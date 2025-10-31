@@ -1,0 +1,97 @@
+#pragma once
+
+#include "ConstBuffer.h"
+
+class MatrixBuffer : public ConstBuffer
+{
+private:
+	struct Data
+	{
+		Matrix matrix;
+	} data;
+
+public:
+	MatrixBuffer() : ConstBuffer(&data, sizeof(Data))
+	{
+		data.matrix = Matrix::Identity;
+	}
+
+	void Set(Matrix value)
+	{
+		data.matrix = value.Transpose();
+	}
+};
+
+class TypeBuffer : public ConstBuffer
+{
+public:
+	struct Data
+	{
+		int values[4];
+		Data() : values{} {}
+	} data;
+
+	TypeBuffer() : ConstBuffer(&data, sizeof(Data)) {}
+};
+
+class BoneBuffer : public ConstBuffer
+{
+public:
+	struct Data
+	{
+		Matrix bones[MAX_BONE];
+	} data;
+
+	BoneBuffer() : ConstBuffer(&data, sizeof(Data))
+	{
+		for (UINT i = 0; i < MAX_BONE; i++)
+			data.bones[i] = Matrix::Identity;
+	}
+
+	void Add(Matrix matrix, UINT index)
+	{
+		data.bones[index] = matrix.Transpose();
+	}
+};
+
+class FrameBuffer : public ConstBuffer
+{
+public:
+	struct KeyFrameDesc
+	{
+		int clip = 0;
+		UINT curFrame = 0;
+		UINT nextFrame = 0;
+		float time = 0.0f;
+
+		float runningTime = 0.0f;
+		float speed = 1.0f;
+		float padding[2];
+	};
+
+	struct TweenDesc
+	{
+		float takeTime;
+		float tweenTime;
+		float runningTime;
+		float padding;
+
+		KeyFrameDesc cur;
+		KeyFrameDesc next;
+
+		TweenDesc() : takeTime(0.5f), tweenTime(0.5f), runningTime(0.0f)
+		{
+			cur.clip = 0;
+			next.clip = -1;
+		}
+	};
+
+	struct Data
+	{
+		TweenDesc tweenDesc[MAX_INSTANCE];
+	} data;
+
+	FrameBuffer() : ConstBuffer(&data, sizeof(Data))
+	{
+	}
+};

@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{e873715a-331e-4d6c-abea-b8140fb8193e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EntryPoint">
+      <UniqueIdentifier>{f8583640-13eb-4abf-b0cb-797d3611bf7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{8965913b-fa91-4572-875b-b8ceae66c9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{e379fda6-36eb-4af3-8c4f-3a8e2c003d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Device">
+      <UniqueIdentifier>{8a599fd1-2ea1-4d5a-a280-bdb35a3fa373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Buffer">
+      <UniqueIdentifier>{ab132db9-63c9-4b9f-8ca3-b4bcd3122de2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{3010a32c-7679-4aaa-bff9-b1970773cfd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform">
+      <UniqueIdentifier>{14c26bf8-f6b9-4e4f-84ce-75bbb57f2a94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Resource">
+      <UniqueIdentifier>{21395e72-c318-4e46-97fa-cdde004d8a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{7257fc1b-b6c7-4aa5-bde9-8949e1a3ac8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{207c71f2-442e-42ce-aff0-6fc577d56311}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Environment">
+      <UniqueIdentifier>{f90822c2-4b5d-406e-9362-ebef88726b8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Resource\ShaderResource">
+      <UniqueIdentifier>{b7247efe-729b-45c8-8dd1-f11259fff5cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\State">
+      <UniqueIdentifier>{391c0340-d426-4b3b-9de7-b5db0cf76c8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{eb8cc856-ca79-424b-bf31-2ff58b0d6510}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SimpleMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>EntryPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>EntryPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>EntryPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>EntryPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Graphics\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Graphics\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Graphics\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexLayouts.h">
+      <Filter>Graphics\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstBuffer.h">
+      <Filter>Graphics\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalBuffers.h">
+      <Filter>Graphics\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Graphics\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Graphics\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Graphics\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShader.h">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClInclude>
+    <ClInclude Include="DomainShader.h">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryShader.h">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClInclude>
+    <ClInclude Include="HullShader.h">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>Graphics\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Control.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelReader.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelExporter.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelType.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryReader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryWriter.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelMesh.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelObject.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelAnimator.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelClip.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Client.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SimpleMath.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>EntryPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>EntryPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Graphics\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Graphics\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Graphics\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexLayouts.cpp">
+      <Filter>Graphics\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstBuffer.cpp">
+      <Filter>Graphics\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalBuffers.cpp">
+      <Filter>Graphics\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Graphics\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Graphics\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Graphics\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputeShader.cpp">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClCompile>
+    <ClCompile Include="DomainShader.cpp">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClCompile>
+    <ClCompile Include="HullShader.cpp">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Graphics\Resource\ShaderResource</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>Graphics\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelReader.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelExporter.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelType.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BinaryReader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BinaryWriter.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelMesh.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelAnimator.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelClip.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SimpleMath.inl">
+      <Filter>Math</Filter>
+    </None>
+    <None Include="..\Shaders\Common.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Shaders\Transform.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Texture.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Default.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

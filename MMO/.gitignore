@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Assets
+Assets/
+
+# Build Files
+Binaries/
