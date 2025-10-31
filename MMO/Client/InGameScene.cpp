@@ -2,6 +2,8 @@
 #include "InGameScene.h"
 #include "Terrain.h"
 #include "Player.h"
+#include "Environment.h"
+#include "Camera.h"
 
 InGameScene::InGameScene()
 {
@@ -10,6 +12,8 @@ InGameScene::InGameScene()
 	_player->position = Vector3(25.0f, 0.0f, 25.0f);
 	_player->scale = Vector3(0.05f);
 	_player->SetTerrain(_terrain);
+
+	Environment::Get().GetMainCamera()->SetTarget(_player);
 }
 
 InGameScene::~InGameScene()

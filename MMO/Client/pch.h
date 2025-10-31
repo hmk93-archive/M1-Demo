@@ -14,6 +14,7 @@ using Microsoft::WRL::ComPtr;
 #include <memory>
 #include <algorithm>
 #include <functional>
+#include <cmath>
 
 // D3D
 #include <d3d11.h>

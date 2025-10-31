@@ -16,6 +16,65 @@ Camera::~Camera()
 
 void Camera::Update()
 {
+	switch (mode)
+	{
+	case Follow:
+		FollowMode();
+		break;
+	case Editor:
+		EditorMode();
+		break;
+	}
+}
+
+void Camera::PostRender()
+{
+	ImGui::Begin("[Camera]");
+	ImGui::RadioButton("FOLLOW", (int*)&mode, 0); ImGui::SameLine();
+	ImGui::RadioButton("EDITOR", (int*)&mode, 1);
+	ImGui::Checkbox("FPV", &_fpv);
+	ImGui::InputFloat("MoveSpeed", &_moveSpeed, 1.0f, 50.0f);
+	ImGui::End();
+}
+
+void Camera::SetVS(UINT slot)
+{
+	_viewBuffer->SetVSBuffer(slot);
+}
+
+void Camera::FollowMode()
+{
+	if (!_target)
+		return;
+
+	Matrix rotMatrix = Matrix::Identity;
+	if (_rotDamping > 0.0f)
+	{
+		if (_target->rotation.y != _destRot)
+		{
+			_destRot = std::lerp(_destRot, _target->rotation.y + XM_PI, _rotDamping * Timer::Get().GetElapsedTime());
+		}
+
+		rotMatrix = Matrix::CreateRotationY(_destRot);
+	}
+	else
+	{
+		// rotMatrix = Matrix::CreateRotationY()
+	}
+
+	Vector3 forward = Vector3::Transform(Vector3::Backward, rotMatrix);
+	_destPos = forward * -_distance;
+	_destPos += _target->GlobalPos();
+	_destPos.y += _height;
+
+	position = Vector3::Lerp(position, _destPos, _moveDamping * Timer::Get().GetElapsedTime());
+
+	_view = XMMatrixLookAtLH(position, _target->GlobalPos(), Up());
+	_viewBuffer->Set(_view);
+}
+
+void Camera::EditorMode()
+{
 	if (!_fpv)
 		return;
 
@@ -44,19 +103,6 @@ void Camera::Update()
 	rotation.y = yaw;
 
 	View();
-}
-
-void Camera::PostRender()
-{
-	ImGui::Begin("[Camera]");
-	ImGui::Checkbox("FPV", &_fpv);
-	ImGui::InputFloat("MoveSpeed", &_moveSpeed, 1.0f, 50.0f);
-	ImGui::End();
-}
-
-void Camera::SetVS(UINT slot)
-{
-	_viewBuffer->SetVSBuffer(slot);
 }
 
 void Camera::View()
@@ -97,3 +143,4 @@ Ray Camera::ScreenPointToRay(Vector3 pos)
 
 	return ray;
 }
+

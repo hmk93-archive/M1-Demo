@@ -28,6 +28,13 @@ class Camera : public Transform
 		}
 	};
 public:
+	enum CamMode
+	{
+		Follow,
+		Editor
+	} mode;
+
+public:
 	Camera();
 	~Camera();
 
@@ -36,9 +43,14 @@ public:
 	
 	void SetVS(UINT slot);
 
+	void SetTarget(Transform* target) { _target = target; }
+
 	Ray ScreenPointToRay(Vector3 pos);
 
 private:
+	void FollowMode();
+	void EditorMode();
+
 	void View();
 
 private:
@@ -49,5 +61,15 @@ private:
 	Matrix _view = Matrix::Identity;
 
 	ViewBuffer* _viewBuffer = nullptr;
+
+	Transform* _target = nullptr;
+
+	float _rotDamping = 0.0f;
+	float _moveDamping = 5.0f;
+	float _destRot = 0.0f;
+
+	Vector3 _destPos = Vector3::Zero;
+	float _distance = 60.0f;
+	float _height = 60.0f;
 };
 
