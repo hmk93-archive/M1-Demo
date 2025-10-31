@@ -194,6 +194,56 @@ void ModelAnimator::PlayClip(UINT clip, float speed, float takeTime)
 	isPlay = true;
 }
 
+Matrix ModelAnimator::GetTransformByNode(int nodeIndex)
+{
+	if (nodeTransform == nullptr)
+		return XMMatrixIdentity();
+
+	FrameBuffer::KeyFrameDesc& curDesc = frameBuffer->data.tweenDesc[0].cur;
+
+	Matrix cur = nodeTransform[curDesc.clip].transform[curDesc.curFrame][nodeIndex];
+	Matrix next = nodeTransform[curDesc.clip].transform[curDesc.nextFrame][nodeIndex];
+
+	Matrix curClip = Matrix::Lerp(cur, next, curDesc.time);
+
+	FrameBuffer::KeyFrameDesc& nextDesc = frameBuffer->data.tweenDesc[0].next;
+
+	if (nextDesc.clip == -1)
+		return curClip;
+
+	cur = nodeTransform[nextDesc.clip].transform[nextDesc.curFrame][nodeIndex];
+	next = nodeTransform[nextDesc.clip].transform[nextDesc.nextFrame][nodeIndex];
+
+	Matrix nextClip = Matrix::Lerp(cur, next, nextDesc.time);
+
+	return Matrix::Lerp(curClip, nextClip, frameBuffer->data.tweenDesc[0].tweenTime);
+}
+
+Matrix ModelAnimator::GetTransformByNode(UINT instance, int nodeIndex)
+{
+	if (nodeTransform == nullptr)
+		return XMMatrixIdentity();
+
+	FrameBuffer::KeyFrameDesc& curDesc = frameBuffer->data.tweenDesc[instance].cur;
+
+	Matrix cur = nodeTransform[curDesc.clip].transform[curDesc.curFrame][nodeIndex];
+	Matrix next = nodeTransform[curDesc.clip].transform[curDesc.nextFrame][nodeIndex];
+
+	Matrix curClip = Matrix::Lerp(cur, next, curDesc.time);
+
+	FrameBuffer::KeyFrameDesc& nextDesc = frameBuffer->data.tweenDesc[instance].next;
+
+	if (nextDesc.clip == -1)
+		return curClip;
+
+	cur = nodeTransform[nextDesc.clip].transform[nextDesc.curFrame][nodeIndex];
+	next = nodeTransform[nextDesc.clip].transform[nextDesc.nextFrame][nodeIndex];
+
+	Matrix nextClip = Matrix::Lerp(cur, next, nextDesc.time);
+
+	return Matrix::Lerp(curClip, nextClip, frameBuffer->data.tweenDesc[instance].tweenTime);
+}
+
 void ModelAnimator::CreateTexture()
 {
 	UINT clipCount = clips.size();

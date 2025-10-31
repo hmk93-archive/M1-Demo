@@ -4,6 +4,7 @@
 #include "Transform.h"
 
 class Terrain;
+class Collider;
 
 class Player : public ModelAnimator, public Transform
 {
@@ -25,6 +26,10 @@ public:
 	void SetTerrain(Terrain* terrain) { _terrain = terrain; }
 
 private:
+	void CreateCollider();
+
+	void UpdateMatrix();
+
 	void Control();
 	void Move();
 	void Rotate();
@@ -42,5 +47,9 @@ private:
 	float _moveSpeed = 20.0f;
 	float _rotateSpeed = 20.0f;
 	float _deceleration = 10.0f;
+
+	Collider* _mainCollider = nullptr;
+
+	Matrix _body = Matrix::Identity;
 };
 

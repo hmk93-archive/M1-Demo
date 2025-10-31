@@ -494,5 +494,8 @@
     <FxCompile Include="..\Shaders\ComputePicking.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Collider.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

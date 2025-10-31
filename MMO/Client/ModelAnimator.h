@@ -22,6 +22,9 @@ public:
 
 	void PlayClip(UINT clip, float speed = 1.0f, float takeTime = 0.2f);
 
+	Matrix GetTransformByNode(int nodeIndex);
+	Matrix GetTransformByNode(UINT instance, int nodeIndex);
+
 private:
 	void CreateClipTransform(UINT index);
 

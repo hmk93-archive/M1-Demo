@@ -3,6 +3,7 @@
 #include "Terrain.h"
 #include "Control.h"
 #include "Timer.h"
+#include "CapsuleCollider.h"
 
 Player::Player(string file)
 	: ModelAnimator(file + "/" + file)
@@ -13,10 +14,13 @@ Player::Player(string file)
 	ReadClip(file + "/Run0");
 	
 	SetAnimation(Idle);
+
+	CreateCollider();
 }
 
 Player::~Player()
 {
+	delete _mainCollider;
 }
 
 void Player::Update()
@@ -25,6 +29,7 @@ void Player::Update()
 	Move();
 	Rotate();
 	SetHeight();
+	UpdateMatrix();
 
 	ModelAnimator::Update();
 }
@@ -33,11 +38,36 @@ void Player::Render()
 {
 	SetWorldBuffer();
 	ModelAnimator::Render();
+
+	_mainCollider->Render();
 }
 
 void Player::PostRender()
 {
 
+}
+
+void Player::CreateCollider()
+{
+	_mainCollider = new CapsuleCollider(15.0f, 100.0f);
+}
+
+void Player::UpdateMatrix()
+{
+	static bool set = false;
+	static int i1, i2, i3, i4;
+	if (!set)
+	{
+		set = true;
+		i1 = GetNodeByName("mixamorig:RightHand");
+		i2 = GetNodeByName("mixamorig:Spine1");
+		i3 = GetNodeByName("mixamorig:Hips");
+		i4 = GetNodeByName("mixamorig:Neck");
+	}
+
+	_body = GetTransformByNode(i2) * _world;
+
+	_mainCollider->SetParent(&_body);
 }
 
 void Player::Control()
