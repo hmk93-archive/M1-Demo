@@ -35,7 +35,7 @@ void Cube::Render()
 
 void Cube::PostRender()
 {
-
+	
 }
 
 void Cube::Create()

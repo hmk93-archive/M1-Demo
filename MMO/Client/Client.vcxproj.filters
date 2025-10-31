@@ -47,14 +47,23 @@
     <Filter Include="Graphics\State">
       <UniqueIdentifier>{391c0340-d426-4b3b-9de7-b5db0cf76c8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="System">
-      <UniqueIdentifier>{eb8cc856-ca79-424b-bf31-2ff58b0d6510}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Model">
       <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
     </Filter>
     <Filter Include="Object">
       <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Landscape">
+      <UniqueIdentifier>{c6149347-1e6a-4218-b29e-763367e7a7b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\ImGui">
+      <UniqueIdentifier>{c72097c5-ffae-4c2d-ba54-b2029e5b8987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{eb8cc856-ca79-424b-bf31-2ff58b0d6510}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{a45a0018-62f7-4215-9654-c76169201989}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -140,13 +149,13 @@
       <Filter>Graphics\State</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>System</Filter>
+      <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="Control.h">
-      <Filter>System</Filter>
+      <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
-      <Filter>System</Filter>
+      <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
       <Filter>Geometry</Filter>
@@ -186,6 +195,63 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainEditor.h">
+      <Filter>Landscape</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Landscape</Filter>
+    </ClInclude>
+    <ClInclude Include="StructuredBuffer.h">
+      <Filter>Graphics\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx11.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="dirent.h">
+      <Filter>Utils\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainEditorScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="InGameScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -278,13 +344,13 @@
       <Filter>Graphics\State</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>System</Filter>
+      <Filter>Managers</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">
-      <Filter>System</Filter>
+      <Filter>Managers</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
-      <Filter>System</Filter>
+      <Filter>Managers</Filter>
     </ClCompile>
     <ClCompile Include="Sphere.cpp">
       <Filter>Geometry</Filter>
@@ -325,6 +391,51 @@
     <ClCompile Include="Player.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="TerrainEditor.cpp">
+      <Filter>Landscape</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Landscape</Filter>
+    </ClCompile>
+    <ClCompile Include="StructuredBuffer.cpp">
+      <Filter>Graphics\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx11.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainEditorScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="InGameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -342,6 +453,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Default.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\TerrainEditor.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\ComputePicking.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

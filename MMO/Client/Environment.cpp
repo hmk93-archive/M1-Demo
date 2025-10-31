@@ -3,32 +3,36 @@
 #include "Device.h"
 #include "GlobalBuffers.h"
 #include "SamplerState.h"
+#include "Camera.h"
 
 Environment::Environment()
 {
 	CreatePerspective();
-	CreateView();
 
 	_samplerState = new SamplerState();
 	_samplerState->SetState();
+
+	_mainCamera = new Camera();
+	_mainCamera->position = Vector3(0.0f, 5.0f, -5.0f);
 }
 
 Environment::~Environment()
 {
+	delete _mainCamera;
 	delete _samplerState;
 	delete _projectionBuffer;
-	delete _viewBuffer;
 }
 
 void Environment::Set()
 {
 	SetViewport();
-
-	_viewBuffer->SetVSBuffer(1);
-
 	SetProjection();
+	_mainCamera->SetVS(1);
+}
 
-	
+void Environment::PostRender()
+{
+	_mainCamera->PostRender();
 }
 
 void Environment::SetProjection()
@@ -55,16 +59,4 @@ void Environment::CreatePerspective()
 	_projectionBuffer = new MatrixBuffer();
 
 	_projectionBuffer->Set(_projection);
-}
-
-void Environment::CreateView()
-{
-	Vector3 eyePos = Vector3(0.0f, 0.0f, -10.0f);
-	Vector3 eyeDir = Vector3(0.0f, 0.0f, 1.0f);
-
-	_view = XMMatrixLookToLH(eyePos, eyeDir, Vector3(0.0f, 1.0f, 0.0f));
-
-	_viewBuffer = new ViewBuffer();
-
-	_viewBuffer->Set(_view);
 }

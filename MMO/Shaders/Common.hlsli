@@ -60,6 +60,20 @@ cbuffer ModelType : register(b5)
 Texture2DArray transformMap : register(t0);
 
 // Pixel Shader
+cbuffer MaterialInfo : register(b1)
+{
+    float4 mDiffuse;
+    float4 mSpecular;
+    float4 mAmbient;
+    float4 mEmissive;
+    
+    float shininess;
+    
+    int hasDiffuseMap;
+    int hasSpecularMap;
+    int hasNormalMap;
+}
+
 SamplerState linearWrapSS : register(s0);
 Texture2D diffuseMap : register(t0);
 Texture2D specularMap : register(t1);
@@ -96,6 +110,15 @@ struct VertexUVNormalTangent
     float2 uv : UV;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
+};
+
+struct VertexUVNormalTangentAlpha
+{
+    float4 pos : POSITION;
+    float2 uv : UV;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float4 alpha : ALPHA;
 };
 
 struct VertexUVNormalTangentBlend

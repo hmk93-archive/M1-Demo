@@ -35,12 +35,21 @@ using namespace DirectX;
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
 
+// ImGui
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
+#include <dirent.h>
+#include <ImGuiFileDialog.h>
+#include <ImGuiFileDialogConfig.h>
+
 // Lib
 #ifdef _DEBUG
 #pragma comment(lib, "DirectXTex/DirectXTex_debug.lib")
-#pragma comment(lib, "Assimp/assimp-vc143-mt.lib")
+#pragma comment(lib, "Assimp/assimp-vc143-mtd.lib")
 #else
 #pragma comment(lib, "DirectXTex/DirectXTex.lib")
+#pragma comment(lib, "Assimp/assimp-vc143-mt.lib")
 #endif
 
 // Math

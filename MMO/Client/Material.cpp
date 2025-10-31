@@ -41,6 +41,8 @@ void Material::Set()
 	if (normalMap)
 		normalMap->PSSet(2);
 
+	buffer->SetPSBuffer(1);
+
 	vertexShader->Set();
 	pixelShader->Set();
 }

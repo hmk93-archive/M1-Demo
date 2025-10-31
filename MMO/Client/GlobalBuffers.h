@@ -95,3 +95,24 @@ public:
 	{
 	}
 };
+
+
+class RayBuffer : public ConstBuffer
+{
+public:
+	struct Data
+	{
+		Vector3 position;
+		float size;
+
+		Vector3 direction;
+		float padding;
+	} data;
+
+	RayBuffer() : ConstBuffer(&data, sizeof(Data))
+	{
+		data.position = Vector3(0, 0, 0);
+		data.size = 0.0f;
+		data.direction = Vector3(0, 0, 0);
+	}
+};

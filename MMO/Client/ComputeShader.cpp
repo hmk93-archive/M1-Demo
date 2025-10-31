@@ -31,7 +31,6 @@ ComputeShader::ComputeShader(wstring file, string entry)
 
 ComputeShader::~ComputeShader()
 {
-	_shader->Release();
 }
 
 void ComputeShader::Set()
