@@ -6,11 +6,19 @@
 #include "Camera.h"
 #include "Warrok.h"
 #include "SphereCollider.h"
+#include "Field.h"
 
 InGameScene::InGameScene()
 {
 	// Terrain
 	_terrain = new Terrain();
+
+	// Fields
+	for (UINT i = 0; i < 9; i++)
+	{
+		Field* field = new Field(_terrain, Field::Location(i));
+		_fields.emplace_back(field);
+	}
 
 	// Player
 	_player = new Player("Paladin");
@@ -35,12 +43,16 @@ InGameScene::~InGameScene()
 {
 	delete _warrok;
 	delete _player;
+	for (Field* field : _fields)
+		delete field;
 	delete _terrain;
 }
 
 void InGameScene::Update()
 {
 	_terrain->Update();
+	for (Field* field : _fields)
+		field->Update();
 	_player->Update();
 	_warrok->Update();
 
@@ -54,6 +66,8 @@ void InGameScene::PreRender()
 void InGameScene::Render()
 {
 	_terrain->Render();
+	for (Field* field : _fields)
+		field->Render();
 	_player->Render();
 	_warrok->Render();
 }
@@ -61,6 +75,8 @@ void InGameScene::Render()
 void InGameScene::PostRender()
 {
 	_terrain->PostRender();
+	for (Field* field : _fields)
+		field->PostRender();
 	_player->PostRender();
 	_warrok->PostRender();
 }

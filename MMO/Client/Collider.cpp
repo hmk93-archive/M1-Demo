@@ -18,7 +18,7 @@ Collider::Collider()
 Collider::~Collider()
 {
     delete material;
-    delete mesh;
+    delete _mesh;
 }
 
 bool Collider::Collision(Collider* collider)
@@ -51,10 +51,10 @@ void Collider::Render()
 	if (s_isColliderDraw == false)
         return;
 
-    mesh->IASet(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+    _mesh->IASet(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
     material->Set();
 
-    Device::Get().GetDeviceContext()->DrawIndexed(indices.size(), 0, 0);
+    Device::Get().GetDeviceContext()->DrawIndexed(_indices.size(), 0, 0);
 
     //RenderAxis();
 }

@@ -37,6 +37,16 @@ struct VertexColor
 	}
 };
 
+struct VertexUV
+{
+	Vector3 position;
+	Vector2 uv;
+
+	VertexUV() : position(0, 0, 0), uv(0, 0)
+	{
+	}
+};
+
 struct VertexUVNormal
 {
 	Vector3 position;

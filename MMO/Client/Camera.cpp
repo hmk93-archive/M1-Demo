@@ -126,7 +126,7 @@ void Camera::View()
 
 Ray Camera::ScreenPointToRay(Vector3 pos)
 {
-	Vector2 screenSize(g_screenWidth, g_screenHeight);
+	Vector2 screenSize((float)g_screenWidth, (float)g_screenHeight);
 
 	Vector2 point;
 	point.x = ((2 * pos.x) / screenSize.x) - 1.0f;

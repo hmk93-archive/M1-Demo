@@ -36,10 +36,10 @@ bool BoxCollider::RayCollision(IN Ray ray, OUT Contact* contact)
     {
         Vector3 p[4];
 
-        p[0] = vertices[face[i * 4 + 0]].position;
-        p[1] = vertices[face[i * 4 + 1]].position;
-        p[2] = vertices[face[i * 4 + 2]].position;
-        p[3] = vertices[face[i * 4 + 3]].position;
+        p[0] = _vertices[face[i * 4 + 0]].position;
+        p[1] = _vertices[face[i * 4 + 1]].position;
+        p[2] = _vertices[face[i * 4 + 2]].position;
+        p[3] = _vertices[face[i * 4 + 3]].position;
 
         p[0] = Vector3::Transform(p[0], _world);
         p[1] = Vector3::Transform(p[1], _world);
@@ -249,24 +249,23 @@ Obb BoxCollider::GetObb()
 
 void BoxCollider::CreateMesh()
 {
-    vertices.emplace_back(minBox.x, minBox.y, minBox.z);
-    vertices.emplace_back(minBox.x, maxBox.y, minBox.z);
-    vertices.emplace_back(maxBox.x, maxBox.y, minBox.z);
-    vertices.emplace_back(maxBox.x, minBox.y, minBox.z);
+    _vertices.emplace_back(minBox.x, minBox.y, minBox.z);
+    _vertices.emplace_back(minBox.x, maxBox.y, minBox.z);
+    _vertices.emplace_back(maxBox.x, maxBox.y, minBox.z);
+    _vertices.emplace_back(maxBox.x, minBox.y, minBox.z);
 
-    vertices.emplace_back(minBox.x, minBox.y, maxBox.z);
-    vertices.emplace_back(minBox.x, maxBox.y, maxBox.z);
-    vertices.emplace_back(maxBox.x, maxBox.y, maxBox.z);
-    vertices.emplace_back(maxBox.x, minBox.y, maxBox.z);
+    _vertices.emplace_back(minBox.x, minBox.y, maxBox.z);
+    _vertices.emplace_back(minBox.x, maxBox.y, maxBox.z);
+    _vertices.emplace_back(maxBox.x, maxBox.y, maxBox.z);
+    _vertices.emplace_back(maxBox.x, minBox.y, maxBox.z);
 
-    indices = {
+    _indices = {
         0, 1, 1, 2, 2, 3, 3, 0,
         4, 5, 5, 6, 6, 7, 7, 4,
         0, 4, 1, 5, 2, 6, 3, 7
     };
 
-    mesh = new Mesh(vertices.data(), sizeof(Vertex), vertices.size(),
-        indices.data(), indices.size());
+    _mesh = new Mesh(_vertices.data(), sizeof(Vertex), (UINT)_vertices.size(), _indices.data(), (UINT)_indices.size());
 }
 
 bool BoxCollider::SeperateAxis(Vector3 D, Vector3 axis, Obb box1, Obb box2)

@@ -32,7 +32,7 @@ bool UICollider::MouseCollision()
 
 void UICollider::SetSize(Vector4 value)
 {
-    vertices.clear();
+    _vertices.clear();
     //
     box = value;
     //
@@ -40,12 +40,12 @@ void UICollider::SetSize(Vector4 value)
     float t = box.y;
     float r = box.z;
     float b = box.w;
-    vertices.emplace_back(l, b, 0);
-    vertices.emplace_back(l, t, 0);
-    vertices.emplace_back(r, t, 0);
-    vertices.emplace_back(r, b, 0);
+    _vertices.emplace_back(l, b, 0);
+    _vertices.emplace_back(l, t, 0);
+    _vertices.emplace_back(r, t, 0);
+    _vertices.emplace_back(r, b, 0);
     //
-    mesh->UpdateVertex(vertices.data(), vertices.size());
+    _mesh->UpdateVertex(_vertices.data(), _vertices.size());
 }
 
 void UICollider::CreateMesh()
@@ -54,14 +54,14 @@ void UICollider::CreateMesh()
     float t = box.y;
     float r = box.z;
     float b = box.w;
-    vertices.emplace_back(l, b, 0);
-    vertices.emplace_back(l, t, 0);
-    vertices.emplace_back(r, t, 0);
-    vertices.emplace_back(r, b, 0);
+    _vertices.emplace_back(l, b, 0);
+    _vertices.emplace_back(l, t, 0);
+    _vertices.emplace_back(r, t, 0);
+    _vertices.emplace_back(r, b, 0);
     //
-	indices = { 0, 1, 1, 2, 2, 3, 3, 0 };
-    mesh = new Mesh(vertices.data(), sizeof(Vertex), vertices.size(),
-        indices.data(), indices.size());
+	_indices = { 0, 1, 1, 2, 2, 3, 3, 0 };
+    _mesh = new Mesh(_vertices.data(), sizeof(Vertex), _vertices.size(),
+        _indices.data(), _indices.size());
 }
 
 bool UICollider::RayCollision(IN Ray ray, OUT Contact* contact)

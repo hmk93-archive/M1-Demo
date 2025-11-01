@@ -36,6 +36,7 @@ public:
 	bool ComputePicking(OUT Vector3& position);
 
 	float GetHeight(Vector3 position);
+	Vector2 GetSize() { return Vector2((float)_width, (float)_height); }
 
 private:
 	void CreateMesh();

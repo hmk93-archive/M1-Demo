@@ -46,6 +46,6 @@ void Warrok::SetAnimation(WarrokAnimState value, float speed)
 	if (state != value)
 	{
 		state = value;
-		PlayClip(state, speed);
+		PlayClip(0, state, speed);
 	}
 }

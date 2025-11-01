@@ -5,6 +5,7 @@
 class Terrain;
 class Player;
 class Warrok;
+class Field;
 
 class InGameScene : public Scene
 {
@@ -24,5 +25,7 @@ private:
 	Terrain* _terrain = nullptr;
 	Player* _player = nullptr;
 	Warrok* _warrok = nullptr;
+
+	vector<Field*> _fields = {};
 };
 

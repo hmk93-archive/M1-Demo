@@ -95,7 +95,7 @@ void Terrain::CreateMesh()
 		}
 	}
 
-	_computeSize = _indices.size() / 3;
+	_computeSize = (UINT)_indices.size() / 3;
 
 	CreateInput();
 
@@ -138,7 +138,7 @@ bool Terrain::ComputePicking(OUT Vector3& position)
 	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
 	_rayBuffer->data.position = ray.position;
 	_rayBuffer->data.direction = ray.direction;
-	_rayBuffer->data.size = _computeSize;
+	_rayBuffer->data.size = (float)_computeSize;
 	_computeShader->Set();
 
 	_rayBuffer->SetCSBuffer(0);
@@ -146,7 +146,7 @@ bool Terrain::ComputePicking(OUT Vector3& position)
 	Device::Get().GetDeviceContext()->CSSetShaderResources(0, 1, &_structuredBuffer->GetSRV());
 	Device::Get().GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &_structuredBuffer->GetUAV(), nullptr);
 
-	UINT x = ceil((float)_computeSize / 1024.0f);
+	UINT x = (UINT)ceil((float)_computeSize / 1024.0f);
 
 	Device::Get().GetDeviceContext()->Dispatch(x, 1, 1);
 

@@ -178,7 +178,7 @@ void CapsuleCollider::CreateMesh()
 			else
 				vertex.position.y -= height * 0.5f;
 
-			vertices.emplace_back(vertex);
+			_vertices.emplace_back(vertex);
 		}
 	}
 
@@ -186,14 +186,14 @@ void CapsuleCollider::CreateMesh()
 	{
 		for (UINT j = 0; j < sliceCount; j++)
 		{
-			indices.emplace_back((sliceCount + 1) * i + j);//0
-			indices.emplace_back((sliceCount + 1) * i + j + 1);//1			
+			_indices.emplace_back((sliceCount + 1) * i + j);//0
+			_indices.emplace_back((sliceCount + 1) * i + j + 1);//1			
 
-			indices.emplace_back((sliceCount + 1) * i + j);//0
-			indices.emplace_back((sliceCount + 1) * (i + 1) + j);//2
+			_indices.emplace_back((sliceCount + 1) * i + j);//0
+			_indices.emplace_back((sliceCount + 1) * (i + 1) + j);//2
 		}
 	}
 
-	mesh = new Mesh(vertices.data(), sizeof(Vertex), vertices.size(),
-		indices.data(), indices.size());
+	_mesh = new Mesh(_vertices.data(), sizeof(Vertex), _vertices.size(),
+		_indices.data(), _indices.size());
 }

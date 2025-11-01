@@ -38,12 +38,12 @@ public:
 	//
 protected:
 	Material* material;
-	Mesh* mesh;
+	Mesh* _mesh;
 
 	Type type;
 
-	vector<Vertex> vertices;
-	vector<UINT> indices;
+	vector<Vertex> _vertices;
+	vector<UINT> _indices;
 
 public:
 	Collider();

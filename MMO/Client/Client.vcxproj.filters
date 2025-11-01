@@ -47,12 +47,6 @@
     <Filter Include="Graphics\State">
       <UniqueIdentifier>{391c0340-d426-4b3b-9de7-b5db0cf76c8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Model">
-      <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object">
-      <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Landscape">
       <UniqueIdentifier>{c6149347-1e6a-4218-b29e-763367e7a7b4}</UniqueIdentifier>
     </Filter>
@@ -67,6 +61,12 @@
     </Filter>
     <Filter Include="Collider">
       <UniqueIdentifier>{d70fe33d-2aa6-48f8-9447-5846a70042dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects">
+      <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -164,13 +164,13 @@
       <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="ModelReader.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="ModelExporter.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="ModelType.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="tinyxml2.h">
       <Filter>Utils</Filter>
@@ -182,22 +182,22 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ModelMesh.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="ModelObject.h">
-      <Filter>Object</Filter>
+      <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="ModelAnimator.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="ModelClip.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Object</Filter>
+      <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="TerrainEditor.h">
       <Filter>Landscape</Filter>
@@ -272,13 +272,19 @@
       <Filter>Collider</Filter>
     </ClInclude>
     <ClInclude Include="ModelAnimators.h">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClInclude>
     <ClInclude Include="ModelExportScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Warrok.h">
-      <Filter>Object</Filter>
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldWall.h">
+      <Filter>GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -383,13 +389,13 @@
       <Filter>Geometry</Filter>
     </ClCompile>
     <ClCompile Include="ModelReader.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="ModelExporter.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="ModelType.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="tinyxml2.cpp">
       <Filter>Utils</Filter>
@@ -401,22 +407,22 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModelMesh.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="ModelObject.cpp">
-      <Filter>Object</Filter>
+      <Filter>GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="ModelAnimator.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="ModelClip.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Object</Filter>
+      <Filter>GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="TerrainEditor.cpp">
       <Filter>Landscape</Filter>
@@ -479,13 +485,19 @@
       <Filter>Collider</Filter>
     </ClCompile>
     <ClCompile Include="ModelAnimators.cpp">
-      <Filter>Model</Filter>
+      <Filter>Models</Filter>
     </ClCompile>
     <ClCompile Include="ModelExportScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Warrok.cpp">
-      <Filter>Object</Filter>
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldWall.cpp">
+      <Filter>GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

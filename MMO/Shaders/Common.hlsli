@@ -85,6 +85,12 @@ struct Vertex
     float4 pos : POSITION;
 };
 
+struct VertexSize
+{
+    float3 pos : POSITION;
+    float2 size : SIZE;
+};
+
 struct VertexColor
 {
     float4 pos : POSITION;
