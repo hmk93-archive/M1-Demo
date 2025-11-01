@@ -18,6 +18,9 @@ public:
 	virtual void PostRender() override;
 
 private:
+	void PlayerAttackToWarrok();
+
+private:
 	Terrain* _terrain = nullptr;
 	Player* _player = nullptr;
 	Warrok* _warrok = nullptr;

@@ -11,7 +11,7 @@ InGameScene::InGameScene()
 {
 	// Terrain
 	_terrain = new Terrain();
-	
+
 	// Player
 	_player = new Player("Paladin");
 	_player->position = Vector3(25.0f, 0.0f, 25.0f);
@@ -43,6 +43,8 @@ void InGameScene::Update()
 	_terrain->Update();
 	_player->Update();
 	_warrok->Update();
+
+	PlayerAttackToWarrok();
 }
 
 void InGameScene::PreRender()
@@ -61,4 +63,19 @@ void InGameScene::PostRender()
 	_terrain->PostRender();
 	_player->PostRender();
 	_warrok->PostRender();
+}
+
+void InGameScene::PlayerAttackToWarrok()
+{
+	Collider* player = _player->GetMainCollider();
+	if (!player->isActive)
+		return;
+	Collider* warrok = _warrok->mainCollider;
+	if (!warrok->isActive)
+		return;
+	if (player->Collision(warrok))
+	{
+		_player->Attack();
+		_warrok->Hit(0);
+	}
 }

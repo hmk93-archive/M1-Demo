@@ -19,6 +19,8 @@ Warrok::~Warrok()
 
 void Warrok::Update()
 {
+	mainCollider->SetColor(Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
 	ModelAnimators::Update();
 }
 
@@ -32,6 +34,11 @@ void Warrok::Render()
 void Warrok::PostRender()
 {
 
+}
+
+void Warrok::Hit(UINT damage)
+{
+	mainCollider->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 void Warrok::SetAnimation(WarrokAnimState value, float speed)

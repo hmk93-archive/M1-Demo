@@ -14,6 +14,7 @@ Player::Player(string file)
 
 	ReadClip(file + "/Idle0");
 	ReadClip(file + "/Run0");
+	ReadClip(file + "/Attack_A0");
 	
 	SetAnimation(Idle);
 
@@ -47,6 +48,11 @@ void Player::Render()
 void Player::PostRender()
 {
 
+}
+
+void Player::Attack()
+{
+	SetAnimation(Attack_A);
 }
 
 void Player::CreateCollider()

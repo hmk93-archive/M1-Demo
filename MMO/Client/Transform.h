@@ -35,10 +35,9 @@ public:
 	Vector3 position = {};
 	Vector3 rotation = {};
 	Vector3 scale = Vector3(1.0f);
+	bool isActive = true;
 
 protected:
-	bool _isActive = true;
-
 	Vector3 _globalPosition = {};
 	Vector3 _globalRotation = {};
 	Vector3 _globalScale = Vector3(1.0f);

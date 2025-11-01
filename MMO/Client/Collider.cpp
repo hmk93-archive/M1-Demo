@@ -43,7 +43,7 @@ bool Collider::Collision(Collider* collider)
 
 void Collider::Render()
 {
-    if (_isActive == false)
+    if (isActive == false)
         return;
 
     SetWorldBuffer();

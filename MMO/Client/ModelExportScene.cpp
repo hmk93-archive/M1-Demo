@@ -9,28 +9,31 @@ ModelExportScene::ModelExportScene()
 	// Player
 	{
 		CreateModel("Paladin");
+		CreateAnimation("Paladin", "Idle");
+		CreateAnimation("Paladin", "Run");
+		CreateAnimation("Paladin", "Attack_A");
 		_player = new Player("Paladin");
 	}
 
-	// Monster
-	{
-		// Warrok
-		{
-			CreateModel("Warrok");
-			CreateAnimation("Warrok", "Idle");
-			_warrok = new Warrok("Warrok");
-			for (float z = -10.0f; z < 10.0f; z++)
-			{
-				for (float x = -10.0f; x < 10.0f; x++)
-				{
-					Transform* transform = _warrok->AddTransform();
-					// Tag??
-					transform->position = Vector3(20 * x, 0.0f, 20 * z);
-					transform->scale = Vector3(0.1f);
-				}
-			}
-		}
-	}
+	//// Monster
+	//{
+	//	// Warrok
+	//	{
+	//		CreateModel("Warrok");
+	//		CreateAnimation("Warrok", "Idle");
+	//		_warrok = new Warrok("Warrok");
+	//		for (float z = -10.0f; z < 10.0f; z++)
+	//		{
+	//			for (float x = -10.0f; x < 10.0f; x++)
+	//			{
+	//				Transform* transform = _warrok->AddTransform();
+	//				// Tag??
+	//				transform->position = Vector3(20 * x, 0.0f, 20 * z);
+	//				transform->scale = Vector3(0.1f);
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 ModelExportScene::~ModelExportScene()
@@ -42,7 +45,7 @@ ModelExportScene::~ModelExportScene()
 void ModelExportScene::Update()
 {
 	_player->Update();
-	_warrok->Update();
+	// _warrok->Update();
 }
 
 void ModelExportScene::PreRender()
@@ -52,13 +55,13 @@ void ModelExportScene::PreRender()
 void ModelExportScene::Render()
 {
 	_player->Render();
-	_warrok->Render();
+	// _warrok->Render();
 }
 
 void ModelExportScene::PostRender()
 {
 	_player->PostRender();
-	_warrok->PostRender();
+	// _warrok->PostRender();
 }
 
 void ModelExportScene::CreateModel(string name, string ext)

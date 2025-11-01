@@ -12,6 +12,7 @@ class Player : public ModelAnimator, public Transform
 	{
 		Idle,
 		Run,
+		Attack_A,
 		End
 	} state;
 public:
@@ -24,6 +25,10 @@ public:
 	void PostRender();
 
 	void SetTerrain(Terrain* terrain) { _terrain = terrain; }
+
+	Collider* GetMainCollider() { return _mainCollider; }
+
+	void Attack();
 
 private:
 	void CreateCollider();

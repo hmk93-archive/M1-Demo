@@ -23,6 +23,8 @@ public:
 
 	void SetTerrain(Terrain* terrain) { _terrain = terrain; }
 
+	void Hit(UINT damage);
+
 private:
 	void SetAnimation(WarrokAnimState value, float speed = 1.0f);
 
