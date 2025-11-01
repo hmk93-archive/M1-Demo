@@ -25,7 +25,7 @@ public:
 	Matrix GetTransformByNode(int nodeIndex);
 	Matrix GetTransformByNode(UINT instance, int nodeIndex);
 
-private:
+protected:
 	void CreateClipTransform(UINT index);
 
 	void CreateTexture();

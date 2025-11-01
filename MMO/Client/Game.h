@@ -14,6 +14,7 @@ public:
 
 private:
 	void RenderFPS();
+	void Debug();
 
 public:
 	static bool s_exit;

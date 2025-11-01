@@ -131,6 +131,20 @@ struct VertexUVNormalTangentBlend
     float4 weights : BLENDWEIGHT;
 };
 
+struct VertexInstancing
+{
+    float4 pos : POSITION;
+    float2 uv : UV;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float4 indices : BLENDINDICES;
+    float4 weights : BLENDWEIGHT;
+    
+    matrix transform : INSTANCE_TRANSFORM;
+    uint index : INSTANCE_INDEX;
+    uint instanceID : SV_INSTANCEID;
+};
+
 matrix BoneWorld(float4 indices, float4 weights)
 {
     matrix transform = 0;

@@ -51,10 +51,13 @@ private:
 	void FollowMode();
 	void EditorMode();
 
+	void EditorMove();
+	void EditorRotate();
+
 	void View();
 
 private:
-	bool _fpv = true;
+	bool _fpv = false;
 	float _moveSpeed = 25.0f;
 	float _rotSpeed = 0.1f;
 

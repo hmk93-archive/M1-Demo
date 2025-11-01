@@ -38,11 +38,14 @@ private:
 	void SetHeight();
 	void SetAnimation(PlayerAnimState value, float speed = 1.0f);
 
+	// TMP
+public:
+	Vector3 _destPos = Vector3(0.0f);
+
 private:
 	Terrain* _terrain = nullptr;
 
 	Vector3 _velocity = Vector3(0.0f);
-	Vector3 _destPos = Vector3(0.0f);
 
 	float _moveSpeed = 20.0f;
 	float _rotateSpeed = 20.0f;

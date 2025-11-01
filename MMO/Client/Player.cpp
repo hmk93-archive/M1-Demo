@@ -8,6 +8,8 @@
 Player::Player(string file)
 	: ModelAnimator(file + "/" + file)
 {
+	scale = Vector3(0.05f);
+
 	SetShader(L"Default");
 
 	ReadClip(file + "/Idle0");
@@ -72,6 +74,8 @@ void Player::UpdateMatrix()
 
 void Player::Control()
 {
+	if (!_terrain)
+		return;
 	if (Control::Get().Press(VK_LBUTTON))
 	{
 		_terrain->ComputePicking(_destPos);
@@ -118,6 +122,8 @@ void Player::Rotate()
 void Player::SetVelocity()
 {
 	Vector3 direction = _destPos - position;
+	if (direction.Length() < 0.001f)
+		direction = Vector3::Zero;
 	_velocity = direction;
 	//@TODO
 	_velocity.y = 0.0f; 

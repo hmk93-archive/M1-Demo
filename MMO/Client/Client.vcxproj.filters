@@ -271,6 +271,15 @@
     <ClInclude Include="Collider.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="ModelAnimators.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelExportScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Warrok.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -469,6 +478,15 @@
     <ClCompile Include="Collider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
+    <ClCompile Include="ModelAnimators.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelExportScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Warrok.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -495,6 +513,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Collider.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Instancing.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

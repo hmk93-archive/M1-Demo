@@ -12,6 +12,8 @@
 #include "SceneManager.h"
 #include "TerrainEditorScene.h"
 #include "InGameScene.h"
+#include "Collider.h"
+#include "ModelExportScene.h"
 
 bool Game::s_exit = false;
 
@@ -30,31 +32,11 @@ Game::Game()
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(Device::Get().GetDevice(), Device::Get().GetDeviceContext());
 
+	SceneManager::Get().Add("ModelExportScene", new ModelExportScene());
 	SceneManager::Get().Add("TerrainEditor", new TerrainEditorScene());
 	SceneManager::Get().Add("InGame", new InGameScene());
 	SceneManager::Get().Play("InGame");
-
-	//_cube = new Cube();
-	//_cube->position = Vector3(0.0f, 0.0f, 2.0f);
-
-	//_sphere = new Sphere();
-	//_sphere->position = Vector3(-2.0f, 0.0f, 2.0f);
-
-	{
-		// Export Model
-		 //ModelExporter exporter("../Assets/Models/Paladin.fbx");
-		 //exporter.ExportMaterial("Paladin/Paladin");
-		 //exporter.ExportMesh("Paladin/Paladin");
-	}
-	{
-		// Export Clip
-		// ModelExporter exporter("../Assets/Animations/Paladin/Idle.fbx");
-		// exporter.ExportClip("Paladin/Idle");
-	}
-
-	//_modelObj = new ModelObject("Paladin/Paladin");
-	//_modelObj->position = Vector3(2.0f, 0.0f, 2.0f);
-	//_modelObj->scale = Vector3(0.01f);
+	// SceneManager::Get().Play("ModelExportScene");
 }
 
 Game::~Game()
@@ -68,6 +50,7 @@ Game::~Game()
 
 void Game::Update()
 {
+	Debug();
 	Control::Get().Update();
 	Timer::Get().Update();
 	Environment::Get().GetMainCamera()->Update();
@@ -109,4 +92,12 @@ void Game::RenderFPS()
 {
 	wstring fps = L"FPS: " + to_wstring((int)Timer::Get().GetFPS());
 	Font::Get().RenderText(fps, { 10,0,0 });
+}
+
+void Game::Debug()
+{
+	if (Control::Get().Down(VK_F5))
+	{
+		Collider::s_isColliderDraw = !Collider::s_isColliderDraw;
+	}
 }

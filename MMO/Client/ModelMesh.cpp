@@ -29,7 +29,10 @@ void ModelMesh::Render()
 
 void ModelMesh::Render(UINT drawCount)
 {
+	mesh->IASet();
+	material->Set();
 
+	Device::Get().GetDeviceContext()->DrawIndexedInstanced(indexCount, drawCount, 0, 0, 0);
 }
 
 void ModelMesh::SetBox(Vector3* minBox, Vector3* maxBox)

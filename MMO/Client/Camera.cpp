@@ -31,7 +31,7 @@ void Camera::PostRender()
 {
 	ImGui::Begin("[Camera]");
 	ImGui::RadioButton("FOLLOW", (int*)&mode, 0); ImGui::SameLine();
-	ImGui::RadioButton("EDITOR", (int*)&mode, 1);
+	if (ImGui::RadioButton("EDITOR", (int*)&mode, 1)) position = Vector3::Zero;
 	ImGui::Checkbox("FPV", &_fpv);
 	ImGui::InputFloat("MoveSpeed", &_moveSpeed, 1.0f, 50.0f);
 	ImGui::End();
@@ -75,10 +75,15 @@ void Camera::FollowMode()
 
 void Camera::EditorMode()
 {
-	if (!_fpv)
-		return;
+	if (Control::Get().Down('F'))
+		_fpv = !_fpv;
+	EditorMove();
+	EditorRotate();
+	View();
+}
 
-	// Move
+void Camera::EditorMove()
+{
 	if (Control::Get().Press('W'))
 		position += Forward() * _moveSpeed * Timer::Get().GetElapsedTime();
 	if (Control::Get().Press('S'))
@@ -91,6 +96,12 @@ void Camera::EditorMode()
 		position -= Up() * _moveSpeed * Timer::Get().GetElapsedTime();
 	if (Control::Get().Press('E'))
 		position += Up() * _moveSpeed * Timer::Get().GetElapsedTime();
+}
+
+void Camera::EditorRotate()
+{
+	if (!_fpv)
+		return;
 
 	// Rotation
 	float ndcX = Control::Get().GetMouse().x / g_screenWidth * 2.0f - 1.0f;
@@ -101,8 +112,6 @@ void Camera::EditorMode()
 
 	rotation.x = pitch;
 	rotation.y = yaw;
-
-	View();
 }
 
 void Camera::View()

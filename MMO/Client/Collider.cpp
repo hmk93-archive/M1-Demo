@@ -41,16 +41,6 @@ bool Collider::Collision(Collider* collider)
 	return false;
 }
 
-//void Collider::Update()
-//{
-//    if (isActive == false) return;
-//    //
-//    SetWorldBuffer();
-//    ////
-//    //mesh->IASet(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-//    //material->Set();
-//}
-
 void Collider::Render()
 {
     if (_isActive == false)
