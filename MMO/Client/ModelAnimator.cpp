@@ -81,7 +81,7 @@ void ModelAnimator::Update()
 		// at Frame of Event
 		if (FrameEvent.count(desc.clip) > 0)
 		{
-			UINT fSize = frames[desc.clip].size();
+			UINT fSize = (UINT)frames[desc.clip].size();
 			UINT frame = frames[desc.clip][0];
 			if (desc.curFrame == frame)
 			{
@@ -246,7 +246,7 @@ Matrix ModelAnimator::GetTransformByNode(UINT instance, int nodeIndex)
 
 void ModelAnimator::CreateTexture()
 {
-	UINT clipCount = clips.size();
+	UINT clipCount = (UINT)clips.size();
 
 	clipTransform = new ClipTransform[clipCount];
 	nodeTransform = new ClipTransform[clipCount];

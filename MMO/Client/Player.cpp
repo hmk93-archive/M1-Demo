@@ -4,6 +4,7 @@
 #include "Control.h"
 #include "Timer.h"
 #include "CapsuleCollider.h"
+#include "AStar.h"
 
 Player::Player(string file)
 	: ModelAnimator(file + "/" + file)
@@ -80,17 +81,22 @@ void Player::UpdateMatrix()
 
 void Player::Control()
 {
-	if (!_terrain)
-		return;
-	if (Control::Get().Press(VK_LBUTTON))
+	if (Control::Get().Down(VK_LBUTTON))
 	{
-		_terrain->ComputePicking(_destPos);
+		SetPath();
 	}
 }
 
 void Player::Move()
 {
 	SetVelocity();
+
+	// ¸¶Âû·Â Àû¿ë
+	if (_velocity.Length() > 0.0f)
+	{
+		Vector3 zero = Vector3::Zero;
+		_velocity = Vector3::Lerp(_velocity, zero, _deceleration * Timer::Get().GetElapsedTime());
+	}
 
 	position += _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
 
@@ -111,9 +117,9 @@ void Player::Rotate()
 {
 	if (_velocity.Length() < 0.1f)
 		return;
-	_velocity.Normalize();
 	Vector3 start = Forward() * -1.0f;
 	Vector3 end = _velocity;
+	end.Normalize();
 	float cosValue = start.Dot(end);
 	float theta = acos(cosValue);
 	if (theta < 0.1f)
@@ -125,22 +131,28 @@ void Player::Rotate()
 		rotation.y -= _rotateSpeed * Timer::Get().GetElapsedTime();
 }
 
+void Player::SetPath()
+{
+	if (!_terrain || !_astar)
+		return;
+
+	_path.clear();
+	_terrain->ComputePicking(_destPos);
+	_astar->SetPath(_path, position, _destPos);
+}
+
 void Player::SetVelocity()
 {
-	Vector3 direction = _destPos - position;
-	if (direction.Length() < 0.001f)
-		direction = Vector3::Zero;
-	_velocity = direction;
-	//@TODO
-	_velocity.y = 0.0f; 
-	_velocity.Normalize();
+	if (_path.empty())
+		return;
 
-	// ¸¶Âû·Â Àû¿ë
-	if (_velocity.Length() > 0.0f)
-	{
-		Vector3 zero = Vector3(0.0f);
-		_velocity = Vector3::Lerp(_velocity, zero, _deceleration * Timer::Get().GetElapsedTime());
-	}
+	Vector3 dest = _path.back();
+	Vector3 direction = dest - position;
+	if (direction.Length() < 0.1f)
+		_path.pop_back();
+
+	_velocity = direction;
+	_velocity.Normalize();
 }
 
 void Player::SetHeight()

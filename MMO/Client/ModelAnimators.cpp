@@ -142,10 +142,10 @@ void ModelAnimators::UpdateTransforms()
 	for (UINT i = 0; i < _transforms.size(); i++)
 	{
 		_transforms[i]->UpdateWorld();
-		worldMinBox = Vector3::Transform(_minBox, _transforms[i]->GetWorld());
-		worldMaxBox = Vector3::Transform(_maxBox, _transforms[i]->GetWorld());
+		worldMinBox = Vector3::Transform(_minBox, *_transforms[i]->GetWorld());
+		worldMaxBox = Vector3::Transform(_maxBox, *_transforms[i]->GetWorld());
 
-		_instanceData[_drawCount].world = _transforms[i]->GetWorld().Transpose();
+		_instanceData[_drawCount].world = (*_transforms[i]->GetWorld()).Transpose();
 		_instanceData[_drawCount].index = i;
 		_drawCount++;
 	}

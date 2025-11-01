@@ -207,7 +207,7 @@ void ModelExporter::ReadMesh(aiNode* node)
 		aiMaterial* material = scene->mMaterials[srcMesh->mMaterialIndex];
 		mesh->materialName = material->GetName().C_Str();
 
-		UINT startVertex = mesh->vertices.size();
+		UINT startVertex = (UINT)mesh->vertices.size();
 
 		vector<VertexWeights> vertexWeights;
 		vertexWeights.resize(srcMesh->mNumVertices);
@@ -279,7 +279,7 @@ void ModelExporter::ReadNode(aiNode* node, int index, int parent)
 	nodes.emplace_back(nodeData);
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
-		ReadNode(node->mChildren[i], nodes.size(), index);
+		ReadNode(node->mChildren[i], (int)nodes.size(), index);
 }
 
 void ModelExporter::ReadBone(aiMesh* mesh, vector<VertexWeights>& vertexWeights)
@@ -323,23 +323,23 @@ void ModelExporter::WriteMesh(string savePath)
 
 	BinaryWriter* w = new BinaryWriter(savePath);
 
-	w->UInt(meshes.size());
+	w->UInt((UINT)meshes.size());
 	for (MeshData* mesh : meshes)
 	{
 		w->String(mesh->name);
 		w->String(mesh->materialName);
 
-		w->UInt(mesh->vertices.size());
-		w->Byte(mesh->vertices.data(), sizeof(ModelVertex) * mesh->vertices.size());
+		w->UInt((UINT)mesh->vertices.size());
+		w->Byte(mesh->vertices.data(), (UINT)(sizeof(ModelVertex) * mesh->vertices.size()));
 
-		w->UInt(mesh->indices.size());
-		w->Byte(mesh->indices.data(), sizeof(UINT) * mesh->indices.size());
+		w->UInt((UINT)mesh->indices.size());
+		w->Byte(mesh->indices.data(), (UINT)(sizeof(UINT) * mesh->indices.size()));
 
 		delete mesh;
 	}
 	meshes.clear();
 
-	w->UInt(nodes.size());
+	w->UInt((UINT)nodes.size());
 	for (NodeData* node : nodes)
 	{
 		w->Int(node->index);
@@ -351,7 +351,7 @@ void ModelExporter::WriteMesh(string savePath)
 	}
 	nodes.clear();
 
-	w->UInt(bones.size());
+	w->UInt((UINT)bones.size());
 	for (BoneData* bone : bones)
 	{
 		w->String(bone->name);
@@ -388,10 +388,9 @@ Clip* ModelExporter::ReadClip(aiAnimation* animation)
 		for (UINT k = 0; k < keyCount; k++)
 		{
 			bool isFound = false;
-			UINT t = node.keyFrame.size();
+			UINT t = (UINT)node.keyFrame.size();
 
-			if (k < srcNode->mNumPositionKeys &&
-				abs((float)srcNode->mPositionKeys[k].mTime - (float)t) <= FLT_EPSILON)
+			if (k < srcNode->mNumPositionKeys && abs((float)srcNode->mPositionKeys[k].mTime - (float)t) <= FLT_EPSILON)
 			{
 				aiVectorKey key = srcNode->mPositionKeys[k];
 				memcpy_s(&transform.position, sizeof(Vector3),
@@ -401,8 +400,7 @@ Clip* ModelExporter::ReadClip(aiAnimation* animation)
 				isFound = true;
 			}
 
-			if (k < srcNode->mNumRotationKeys &&
-				abs((float)srcNode->mRotationKeys[k].mTime - (float)t) <= FLT_EPSILON)
+			if (k < srcNode->mNumRotationKeys && abs((float)srcNode->mRotationKeys[k].mTime - (float)t) <= FLT_EPSILON)
 			{
 				aiQuatKey key = srcNode->mRotationKeys[k];
 
@@ -416,8 +414,7 @@ Clip* ModelExporter::ReadClip(aiAnimation* animation)
 				isFound = true;
 			}
 
-			if (k < srcNode->mNumScalingKeys &&
-				abs((float)srcNode->mScalingKeys[k].mTime - (float)t) <= FLT_EPSILON)
+			if (k < srcNode->mNumScalingKeys && abs((float)srcNode->mScalingKeys[k].mTime - (float)t) <= FLT_EPSILON)
 			{
 				aiVectorKey key = srcNode->mScalingKeys[k];
 				memcpy_s(&transform.scale, sizeof(Vector3),
@@ -429,11 +426,11 @@ Clip* ModelExporter::ReadClip(aiAnimation* animation)
 
 			if (isFound)
 				node.keyFrame.emplace_back(transform);
-		}//KeyTransform
+		}
 
 		if (node.keyFrame.size() < clip->frameCount)
 		{
-			UINT count = clip->frameCount - node.keyFrame.size();
+			UINT count = clip->frameCount - (UINT)node.keyFrame.size();
 			KeyTransform keyTransform = node.keyFrame.back();
 
 			for (UINT n = 0; n < count; n++)
@@ -442,7 +439,7 @@ Clip* ModelExporter::ReadClip(aiAnimation* animation)
 		clip->duration = max(clip->duration, node.keyFrame.back().time);
 
 		clipNodes.emplace_back(node);
-	}//Bone
+	}
 
 	ReadKeyFrame(clip, scene->mRootNode, clipNodes);
 
@@ -504,14 +501,14 @@ void ModelExporter::WriteClip(Clip* clip, string savePath)
 	w->Float(clip->tickPerSecond);
 	w->UInt(clip->frameCount);
 
-	w->UInt(clip->keyFrame.size());
+	w->UInt((UINT)clip->keyFrame.size());
 
 	for (KeyFrame* keyFrame : clip->keyFrame)
 	{
 		w->String(keyFrame->boneName);
 
-		w->UInt(keyFrame->transforms.size());
-		w->Byte(keyFrame->transforms.data(), sizeof(KeyTransform) * keyFrame->transforms.size());
+		w->UInt((UINT)keyFrame->transforms.size());
+		w->Byte(keyFrame->transforms.data(), (UINT)(sizeof(KeyTransform) * keyFrame->transforms.size()));
 
 		delete keyFrame;
 	}

@@ -11,13 +11,13 @@ bool Collider::s_isColliderDraw = true;
 
 Collider::Collider()
 {
-    material = new Material(L"Collider");
-    material->GetBuffer()->data.diffuse = Vector4(0, 1, 0, 1);
+    _material = new Material(L"Collider");
+    _material->GetBuffer()->data.diffuse = Vector4(0, 1, 0, 1);
 }
 
 Collider::~Collider()
 {
-    delete material;
+    delete _material;
     delete _mesh;
 }
 
@@ -25,16 +25,16 @@ bool Collider::Collision(Collider* collider)
 {
     UpdateWorld();
     collider->UpdateWorld();
-    //
-	switch (collider->type)
+
+	switch (collider->_type)
 	{
-	case Collider::BOX:
+	case Collider::Box:
 		return BoxCollision(static_cast<BoxCollider*>(collider));
-	case Collider::SPHERE:
+	case Collider::Sphere:
 		return SphereCollision(static_cast<SphereCollider*>(collider));
-	case Collider::CAPSULE:
+	case Collider::Capsule:
 		return CapsuleCollision(static_cast<CapsuleCollider*>(collider));
-	case Collider::UI:
+	case Collider::Sqaure:
 		return MouseCollision();
 	}
 
@@ -52,14 +52,14 @@ void Collider::Render()
         return;
 
     _mesh->IASet(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-    material->Set();
+    _material->Set();
 
-    Device::Get().GetDeviceContext()->DrawIndexed(_indices.size(), 0, 0);
+    Device::Get().GetDeviceContext()->DrawIndexed((UINT)_indices.size(), 0, 0);
 
     //RenderAxis();
 }
 
 void Collider::SetColor(Vector4 color) 
 {
-    material->GetBuffer()->data.diffuse = color; 
+    _material->GetBuffer()->data.diffuse = color; 
 }

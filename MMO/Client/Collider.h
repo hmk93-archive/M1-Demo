@@ -2,12 +2,6 @@
 
 #include "Transform.h"
 
-//struct Ray
-//{
-//	Vector3 position;
-//	Vector3 direction;
-//};
-
 struct Contact
 {
 	Vector3 hitPoint;
@@ -25,25 +19,16 @@ class Collider : public Transform
 {
 public:
 	static bool s_isColliderDraw;
-	//
+
 public:
 	enum Type
 	{
-		BOX,
-		SPHERE,
-		CAPSULE,
-		UI,
-		NONE
+		Box,
+		Sphere,
+		Capsule,
+		Sqaure,
+		None
 	};
-	//
-protected:
-	Material* material;
-	Mesh* _mesh;
-
-	Type type;
-
-	vector<Vertex> _vertices;
-	vector<UINT> _indices;
 
 public:
 	Collider();
@@ -54,15 +39,22 @@ public:
 	virtual bool BoxCollision(BoxCollider* collider) = 0;
 	virtual bool SphereCollision(SphereCollider* collider) = 0;
 	virtual bool CapsuleCollision(CapsuleCollider* collider) = 0;
-	// UICollider
 	virtual bool MouseCollision() { return 0; };
 
 	virtual void CreateMesh() = 0;
 
-	//void Update();
 	void Render();
 
 	void SetColor(Vector4 color);
-	//
+
 	virtual void SetSize(Vector4 value) {};
+
+protected:
+	Material* _material = nullptr;
+	Mesh* _mesh = nullptr;
+
+	Type _type = Type::None;
+
+	vector<Vertex> _vertices = {};
+	vector<UINT> _indices = {};
 };

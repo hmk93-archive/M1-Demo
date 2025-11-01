@@ -3,11 +3,16 @@
 #include "BoxCollider.h"
 #include "SphereCollider.h"
 #include "Mesh.h"
+#include "Utility.h"
+using namespace Utility;
 
 CapsuleCollider::CapsuleCollider(float radius, float height, UINT stackCount, UINT sliceCount)
-    : radius(radius), height(height), stackCount(stackCount), sliceCount(sliceCount)
+    : _radius(radius)
+	, _height(height)
+	, _stackCount(stackCount)
+	, _sliceCount(sliceCount)
 {
-    type = CAPSULE;
+    _type = Capsule;
     CreateMesh();
 }
 
@@ -109,15 +114,6 @@ bool CapsuleCollider::SphereCollision(SphereCollider* collider)
     return distance <= (Radius() + collider->Radius());
 }
 
-Vector3 ClosestPointOnLineSegment(const Vector3& v1, const Vector3& v2, const Vector3& point)
-{
-	Vector3 line = v2 - v1;
-	float t = line.Dot(point - v1) / line.Dot(line);
-	t = clamp(t, 0.0f, 1.0f);
-
-	return v1 + t * line;
-}
-
 bool CapsuleCollider::CapsuleCollision(CapsuleCollider* collider)
 {
 	Vector3 aDirection = Up();
@@ -156,44 +152,43 @@ bool CapsuleCollider::CapsuleCollision(CapsuleCollider* collider)
 
 void CapsuleCollider::CreateMesh()
 {
-	float phiStep = XM_PI / stackCount;
-	float thetaStep = XM_2PI / sliceCount;
+	float phiStep = XM_PI / _stackCount;
+	float thetaStep = XM_2PI / _sliceCount;
 
-	for (UINT i = 0; i <= stackCount; i++)
+	for (UINT i = 0; i <= _stackCount; i++)
 	{
 		float phi = i * phiStep;
 
-		for (UINT j = 0; j <= sliceCount; j++)
+		for (UINT j = 0; j <= _sliceCount; j++)
 		{
 			float theta = j * thetaStep;
 
 			Vertex vertex;
 
-			vertex.position.x = sin(phi) * cos(theta) * radius;
-			vertex.position.y = cos(phi) * radius;
-			vertex.position.z = sin(phi) * sin(theta) * radius;
+			vertex.position.x = sin(phi) * cos(theta) * _radius;
+			vertex.position.y = cos(phi) * _radius;
+			vertex.position.z = sin(phi) * sin(theta) * _radius;
 
 			if (vertex.position.y > 0)
-				vertex.position.y += height * 0.5f;
+				vertex.position.y += _height * 0.5f;
 			else
-				vertex.position.y -= height * 0.5f;
+				vertex.position.y -= _height * 0.5f;
 
 			_vertices.emplace_back(vertex);
 		}
 	}
 
-	for (UINT i = 0; i < stackCount; i++)
+	for (UINT i = 0; i < _stackCount; i++)
 	{
-		for (UINT j = 0; j < sliceCount; j++)
+		for (UINT j = 0; j < _sliceCount; j++)
 		{
-			_indices.emplace_back((sliceCount + 1) * i + j);//0
-			_indices.emplace_back((sliceCount + 1) * i + j + 1);//1			
+			_indices.emplace_back((_sliceCount + 1) * i + j);
+			_indices.emplace_back((_sliceCount + 1) * i + j + 1);			
 
-			_indices.emplace_back((sliceCount + 1) * i + j);//0
-			_indices.emplace_back((sliceCount + 1) * (i + 1) + j);//2
+			_indices.emplace_back((_sliceCount + 1) * i + j);
+			_indices.emplace_back((_sliceCount + 1) * (i + 1) + j);
 		}
 	}
 
-	_mesh = new Mesh(_vertices.data(), sizeof(Vertex), _vertices.size(),
-		_indices.data(), _indices.size());
+	_mesh = new Mesh(_vertices.data(), sizeof(Vertex), (UINT)_vertices.size(), _indices.data(), (UINT)_indices.size());
 }

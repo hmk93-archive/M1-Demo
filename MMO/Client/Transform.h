@@ -26,7 +26,7 @@ public:
 
 	void RenderAxis();
 
-	Matrix GetWorld() { return _world; }
+	Matrix* GetWorld() { return &_world; }
 
 private:
 	void CreateAxis();

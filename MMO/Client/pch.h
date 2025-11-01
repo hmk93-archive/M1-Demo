@@ -95,8 +95,9 @@ private:                                       \
 #define MAX_INSTANCE 400
 
 // Global
-
-
 extern HWND g_hWnd;
 extern UINT g_screenWidth;
 extern UINT g_screenHeight;
+
+// Disable Warning
+#pragma warning(disable:4244)

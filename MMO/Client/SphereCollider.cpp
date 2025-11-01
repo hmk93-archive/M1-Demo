@@ -5,9 +5,11 @@
 #include "Mesh.h"
 
 SphereCollider::SphereCollider(float radius, UINT stackCount, UINT sliceCount)
-    : radius(radius), stackCount(stackCount), sliceCount(sliceCount)
+    : _radius(radius)
+	, _stackCount(stackCount)
+	, _sliceCount(sliceCount)
 {
-    type = SPHERE;
+    _type = Sphere;
     CreateMesh();
 }
 
@@ -65,39 +67,38 @@ bool SphereCollider::CapsuleCollision(CapsuleCollider* collider)
 
 void SphereCollider::CreateMesh()
 {
-	float phiStep = XM_PI / stackCount;
-	float thetaStep = XM_2PI / sliceCount;
+	float phiStep = XM_PI / _stackCount;
+	float thetaStep = XM_2PI / _sliceCount;
 
-	for (UINT i = 0; i <= stackCount; i++)
+	for (UINT i = 0; i <= _stackCount; i++)
 	{
 		float phi = i * phiStep;
 
-		for (UINT j = 0; j <= sliceCount; j++)
+		for (UINT j = 0; j <= _sliceCount; j++)
 		{
 			float theta = j * thetaStep;
 
 			Vertex vertex;
 
-			vertex.position.x = sin(phi) * cos(theta) * radius;
-			vertex.position.y = cos(phi) * radius;
-			vertex.position.z = sin(phi) * sin(theta) * radius;
+			vertex.position.x = sin(phi) * cos(theta) * _radius;
+			vertex.position.y = cos(phi) * _radius;
+			vertex.position.z = sin(phi) * sin(theta) * _radius;
 
 			_vertices.emplace_back(vertex);
 		}
 	}
 
-	for (UINT i = 0; i < stackCount; i++)
+	for (UINT i = 0; i < _stackCount; i++)
 	{
-		for (UINT j = 0; j < sliceCount; j++)
+		for (UINT j = 0; j < _sliceCount; j++)
 		{
-			_indices.emplace_back((sliceCount + 1) * i + j);//0
-			_indices.emplace_back((sliceCount + 1) * i + j + 1);//1			
+			_indices.emplace_back((_sliceCount + 1) * i + j);
+			_indices.emplace_back((_sliceCount + 1) * i + j + 1);			
 
-			_indices.emplace_back((sliceCount + 1) * i + j);//0
-			_indices.emplace_back((sliceCount + 1) * (i + 1) + j);//2
+			_indices.emplace_back((_sliceCount + 1) * i + j);
+			_indices.emplace_back((_sliceCount + 1) * (i + 1) + j);
 		}
 	}
 
-	_mesh = new Mesh(_vertices.data(), sizeof(Vertex), _vertices.size(),
-		_indices.data(), _indices.size());
+	_mesh = new Mesh(_vertices.data(), sizeof(Vertex), (UINT)_vertices.size(), _indices.data(), (UINT)_indices.size());
 }

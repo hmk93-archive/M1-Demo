@@ -49,7 +49,7 @@ void TerrainEditor::Update()
 
 	if (Control::Get().Up(VK_LBUTTON))
 	{
-		_mesh->UpdateVertex(_vertices.data(), _vertices.size());
+		_mesh->UpdateVertex(_vertices.data(), (UINT)_vertices.size());
 	}
 
 	UpdateWorld();
@@ -125,7 +125,7 @@ void TerrainEditor::CreateMesh()
 		}
 	}
 
-	_computeSize = _indices.size() / 3;
+	_computeSize = (UINT)_indices.size() / 3;
 
 	SetInput();
 
@@ -247,7 +247,7 @@ void TerrainEditor::AdjustY(Vector3 position)
 		break;
 	}
 
-	_mesh->UpdateVertex(_vertices.data(), _vertices.size());
+	_mesh->UpdateVertex(_vertices.data(), (UINT)_vertices.size());
 }
 
 void TerrainEditor::InitFileSystem()

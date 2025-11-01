@@ -82,7 +82,7 @@ void Sphere::CreateMesh()
 
 	CreateTangent();
 
-	_mesh = new Mesh(_vertices.data(), sizeof(VertexUVNormalTangent), _vertices.size(), _indices.data(), _indices.size());
+	_mesh = new Mesh(_vertices.data(), sizeof(VertexUVNormalTangent), (UINT)_vertices.size(), _indices.data(), (UINT)_indices.size());
 }
 
 void Sphere::CreateTangent()

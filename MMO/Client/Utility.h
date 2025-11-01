@@ -21,6 +21,9 @@ namespace Utility
 	
 	bool ExistDirectory(string path);
 	bool ExistFile(string path);
-	//
+	
+	Vector3 ClosestPointOnLineSegment(const Vector3& v1, const Vector3& v2, const Vector3& point);
+	Vector3 ScreenToWorldHeightZero();
+
 	void Shuffle(vector<int>& arr);
 }

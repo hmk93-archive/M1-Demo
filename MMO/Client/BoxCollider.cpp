@@ -5,9 +5,10 @@
 #include "Mesh.h"
 
 BoxCollider::BoxCollider(Vector3 minBox, Vector3 maxBox)
-    : minBox(minBox), maxBox(maxBox)
+    : _minBox(minBox)
+    , _maxBox(maxBox)
 {
-    type = BOX;
+    _type = Box;
     CreateMesh();
 }
 
@@ -23,13 +24,14 @@ bool BoxCollider::RayCollision(IN Ray ray, OUT Contact* contact)
     Contact temp;
     temp.distance = FLT_MAX;
 
-    UINT face[] = {
-        0, 1, 2, 3,//F
-        4, 5, 6, 7,//B
-        0, 1, 5, 4,//L
-        1, 5, 6, 2,//R
-        2, 3, 7, 6,//U
-        0, 3, 7, 4,//D
+    UINT face[] = 
+    {
+        0, 1, 2, 3,
+        4, 5, 6, 7,
+        0, 1, 5, 4,
+        1, 5, 6, 2,
+        2, 3, 7, 6,
+        0, 3, 7, 4,
     };
 
     for (UINT i = 0; i < 6; i++)
@@ -77,48 +79,6 @@ bool BoxCollider::RayCollision(IN Ray ray, OUT Contact* contact)
 
     return true;
 }
-/*
-bool BoxCollider::RayCollision(IN Ray ray, OUT Contact* contact)
-{
-    Vector3 min = minBox;
-    Vector3 max = maxBox;
-
-    Matrix invWorld = XMMatrixInverse(nullptr, world);
-
-    Ray r;
-    r.position = XMVector3TransformCoord(ray.position.data, invWorld);
-    r.direction = XMVector3TransformNormal(ray.direction.data, invWorld);
-    r.direction.Normalize();
-
-    float tmin = (min.x - r.position.x) / r.direction.x;
-    float tmax = (max.x - r.position.x) / r.direction.x;
-
-    if (tmin > tmax) swap(tmin, tmax);
-
-    float tymin = (min.y - r.position.y) / r.direction.y;
-    float tymax = (max.y - r.position.y) / r.direction.y;
-
-    if (tymin > tymax) swap(tymin, tymax);
-
-    if ((tmin > tymax) || (tymin > tmax))
-        return false;
-
-    if (tymin > tmin)
-        tmin = tymin;
-
-    if (tymax < tmax)
-        tmax = tymax;
-
-    float tzmin = (min.z - r.position.z) / r.direction.z;
-    float tzmax = (max.z - r.position.z) / r.direction.z;
-
-    if (tzmin > tzmax) swap(tzmin, tzmax);
-
-    if ((tmin > tzmax) || (tzmin > tmax))
-        return false;    
-
-    return true;
-}*/
 
 bool BoxCollider::BoxCollision(BoxCollider* collider)
 {
@@ -155,15 +115,15 @@ bool BoxCollider::BoxCollision(BoxCollider* collider)
 
 bool BoxCollider::SphereCollision(SphereCollider* collider)
 {
-    Matrix T = XMMatrixTranslation(GlobalPos().x, GlobalPos().y, GlobalPos().z);
-    Matrix R = XMMatrixRotationQuaternion(GlobalRot());
+    Matrix T = Matrix::CreateTranslation(GlobalPos());
+    Matrix R = Matrix::CreateRotationX(GlobalRot().x) * Matrix::CreateRotationY(GlobalRot().y) * Matrix::CreateRotationZ(GlobalRot().z);
 
     Matrix invWorld = XMMatrixInverse(nullptr, R * T);
 
     Vector3 spherePos = XMVector3TransformCoord(collider->GlobalPos(), invWorld);
 
-    Vector3 tempMin = minBox * GlobalScale();
-    Vector3 tempMax = maxBox * GlobalScale();
+    Vector3 tempMin = _minBox * GlobalScale();
+    Vector3 tempMax = _maxBox * GlobalScale();
 
     Vector3 temp;
     temp.x = max(tempMin.x, min(spherePos.x, tempMax.x));
@@ -175,28 +135,6 @@ bool BoxCollider::SphereCollision(SphereCollider* collider)
     return temp.Length() <= collider->Radius();
 }
 
-/*
-bool BoxCollider::SphereCollision(SphereCollider* collider)
-{
-    Obb box = GetObb();
-
-    Vector3 pos = box.position;
-
-    for (UINT i = 0; i < 3; i++)
-    {
-        float length = Vector3::Dot(box.axis[i], collider->GlobalPos() - box.position);
-
-        float mult = (length < 0.0f) ? -1.0f : 1.0f;
-
-        length = min(abs(length), box.halfSize[i]);
-        pos += box.axis[i] * length * mult;
-    }
-
-    float distance = (collider->GlobalPos() - pos).Length();
-
-    return distance <= collider->Radius();
-}*/
-
 bool BoxCollider::CapsuleCollision(CapsuleCollider* collider)
 {
     return collider->BoxCollision(this);
@@ -204,15 +142,15 @@ bool BoxCollider::CapsuleCollision(CapsuleCollider* collider)
 
 bool BoxCollider::SphereCollision(Vector3 center, float radius)
 {
-    Matrix T = XMMatrixTranslation(GlobalPos().x, GlobalPos().y, GlobalPos().z);
-    Matrix R = XMMatrixRotationQuaternion(GlobalRot());
+    Matrix T = Matrix::CreateTranslation(GlobalPos());
+    Matrix R = Matrix::CreateRotationX(GlobalRot().x) * Matrix::CreateRotationY(GlobalRot().y) * Matrix::CreateRotationZ(GlobalRot().z);
 
     Matrix invWorld = XMMatrixInverse(nullptr, R * T);
 
     Vector3 spherePos = XMVector3TransformCoord(center, invWorld);
 
-    Vector3 tempMin = minBox * GlobalScale();
-    Vector3 tempMax = maxBox * GlobalScale();
+    Vector3 tempMin = _minBox * GlobalScale();
+    Vector3 tempMax = _maxBox * GlobalScale();
 
     Vector3 temp;
     temp.x = max(tempMin.x, min(spherePos.x, tempMax.x));
@@ -226,38 +164,38 @@ bool BoxCollider::SphereCollision(Vector3 center, float radius)
 
 Vector3 BoxCollider::MinBox()
 {
-    return XMVector3TransformCoord(minBox, _world);
+    return XMVector3TransformCoord(_minBox, _world);
 }
 
 Vector3 BoxCollider::MaxBox()
 {
-    return XMVector3TransformCoord(maxBox, _world);
+    return XMVector3TransformCoord(_maxBox, _world);
 }
 
 Obb BoxCollider::GetObb()
 {
-    obb.position = GlobalPos();
+    _obb.position = GlobalPos();
 
-    obb.axis[0] = Right();
-    obb.axis[1] = Up();
-    obb.axis[2] = Forward();
+    _obb.axis[0] = Right();
+    _obb.axis[1] = Up();
+    _obb.axis[2] = Forward();
 
-    obb.halfSize = (minBox - maxBox) * 0.5f * GlobalScale();
+    _obb.halfSize = (_minBox - _maxBox) * 0.5f * GlobalScale();
 
-    return obb;
+    return _obb;
 }
 
 void BoxCollider::CreateMesh()
 {
-    _vertices.emplace_back(minBox.x, minBox.y, minBox.z);
-    _vertices.emplace_back(minBox.x, maxBox.y, minBox.z);
-    _vertices.emplace_back(maxBox.x, maxBox.y, minBox.z);
-    _vertices.emplace_back(maxBox.x, minBox.y, minBox.z);
+    _vertices.emplace_back(_minBox.x, _minBox.y, _minBox.z);
+    _vertices.emplace_back(_minBox.x, _maxBox.y, _minBox.z);
+    _vertices.emplace_back(_maxBox.x, _maxBox.y, _minBox.z);
+    _vertices.emplace_back(_maxBox.x, _minBox.y, _minBox.z);
 
-    _vertices.emplace_back(minBox.x, minBox.y, maxBox.z);
-    _vertices.emplace_back(minBox.x, maxBox.y, maxBox.z);
-    _vertices.emplace_back(maxBox.x, maxBox.y, maxBox.z);
-    _vertices.emplace_back(maxBox.x, minBox.y, maxBox.z);
+    _vertices.emplace_back(_minBox.x, _minBox.y, _maxBox.z);
+    _vertices.emplace_back(_minBox.x, _maxBox.y, _maxBox.z);
+    _vertices.emplace_back(_maxBox.x, _maxBox.y, _maxBox.z);
+    _vertices.emplace_back(_maxBox.x, _minBox.y, _maxBox.z);
 
     _indices = {
         0, 1, 1, 2, 2, 3, 3, 0,

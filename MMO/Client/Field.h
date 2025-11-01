@@ -2,6 +2,7 @@
 
 class Terrain;
 class FieldWall;
+class Cube;
 
 class Field
 {
@@ -10,10 +11,18 @@ public:
 	{
 		LB, CB, RB,
 		LM, CM, RM,
-		LT, CT, RT
+		LT, CT, RT,
 	} location;
 
-	static vector<string> locationNames;
+	static vector<string> locNames;
+	string tag;
+
+	enum MapState
+	{
+		NORMAL, ALERT, DANGER
+	}state;
+
+	static vector<string> stateNames;
 
 public:
 	Field(Terrain* terrain, Location location);
@@ -22,16 +31,26 @@ public:
 	void Update();
 	void Render();
 	void PostRender();
+	void SetState();
+	void RenderAlertTime();
 
 private:
+	void SetTag();
+	void SetFieldData();
+	void SetRandomEmissive();
 	void CreateWalls();
 	void CreateCube();
+	void AlertToDanger();
 
 public:
-	Terrain* terrain = nullptr;
-	Vector3 fieldPos = Vector3::Zero;
-	Vector2 fieldSize = Vector2::Zero;
+	vector<FieldWall*> walls;
+	Cube* cube;
 
-	vector<FieldWall*> walls = {};
+public:
+	Terrain* terrain;
+	Vector3 fieldPos;
+	Vector2 fieldSize;
+
+private:
+	float _alertTime = 0.0f;
 };
-

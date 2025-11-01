@@ -4,12 +4,6 @@
 
 class SphereCollider : public Collider
 {
-private:
-	float radius;
-
-	UINT stackCount;
-	UINT sliceCount;
-
 public:
 	SphereCollider(float radius = 1.0f, UINT stackCount = 15, UINT sliceCount = 30);
 	~SphereCollider();
@@ -19,8 +13,14 @@ public:
 	virtual bool SphereCollision(SphereCollider* collider) override;
 	virtual bool CapsuleCollision(CapsuleCollider* collider) override;
 
-	float Radius() { return radius * max(GlobalScale().x, max(GlobalScale().y, GlobalScale().z)); }
-	////////////////////////////////////
+	float Radius() { return _radius * max(GlobalScale().x, max(GlobalScale().y, GlobalScale().z)); }
+
 private:
 	virtual void CreateMesh() override;
+
+private:
+	float _radius = 1.0f;
+
+	UINT _stackCount = 15;
+	UINT _sliceCount = 20;
 };

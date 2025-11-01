@@ -20,5 +20,5 @@ public:
 
 	unordered_map<string, KeyFrame*> keyFrames = {};
 
-	bool loop;
+	bool loop = true;
 };

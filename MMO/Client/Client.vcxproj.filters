@@ -68,6 +68,9 @@
     <Filter Include="Models">
       <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\PathFinding">
+      <UniqueIdentifier>{566c6d54-8ea8-4f5b-9c4e-b0d9b3c73ad2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SimpleMath.h">
@@ -279,6 +282,15 @@
     </ClInclude>
     <ClInclude Include="Warrok.h">
       <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Heap.h">
+      <Filter>Utils\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Utils\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar.h">
+      <Filter>Utils\PathFinding</Filter>
     </ClInclude>
     <ClInclude Include="Field.h">
       <Filter>GameObjects</Filter>
@@ -492,6 +504,15 @@
     </ClCompile>
     <ClCompile Include="Warrok.cpp">
       <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="AStar.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="Heap.cpp">
+      <Filter>Utils\PathFinding</Filter>
     </ClCompile>
     <ClCompile Include="Field.cpp">
       <Filter>GameObjects</Filter>

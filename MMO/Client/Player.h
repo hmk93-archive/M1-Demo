@@ -5,6 +5,7 @@
 
 class Terrain;
 class Collider;
+class AStar;
 
 class Player : public ModelAnimator, public Transform
 {
@@ -25,6 +26,7 @@ public:
 	void PostRender();
 
 	void SetTerrain(Terrain* terrain) { _terrain = terrain; }
+	void SetAStar(AStar* astar) { _astar = astar; }
 
 	Collider* GetMainCollider() { return _mainCollider; }
 
@@ -39,6 +41,7 @@ private:
 	void Move();
 	void Rotate();
 
+	void SetPath();
 	void SetVelocity();
 	void SetHeight();
 	void SetAnimation(PlayerAnimState value, float speed = 1.0f);
@@ -49,15 +52,18 @@ public:
 
 private:
 	Terrain* _terrain = nullptr;
+	AStar* _astar = nullptr;
 
 	Vector3 _velocity = Vector3(0.0f);
 
 	float _moveSpeed = 20.0f;
 	float _rotateSpeed = 20.0f;
-	float _deceleration = 10.0f;
+	float _deceleration = 5.0f;
 
 	Collider* _mainCollider = nullptr;
 
 	Matrix _body = Matrix::Identity;
+
+	vector<Vector3> _path = {};
 };
 
