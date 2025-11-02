@@ -12,6 +12,7 @@ public:
 
 	virtual void Update();
 	virtual void Render();
+	virtual void PostRender();
 
 	Model* GetModel() { return _model; }
 

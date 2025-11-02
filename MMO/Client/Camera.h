@@ -47,6 +47,8 @@ public:
 
 	Ray ScreenPointToRay(Vector3 pos);
 
+	Matrix GetView() { return _view; }
+
 private:
 	void FollowMode();
 	void EditorMode();
@@ -58,8 +60,8 @@ private:
 
 private:
 	bool _fpv = false;
-	float _moveSpeed = 25.0f;
-	float _rotSpeed = 0.1f;
+	float _moveSpeed = 50.0f;
+	float _rotSpeed = 1.0f;
 
 	Matrix _view = Matrix::Identity;
 

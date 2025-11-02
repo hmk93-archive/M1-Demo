@@ -19,8 +19,10 @@ public:
 
 	enum MapState
 	{
-		NORMAL, ALERT, DANGER
-	}state;
+		NORMAL, 
+		ALERT, 
+		DANGER
+	} state;
 
 	static vector<string> stateNames;
 

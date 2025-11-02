@@ -5,13 +5,13 @@
 #include "Cube.h"
 #include "Timer.h"
 
-// static mv √ ±‚»≠
 vector<string> Field::locNames
 {
 	"LB", "CB", "RB",
 	"LM", "CM", "RM",
 	"LT", "CT", "RT"
 };
+
 vector<string> Field::stateNames
 { "NORMAL", "ALERT", "DANGER" };
 
@@ -20,13 +20,9 @@ Field::Field(Terrain* terrain, Location location)
 	terrain(terrain)
 {
 	SetTag();
-	//
 	SetFieldData();
-	//
 	SetRandomEmissive();
-	//
 	CreateWalls();
-	//
 	CreateCube();
 }
 

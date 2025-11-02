@@ -253,7 +253,7 @@
     <ClInclude Include="Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainEditorScene.h">
+    <ClInclude Include="MapEditorScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="InGameScene.h">
@@ -297,6 +297,9 @@
     </ClInclude>
     <ClInclude Include="FieldWall.h">
       <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo.h">
+      <Filter>Utils\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -475,7 +478,7 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainEditorScene.cpp">
+    <ClCompile Include="MapEditorScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="InGameScene.cpp">
@@ -520,6 +523,9 @@
     <ClCompile Include="FieldWall.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="ImGuizmo.cpp">
+      <Filter>Utils\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -549,6 +555,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Instancing.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Terrain.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

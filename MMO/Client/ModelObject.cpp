@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ModelObject.h"
 #include "Model.h"
+#include "Environment.h"
+#include "Camera.h"
 
 ModelObject::ModelObject(string file)
 {
@@ -25,4 +27,14 @@ void ModelObject::Render()
 {
 	SetWorldBuffer();
 	_model->Render();
+}
+
+void ModelObject::PostRender()
+{
+	ImGuizmo::Manipulate(
+		(float*)&Environment::Get().GetMainCamera()->GetView(), 
+		(float*)&Environment::Get().GetProjection(), 
+		ImGuizmo::TRANSLATE, 
+		ImGuizmo::LOCAL, 
+		(float*)&_world);
 }

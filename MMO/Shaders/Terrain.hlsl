@@ -1,13 +1,5 @@
 #include "Common.hlsli"
 
-cbuffer Brush : register(b10)
-{
-    int type;
-    float3 location;
-    float range;
-    float3 color;
-}
-
 struct PixelInput
 {
     float4 posProj : SV_POSITION;
@@ -17,19 +9,6 @@ struct PixelInput
     float3 tangent : TANGENT;
     float4 alpha : ALPHA;
 };
-
-float3 BrushColor(float3 pos)
-{
-    if(type == 0)
-    {
-        float x = pos.x - location.x;
-        float z = pos.z - location.z;
-        float distance = sqrt(x * x + z * z);
-        if(distance <= range)
-            return color;
-    }
-    return 0;
-}
 
 PixelInput VS(VertexUVNormalTangentAlpha input)
 {
@@ -60,7 +39,5 @@ float4 PS(PixelInput input) : SV_TARGET
     albedo = lerp(albedo, second, input.alpha.r);
     albedo = lerp(albedo, third, input.alpha.g);
     
-    float4 brushColor = float4(BrushColor(input.posWorld.xyz), 1.0);
-    
-    return albedo + brushColor;
+    return albedo;
 }

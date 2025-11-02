@@ -3,12 +3,13 @@
 #include "Scene.h"
 
 class TerrainEditor;
+class ModelObject;
 
-class TerrainEditorScene : public Scene
+class MapEditorScene : public Scene
 {
 public:
-	TerrainEditorScene();
-	~TerrainEditorScene();
+	MapEditorScene();
+	~MapEditorScene();
 
 	virtual void Update() override;
 	virtual void PreRender() override {}
@@ -17,5 +18,6 @@ public:
 
 private:
 	TerrainEditor* _terrainEditor = nullptr;
+	vector<ModelObject*> _models = {};
 };
 

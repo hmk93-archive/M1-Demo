@@ -21,10 +21,18 @@ TerrainEditor::TerrainEditor(UINT width, UINT height)
 	_material = new Material(L"TerrainEditor");
 	_material->SetDiffuseMap(L"../Assets/Textures/WallDiffuse.png");
 
+	_secondMap = Texture::Add(L"../Assets/Textures/Floor.png");
+	_thirdMap = Texture::Add(L"../Assets/Textures/Stones.png");
+
 	CreateMesh();
 	CreateCompute();
 
 	_brushBuffer = new BrushBuffer();
+
+	for (VertexType& v : _vertices)
+	{
+		_uvOrigin.push_back(v.uv);
+	}
 
 	InitFileSystem();
 }
@@ -44,7 +52,10 @@ void TerrainEditor::Update()
 {
 	if (Control::Get().Press(VK_LBUTTON) && !ImGui::GetIO().WantCaptureMouse)
 	{
-		AdjustY(_brushBuffer->data.location);
+		if (_isPainting)
+			PaintBrush(_brushBuffer->data.location);
+		else
+			AdjustY(_brushBuffer->data.location);
 	}
 
 	if (Control::Get().Up(VK_LBUTTON))
@@ -61,6 +72,11 @@ void TerrainEditor::Render()
 	_material->Set();
 	SetWorldBuffer();
 
+	_brushBuffer->SetPSBuffer(10);
+
+	_secondMap->PSSet(11);
+	_thirdMap->PSSet(12);
+
 	_worldBuffer->SetVSBuffer(0);
 
 	Device::Get().GetDeviceContext()->DrawIndexed((UINT)_indices.size(), 0, 0);
@@ -74,6 +90,17 @@ void TerrainEditor::PostRender()
 
 	ImGui::Text("[Terrain Editor]");
 	ImGui::Text("Mouse Position: (%f %f %f)", _brushBuffer->data.location.x, _brushBuffer->data.location.y, _brushBuffer->data.location.z);
+	ImGui::SliderInt("Type", &_brushBuffer->data.type, 0, 1);
+	ImGui::ColorEdit3("Color", (float*)&_brushBuffer->data.color);
+	ImGui::Checkbox("Raise", &_isRaise);
+	ImGui::Checkbox("IsPainting", &_isPainting);
+	ImGui::InputInt("SelectMap", &_selectMap);
+	if (ImGui::SliderInt("Layout", &_layout, 1, 16))
+	{
+		int idx = 0;
+		for (auto& v : _vertices)
+			v.uv = _uvOrigin[idx++] * _layout;
+	}
 
 	FileSystem();
 }
@@ -217,6 +244,36 @@ bool TerrainEditor::ComputePicking(OUT Vector3& position)
 	return false;
 }
 
+void TerrainEditor::PaintBrush(Vector3 position)
+{
+	switch (_brushBuffer->data.type)
+	{
+	case 0:
+		for (VertexType& vertex : _vertices)
+		{
+			Vector3 p1 = Vector3(vertex.position.x, 0, vertex.position.z);
+			Vector3 p2 = Vector3(position.x, 0, position.z);
+
+			float distance = (p2 - p1).Length();
+
+			float temp = _paintValue * max(0.0f, cos(XM_PIDIV2 * distance / _brushBuffer->data.range));
+
+			if (distance <= _brushBuffer->data.range)
+			{
+				if (_isRaise)
+					vertex.alpha[_selectMap] += temp * Timer::Get().GetElapsedTime();
+				else
+					vertex.alpha[_selectMap] -= temp * Timer::Get().GetElapsedTime();
+
+				vertex.alpha[_selectMap] = clamp(vertex.alpha[_selectMap], 0.0f, 1.0f);
+			}
+		}
+		break;
+	}
+
+	_mesh->UpdateVertex(_vertices.data(), (UINT)_vertices.size());
+}
+
 void TerrainEditor::AdjustY(Vector3 position)
 {
 	switch (_brushBuffer->data.type)
@@ -265,12 +322,12 @@ void TerrainEditor::FileSystem()
 
 void TerrainEditor::SaveFile()
 {
-	if (ImGui::Button("Save"))
+	if (ImGui::Button("HeightSave"))
 	{
-		igfd::ImGuiFileDialog::Instance()->OpenDialog("SaveKey", "Save File", ".png", ".");
+		igfd::ImGuiFileDialog::Instance()->OpenDialog("HeightSaveKey", "Save Height File", ".png", ".");
 	}
 
-	if (igfd::ImGuiFileDialog::Instance()->FileDialog("SaveKey"))
+	if (igfd::ImGuiFileDialog::Instance()->FileDialog("HeightSaveKey"))
 	{
 		if (igfd::ImGuiFileDialog::Instance()->IsOk == true)
 		{
@@ -280,18 +337,35 @@ void TerrainEditor::SaveFile()
 			SaveHeight(ToWString(_path));
 		}
 
-		igfd::ImGuiFileDialog::Instance()->CloseDialog("SaveKey");
+		igfd::ImGuiFileDialog::Instance()->CloseDialog("HeightSaveKey");
+	}
+
+	if (ImGui::Button("AlphaSave"))
+	{
+		igfd::ImGuiFileDialog::Instance()->OpenDialog("AlphaSaveKey", "Save Alpha File", ".png", ".");
+	}
+
+	if (igfd::ImGuiFileDialog::Instance()->FileDialog("AlphaSaveKey"))
+	{
+		if (igfd::ImGuiFileDialog::Instance()->IsOk == true)
+		{
+			_path = igfd::ImGuiFileDialog::Instance()->GetFilePathName();
+			Replace(&_path, "\\", "/");
+			SaveAlpha(ToWString(_path), _selectMap);
+		}
+
+		igfd::ImGuiFileDialog::Instance()->CloseDialog("AlphaSaveKey");
 	}
 }
 
 void TerrainEditor::LoadFile()
 {
-	if (ImGui::Button("Load"))
+	if (ImGui::Button("HeightLoad"))
 	{
-		igfd::ImGuiFileDialog::Instance()->OpenDialog("LoadKey", "Load File", ".png", ".");
+		igfd::ImGuiFileDialog::Instance()->OpenDialog("HeightLoadKey", "Load Height File", ".png", ".");
 	}
 
-	if (igfd::ImGuiFileDialog::Instance()->FileDialog("LoadKey"))
+	if (igfd::ImGuiFileDialog::Instance()->FileDialog("HeightLoadKey"))
 	{
 		if (igfd::ImGuiFileDialog::Instance()->IsOk == true)
 		{
@@ -300,8 +374,25 @@ void TerrainEditor::LoadFile()
 			Replace(&_path, "\\", "/");
 			LoadHeight(ToWString(_path));
 		}
-		// close
-		igfd::ImGuiFileDialog::Instance()->CloseDialog("LoadKey");
+
+		igfd::ImGuiFileDialog::Instance()->CloseDialog("HeightLoadKey");
+	}
+
+	if (ImGui::Button("AlphaLoad"))
+	{
+		igfd::ImGuiFileDialog::Instance()->OpenDialog("AlphaLoadKey", "Load Alpha File", ".png", ".");
+	}
+
+	if (igfd::ImGuiFileDialog::Instance()->FileDialog("AlphaLoadKey"))
+	{
+		if (igfd::ImGuiFileDialog::Instance()->IsOk == true)
+		{
+			_path = igfd::ImGuiFileDialog::Instance()->GetFilePathName();
+			Replace(&_path, "\\", "/");
+			LoadAlpha(ToWString(_path), _selectMap);
+		}
+
+		igfd::ImGuiFileDialog::Instance()->CloseDialog("AlphaLoadKey");
 	}
 }
 
@@ -345,3 +436,64 @@ void TerrainEditor::LoadHeight(wstring heightFile)
 	CreateMesh();
 	CreateCompute();
 }
+
+void TerrainEditor::SaveAlpha(wstring alphaFile, int selectMap)
+{
+	UINT size = _width * _height * 4;
+	{
+		uint8_t* pixels = new uint8_t[size];
+		for (UINT i = 0; i < size / 4; ++i)
+		{
+			float a = _vertices[i].alpha[selectMap];
+			uint8_t alpha = (a * 255.0f) / MAX_ALPHA;
+			pixels[(i * 4) + 0] = 0;
+			pixels[(i * 4) + 1] = 0;
+			pixels[(i * 4) + 2] = 0;
+			pixels[(i * 4) + 3] = 255;
+			pixels[(i * 4) + selectMap] = alpha;
+		}
+
+		Image image;
+		image.width = _width;
+		image.height = _height;
+		image.pixels = pixels;
+		image.format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		image.rowPitch = image.width * 4;
+		image.slicePitch = size;
+
+		wstring fileName = alphaFile; //+L"_" + to_wstring(selectMap); //+ L".png";
+
+		SaveToWICFile(image, WIC_FLAGS_FORCE_RGB, GetWICCodec(WIC_CODEC_PNG), fileName.c_str());
+
+		delete[] pixels;
+	}
+}
+
+void TerrainEditor::LoadAlpha(wstring alphaFile, int selectMap)
+{
+	wstring fileName = alphaFile;
+
+	_alphaMaps[selectMap] = Texture::Load(fileName);
+	vector<Vector4> pixels = _alphaMaps[selectMap]->ReadPixels();
+	for (UINT z = 0; z < _height; z++)
+	{
+		for (UINT x = 0; x < _width; x++)
+		{
+			UINT index = _width * z + x;
+			switch (selectMap)
+			{
+			case 0:
+				_vertices[index].alpha[selectMap] = pixels[index].x;
+				break;
+			case 1:
+				_vertices[index].alpha[selectMap] = pixels[index].y;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	_mesh->UpdateVertex(_vertices.data(), (UINT)_vertices.size());
+}
+

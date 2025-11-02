@@ -13,8 +13,11 @@
 
 Terrain::Terrain(Vector3 pos)
 {
-	_material = new Material(L"Default");
+	_material = new Material(L"Terrain");
 	_material->SetDiffuseMap(L"../Assets/Textures/WallDiffuse.png");
+
+	_secondMap = Texture::Add(L"../Assets/Textures/Floor.png");
+	_thirdMap = Texture::Add(L"../Assets/Textures/Stones.png");
 
 	_heightMap = Texture::Add(L"../Assets/Textures/HeightMap.png");
 
@@ -46,6 +49,9 @@ void Terrain::Render()
 	_worldBuffer->SetVSBuffer(0);
 	_typeBuffer->SetVSBuffer(5);
 	_material->Set();
+
+	_secondMap->PSSet(11);
+	_thirdMap->PSSet(12);
 
 	Device::Get().GetDeviceContext()->DrawIndexed((UINT)_indices.size(), 0, 0);
 }
@@ -102,6 +108,8 @@ void Terrain::CreateMesh()
 	if (_mesh)
 		delete _mesh;
 
+	CreateAlpha();
+
 	_mesh = new Mesh(_vertices.data(), sizeof(VertexType), (UINT)_vertices.size(), _indices.data(), (UINT)_indices.size());
 }
 
@@ -130,6 +138,39 @@ void Terrain::CreateInput()
 		_input[i].v2 = _vertices[index2].position;
 
 		_input[i].index = i;
+	}
+}
+
+void Terrain::CreateAlpha()
+{
+	wstring filenames[2] =
+	{
+		L"../Assets/Textures/First.png",
+		L"../Assets/Textures/Second.png"
+	};
+
+	for (UINT i = 0; i < 2; i++)
+	{
+		_alphaMap[i] = Texture::Load(filenames[i]);
+		vector<Vector4> pixels = _alphaMap[i]->ReadPixels();
+		for (UINT z = 0; z < _height; z++)
+		{
+			for (UINT x = 0; x < _width; x++)
+			{
+				UINT index = _width * z + x;
+				switch (i)
+				{
+				case 0:
+					_vertices[index].alpha[i] = pixels[index].x;
+					break;
+				case 1:
+					_vertices[index].alpha[i] = pixels[index].y;
+					break;
+				default:
+					break;
+				}
+			}
+		}
 	}
 }
 

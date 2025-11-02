@@ -62,6 +62,7 @@ private:
 
 	bool ComputePicking(OUT Vector3& position);
 
+	void PaintBrush(Vector3 position);
 	void AdjustY(Vector3 position);
 
 	void InitFileSystem();
@@ -72,19 +73,25 @@ private:
 	void SaveHeight(wstring heightFile);
 	void LoadHeight(wstring heightFile);
 
+	void SaveAlpha(wstring alphaFile, int selectMap);
+	void LoadAlpha(wstring alphaFile, int selectMap);
+
 private:
 	const float MAX_HEIGHT = 30.0f;
-	
+	const float MAX_ALPHA = 1.0f;
+
 	float _adjustValue = 50.0f;
+	float _paintValue = 5.0f;
 
 	bool _isRaise = true;
+	bool _isPainting = false;
 
 	Material* _material = nullptr;
 	Mesh* _mesh;
 
 	Texture* _heightMap = nullptr;
-	
-	Texture* _alphaMap = nullptr;
+
+	Texture* _alphaMaps[2] = {};
 	Texture* _secondMap = nullptr;
 	Texture* _thirdMap = nullptr;
 
@@ -104,6 +111,11 @@ private:
 	OutputDesc* _output = nullptr;
 
 	UINT _computeSize = 0;
+
+	int _selectMap = 0;
+	int _layout = 0;
+
+	vector<Vector2> _uvOrigin = {};
 
 	// Filesystem
 	string _projectPath = "";

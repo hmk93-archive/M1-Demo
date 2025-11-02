@@ -5,6 +5,7 @@
 class ModelExporter;
 class Player;
 class Warrok;
+class ModelObject;
 
 class ModelExportScene : public Scene
 {
@@ -26,5 +27,7 @@ private:
 
 	Player* _player = nullptr;
 	Warrok* _warrok = nullptr;
+
+	vector<ModelObject*> _models = {};
 };
 

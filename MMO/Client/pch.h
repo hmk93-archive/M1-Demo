@@ -43,6 +43,7 @@ using namespace DirectX;
 #include <dirent.h>
 #include <ImGuiFileDialog.h>
 #include <ImGuiFileDialogConfig.h>
+#include <ImGuizmo.h>
 
 // Lib
 #ifdef _DEBUG
@@ -98,6 +99,7 @@ private:                                       \
 extern HWND g_hWnd;
 extern UINT g_screenWidth;
 extern UINT g_screenHeight;
+
 
 // Disable Warning
 #pragma warning(disable:4244)

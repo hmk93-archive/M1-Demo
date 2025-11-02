@@ -10,7 +10,7 @@
 #include "Font.h"
 #include "Camera.h"
 #include "SceneManager.h"
-#include "TerrainEditorScene.h"
+#include "MapEditorScene.h"
 #include "InGameScene.h"
 #include "Collider.h"
 #include "ModelExportScene.h"
@@ -32,11 +32,10 @@ Game::Game()
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(Device::Get().GetDevice(), Device::Get().GetDeviceContext());
 
-	SceneManager::Get().Add("ModelExportScene", new ModelExportScene());
-	SceneManager::Get().Add("TerrainEditor", new TerrainEditorScene());
+	SceneManager::Get().Add("ModelExport", new ModelExportScene());
+	SceneManager::Get().Add("MapEditor", new MapEditorScene());
 	SceneManager::Get().Add("InGame", new InGameScene());
-	SceneManager::Get().Play("InGame");
-	// SceneManager::Get().Play("ModelExportScene");
+	SceneManager::Get().Play("MapEditor");
 }
 
 Game::~Game()
@@ -80,6 +79,10 @@ void Game::PostRender()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
+	ImGuizmo::SetOrthographic(false);
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
 	Environment::Get().PostRender();
 	SceneManager::Get().PostRender();

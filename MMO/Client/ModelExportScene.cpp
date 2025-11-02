@@ -3,17 +3,18 @@
 #include "ModelExporter.h"
 #include "Player.h"
 #include "Warrok.h"
+#include "ModelObject.h"
 
 ModelExportScene::ModelExportScene()
 {
-	// Player
-	{
-		CreateModel("Paladin");
-		CreateAnimation("Paladin", "Idle");
-		CreateAnimation("Paladin", "Run");
-		CreateAnimation("Paladin", "Attack_A");
-		_player = new Player("Paladin");
-	}
+	//// Player
+	//{
+	//	CreateModel("Paladin");
+	//	CreateAnimation("Paladin", "Idle");
+	//	CreateAnimation("Paladin", "Run");
+	//	CreateAnimation("Paladin", "Attack_A");
+	//	_player = new Player("Paladin");
+	//}
 
 	//// Monster
 	//{
@@ -34,18 +35,34 @@ ModelExportScene::ModelExportScene()
 	//		}
 	//	}
 	//}
+
+	// ModelObject
+	{
+		CreateModel("Stone");
+	}
+
+	// Create ModelObject
+	{
+		ModelObject* obj = new ModelObject("Stone/Stone");
+		obj->rotation.z = XM_PI;
+		_models.emplace_back(obj);
+	}
 }
 
 ModelExportScene::~ModelExportScene()
 {
 	delete _player;
 	delete _warrok;
+	for (ModelObject* model : _models)
+		delete model;
 }
 
 void ModelExportScene::Update()
 {
-	_player->Update();
+	// _player->Update();
 	// _warrok->Update();
+	for (ModelObject* model : _models)
+		model->Update();
 }
 
 void ModelExportScene::PreRender()
@@ -54,13 +71,15 @@ void ModelExportScene::PreRender()
 
 void ModelExportScene::Render()
 {
-	_player->Render();
+	// _player->Render();
 	// _warrok->Render();
+	for (ModelObject* model : _models)
+		model->Render();
 }
 
 void ModelExportScene::PostRender()
 {
-	_player->PostRender();
+	// _player->PostRender();
 	// _warrok->PostRender();
 }
 

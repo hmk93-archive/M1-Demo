@@ -12,7 +12,7 @@ class StructuredBuffer;
 
 class Terrain : public Transform
 {
-	using VertexType = VertexUVNormalTangent;
+	using VertexType = VertexUVNormalTangentAlpha;
 
 	struct InputDesc
 	{
@@ -25,6 +25,7 @@ class Terrain : public Transform
 		int picked;
 		float u, v, distance;
 	};
+
 public:
 	Terrain(Vector3 pos = Vector3(0.0f));
 	virtual ~Terrain();
@@ -43,6 +44,7 @@ private:
 	void CreateCompute();
 
 	void CreateInput();
+	void CreateAlpha();
 
 private:
 	Material* _material = nullptr;
@@ -55,6 +57,9 @@ private:
 	UINT _height = 0;
 
 	Texture* _heightMap = nullptr;
+	Texture* _alphaMap[2] = {};
+	Texture* _secondMap = nullptr;
+	Texture* _thirdMap = nullptr;
 
 	TypeBuffer* _typeBuffer = nullptr;
 
