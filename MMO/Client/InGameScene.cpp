@@ -10,6 +10,7 @@
 #include "FieldWall.h"
 #include "AStar.h"
 #include "Node.h"
+#include "Control.h"
 
 InGameScene::InGameScene()
 {
@@ -32,7 +33,6 @@ InGameScene::InGameScene()
 	_player->position = Vector3(25.0f, 0.0f, 25.0f);
 	_player->SetTerrain(_terrain);
 	_player->SetAStar(_astar);
-	_player->_destPos = _player->position;
 	Environment::Get().GetMainCamera()->SetTarget(_player);
 
 	// Warrok
@@ -42,9 +42,9 @@ InGameScene::InGameScene()
 	transform->scale = Vector3(0.1f);
 	_warrok->UpdateTransforms();
 	float radius = (_warrok->worldMinBox - _warrok->worldMaxBox).Length() * 0.5f;
-	_warrok->mainCollider = new SphereCollider(radius * 0.25f);
+	_warrok->mainCollider[0] = new SphereCollider(radius * 0.25f);
 	Vector3 offset = Vector3(0.0f, 10.0f, 0.0f);
-	_warrok->mainCollider->SetTarget(transform, offset);
+	_warrok->mainCollider[0]->SetTarget(transform, offset);
 
 	Update();
 
@@ -100,6 +100,8 @@ void InGameScene::Update()
 	_warrok->Update();
 
 	PlayerAttackToWarrok();
+	WarrokToMouse();
+	WarrokToPlayer();
 }
 
 void InGameScene::PreRender()
@@ -131,12 +133,38 @@ void InGameScene::PlayerAttackToWarrok()
 	Collider* player = _player->GetMainCollider();
 	if (!player->isActive)
 		return;
-	Collider* warrok = _warrok->mainCollider;
+	Collider* warrok = _warrok->mainCollider[0];
 	if (!warrok->isActive)
 		return;
 	if (player->Collision(warrok))
 	{
-		_player->Attack();
-		_warrok->Hit(0);
+		_warrok->Hit(0, 0);
+	}
+}
+
+void InGameScene::WarrokToMouse()
+{
+	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
+	Collider* col = _warrok->mainCollider[0];
+	if (col->RayCollision(ray))
+		_warrok->onMouse = true;
+	else
+		_warrok->onMouse = false;
+}
+
+void InGameScene::WarrokToPlayer()
+{
+	Collider* warrokCol = _warrok->mainCollider[0];
+	Collider* playerMainCol = _player->GetMainCollider();
+	Collider* playerEventCol = _player->GetEventCollider();
+	if (warrokCol->Collision(playerEventCol))
+	{
+		if (Control::Get().Down(VK_LBUTTON) && _warrok->onMouse)
+		{
+			_player->Attack();
+		}
+
+		if (warrokCol->Collision(playerMainCol))
+			_player->PushBack(warrokCol);
 	}
 }

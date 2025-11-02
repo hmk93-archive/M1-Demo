@@ -21,6 +21,8 @@ public:
 
 private:
 	void PlayerAttackToWarrok();
+	void WarrokToMouse();
+	void WarrokToPlayer();
 
 private:
 	Terrain* _terrain = nullptr;

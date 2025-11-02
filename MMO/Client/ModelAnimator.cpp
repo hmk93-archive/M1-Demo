@@ -71,14 +71,13 @@ void ModelAnimator::Update()
 	FrameBuffer::TweenDesc& tweenDesc = frameBuffer->data.tweenDesc[0];
 
 	if (isPlay)
-	{//CurAnimation
+	{
 		FrameBuffer::KeyFrameDesc& desc = tweenDesc.cur;
 		ModelClip* clip = clips[desc.clip];
 
 		float time = 1.0f / clip->tickPerSecond / desc.speed;
 		desc.runningTime += Timer::Get().GetElapsedTime();
 
-		// at Frame of Event
 		if (FrameEvent.count(desc.clip) > 0)
 		{
 			UINT fSize = (UINT)frames[desc.clip].size();
@@ -88,19 +87,19 @@ void ModelAnimator::Update()
 				FrameEvent[desc.clip]();
 
 				if (fSize == 1)
-				{ // A-1. save frame, at last load frame saved
+				{
 					tempFrame = frame;
 					frames[desc.clip][0] = -1;
 				}
 				else
-				{ // B. send first value To last
+				{
 					auto iter = frames[desc.clip].begin();
 					UINT valueTemp = *iter;
 					frames[desc.clip].erase(iter);
 					frames[desc.clip].emplace_back(valueTemp);
 				}
 			}
-			if (fSize == 1) // A-2
+			if (fSize == 1) 
 				if (desc.curFrame >= clip->frameCount - 1)
 				{
 					frames[desc.clip][0] = tempFrame;
@@ -108,7 +107,6 @@ void ModelAnimator::Update()
 				}
 		}
 
-		// at Clip End
 		if (desc.curFrame >= clip->frameCount - 1)
 		{
 			if (EndEvent.count(desc.clip) > 0)
@@ -132,7 +130,7 @@ void ModelAnimator::Update()
 		desc.time = desc.runningTime / time;
 	}
 
-	{//NextAnimation
+	{
 		FrameBuffer::KeyFrameDesc& desc = tweenDesc.next;
 
 		if (desc.clip > -1)
@@ -186,12 +184,16 @@ void ModelAnimator::Render()
 void ModelAnimator::PlayClip(UINT clip, float speed, float takeTime)
 {
 	frameBuffer->data.tweenDesc[0].cur = {};
-	//
 	frameBuffer->data.tweenDesc[0].takeTime = takeTime;
 	frameBuffer->data.tweenDesc[0].next.clip = clip;
 	frameBuffer->data.tweenDesc[0].next.speed = speed;
-	//
 	isPlay = true;
+}
+
+void ModelAnimator::SetFrameEvent(UINT clip, CallBack Event, vector<UINT> value)
+{
+	FrameEvent[clip] = Event;
+	frames[clip] = value;
 }
 
 Matrix ModelAnimator::GetTransformByNode(int nodeIndex)
@@ -253,7 +255,7 @@ void ModelAnimator::CreateTexture()
 	for (UINT i = 0; i < clipCount; i++)
 		CreateClipTransform(i);
 
-	{//CreatTexture
+	{
 		D3D11_TEXTURE2D_DESC desc = {};
 		desc.Width = MAX_BONE * 4;
 		desc.Height = MAX_FRAME_KEY;
@@ -299,7 +301,7 @@ void ModelAnimator::CreateTexture()
 		VirtualFree(p, 0, MEM_RELEASE);
 	}
 
-	{//Create SRV
+	{
 		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
 		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;

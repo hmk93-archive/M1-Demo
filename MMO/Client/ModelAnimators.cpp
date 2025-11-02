@@ -49,8 +49,8 @@ void ModelAnimators::Update()
 			{
 				if (desc.curFrame + desc.time >= clip->frameCount)
 				{
-					//if (EndEvents[i].count(desc.clip) > 0)
-					//	EndEvents[i][desc.clip](params[i][desc.clip]);
+					if (!EndEvents.empty() && EndEvents[i].count(desc.clip) > 0)
+						EndEvents[i][desc.clip](params[i][desc.clip]);
 				}
 
 				desc.curFrame = (desc.curFrame + 1) % clip->frameCount;

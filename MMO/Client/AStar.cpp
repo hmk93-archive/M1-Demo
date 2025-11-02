@@ -5,6 +5,9 @@
 #include "Collider.h"
 #include "ModelObject.h"
 #include "Utility.h"
+#include "Control.h"
+#include "Environment.h"
+#include "Camera.h"
 using namespace Utility;
 
 AStar::AStar(UINT width, UINT height)
@@ -24,27 +27,35 @@ AStar::~AStar()
 void AStar::Update()
 {
 	SetCullIdx();
+
+	for (int z = -cullRange.y; z < cullRange.y; ++z)
+		for (int x = -cullRange.x; x < cullRange.x; ++x)
+		{
+			int idx = (cullIdx.y + z) * width + (cullIdx.x + x); 
+			idx = clamp(idx, 0, (int)nodes.size() - 1);
+			nodes[idx]->Update();
+		}
 	
 	if (makeObsMode == false)
 		return;
-	//
-	//if (KEY_DOWN(VK_LBUTTON))
-	//{
-	//	Ray ray = CAMERA->ScreenPointToRay(MOUSEPOS);
+	
+	if (Control::Get().Down(VK_LBUTTON))
+	{
+		Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
 
-	//	for (int z = -2; z < 2; ++z)
-	//		for (int x = -2; x < 2; ++x)
-	//		{
-	//			int idx = (cullIdx.y + z) * width + (cullIdx.x + x); //z * width + x;
-	//			idx = Saturate(idx, 0, nodes.size() - 1);
-	//			//
-	//			if (nodes[idx]->collider->RayCollision(ray))
-	//			{
-	//				obstacles.emplace_back(nodes[idx]->MakeObstacle());
-	//				break;
-	//			}
-	//		}
-	//}
+		for (int z = -2; z < 2; ++z)
+			for (int x = -2; x < 2; ++x)
+			{
+				int idx = (cullIdx.y + z) * width + (cullIdx.x + x); //z * width + x;
+				idx = clamp(idx, 0, (int)nodes.size() - 1);
+				
+				if (nodes[idx]->_collider->RayCollision(ray))
+				{
+					_obstacles.emplace_back(nodes[idx]->MakeObstacle());
+					break;
+				}
+			}
+	}
 }
 
 void AStar::Render()
@@ -55,13 +66,10 @@ void AStar::Render()
 	for (int z = -cullRange.y; z < cullRange.y; ++z)
 		for (int x = -cullRange.x; x < cullRange.x; ++x)
 		{
-			int idx = (cullIdx.y + z) * width + (cullIdx.x + x); //z * width + x;
+			int idx = (cullIdx.y + z) * width + (cullIdx.x + x); 
 			idx = clamp(idx, 0, (int)nodes.size() - 1);
 			nodes[idx]->Render();
 		}
-
-	//for (Node* node : nodes)
-	//	node->Render();	
 }
 
 void AStar::PostRender()
@@ -85,7 +93,7 @@ void AStar::SetNode(Vector2 size)
 			delete node;
 		nodes.clear();
 	}
-		//
+
 	for (UINT z = 0; z < height; z++)
 	{
 		for (UINT x = 0; x < width; x++)
@@ -269,7 +277,7 @@ bool AStar::CollisionObstacle(Ray ray, float destDistance)
 void AStar::SetPath(vector<Vector3>& path, Vector3 position, Vector3 destPos)
 {
 	path.clear();
-	//
+	
 	Ray ray;
 	ray.position = position;
 	ray.direction = (destPos - position);

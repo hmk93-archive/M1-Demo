@@ -23,6 +23,9 @@ public:
 
 	void PlayClip(UINT instance, UINT clip, float speed = 1.0f, float takeTime = 0.2f);
 
+	void SetEndEvents(UINT instance, UINT clip, CallBackParam Event) { EndEvents[instance][clip] = Event; }
+	void SetParams(UINT instance, UINT clip, int param) { params[instance][clip] = param; }
+
 	Transform* AddTransform();
 
 	void UpdateTransforms();
@@ -30,14 +33,18 @@ public:
 public:
 	Vector3 worldMinBox, worldMaxBox;
 
+protected:
+	UINT _drawCount = 0;
+
 private:
 	InstanceData _instanceData[MAX_INSTANCE] = {};
 	VertexBuffer* _instanceBuffer = nullptr;
 
 	vector<Transform*> _transforms = {};
 
-	UINT _drawCount = 0;
-
 	Vector3 _minBox, _maxBox;
+
+	vector<map<UINT, CallBackParam>> EndEvents;
+	vector<map<UINT, int>> params;
 };
 

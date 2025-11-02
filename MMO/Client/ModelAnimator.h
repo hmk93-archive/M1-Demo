@@ -22,6 +22,11 @@ public:
 
 	void PlayClip(UINT clip, float speed = 1.0f, float takeTime = 0.2f);
 
+	void SetEndEvent(UINT clip, CallBack Event) { EndEvent[clip] = Event; }
+	void SetEndParamEvent(UINT clip, CallBackParam Event) { EndParamEvent[clip] = Event; }
+	void SetParam(UINT clip, int value) { param[clip] = value; }
+	void SetFrameEvent(UINT clip, CallBack Event, vector<UINT> value);
+
 	Matrix GetTransformByNode(int nodeIndex);
 	Matrix GetTransformByNode(UINT instance, int nodeIndex);
 

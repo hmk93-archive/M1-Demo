@@ -52,7 +52,7 @@ bool SphereCollider::BoxCollision(BoxCollider* collider)
 
 bool SphereCollider::SphereCollision(SphereCollider* collider)
 {
-	float distance = (GlobalPos(), collider->GlobalPos()).Length();
+	float distance = (GlobalPos() - collider->GlobalPos()).Length();
 
 	float r1 = Radius();
 	float r2 = collider->Radius();

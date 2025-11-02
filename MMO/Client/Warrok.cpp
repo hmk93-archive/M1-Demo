@@ -14,12 +14,14 @@ Warrok::Warrok(string file)
 
 Warrok::~Warrok()
 {
-	delete mainCollider;
+	for(Collider* collider : mainCollider)
+		delete collider;
 }
 
 void Warrok::Update()
 {
-	mainCollider->SetColor(Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+	for (UINT i = 0; i < _drawCount; i++)
+		mainCollider[i]->SetColor(Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
 	ModelAnimators::Update();
 }
@@ -28,7 +30,8 @@ void Warrok::Render()
 {
 	ModelAnimators::Render();
 
-	mainCollider->Render();
+	for (UINT i = 0; i < _drawCount; i++)
+		mainCollider[i]->Render();
 }
 
 void Warrok::PostRender()
@@ -36,9 +39,9 @@ void Warrok::PostRender()
 
 }
 
-void Warrok::Hit(UINT damage)
+void Warrok::Hit(UINT instanceID, UINT damage)
 {
-	mainCollider->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	mainCollider[instanceID]->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 void Warrok::SetAnimation(WarrokAnimState value, float speed)

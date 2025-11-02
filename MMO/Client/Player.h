@@ -15,7 +15,15 @@ class Player : public ModelAnimator, public Transform
 		Run,
 		Attack_A,
 		End
-	} state;
+	} animState;
+
+	enum PlayerBehaviourState
+	{
+		None,
+		War,
+		Jump,
+	} behaviourState;
+
 public:
 	Player(string file);
 	~Player();
@@ -29,8 +37,10 @@ public:
 	void SetAStar(AStar* astar) { _astar = astar; }
 
 	Collider* GetMainCollider() { return _mainCollider; }
+	Collider* GetEventCollider() { return _eventCollider; }
 
 	void Attack();
+	void PushBack(Collider* other);
 
 private:
 	void CreateCollider();
@@ -41,18 +51,19 @@ private:
 	void Move();
 	void Rotate();
 
+	void SetIdle();
+
+
 	void SetPath();
 	void SetVelocity();
 	void SetHeight();
 	void SetAnimation(PlayerAnimState value, float speed = 1.0f);
 
-	// TMP
-public:
-	Vector3 _destPos = Vector3(0.0f);
-
 private:
 	Terrain* _terrain = nullptr;
 	AStar* _astar = nullptr;
+
+	Vector3 _destPos = Vector3(0.0f);
 
 	Vector3 _velocity = Vector3(0.0f);
 
@@ -61,6 +72,7 @@ private:
 	float _deceleration = 5.0f;
 
 	Collider* _mainCollider = nullptr;
+	Collider* _eventCollider = nullptr;
 
 	Matrix _body = Matrix::Identity;
 

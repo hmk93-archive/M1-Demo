@@ -23,13 +23,16 @@ public:
 
 	void SetTerrain(Terrain* terrain) { _terrain = terrain; }
 
-	void Hit(UINT damage);
+	void Hit(UINT instanceID, UINT damage);
+
+public:
+	bool onMouse = false;
 
 private:
 	void SetAnimation(WarrokAnimState value, float speed = 1.0f);
 
 public:
-	Collider* mainCollider = nullptr;
+	Collider* mainCollider[MAX_INSTANCE] = {};
 
 private:
 	Terrain* _terrain = nullptr;

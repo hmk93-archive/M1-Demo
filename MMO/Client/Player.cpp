@@ -4,10 +4,12 @@
 #include "Control.h"
 #include "Timer.h"
 #include "CapsuleCollider.h"
+#include "SphereCollider.h"
 #include "AStar.h"
 
 Player::Player(string file)
 	: ModelAnimator(file + "/" + file)
+	, behaviourState(None)
 {
 	scale = Vector3(0.05f);
 
@@ -15,7 +17,9 @@ Player::Player(string file)
 
 	ReadClip(file + "/Idle0");
 	ReadClip(file + "/Run0");
-	ReadClip(file + "/Attack_A0");
+	ReadClip(file + "/Attack_A0", false);
+
+	SetEndEvent(Attack_A, bind(&Player::SetIdle, this));
 	
 	SetAnimation(Idle);
 
@@ -24,6 +28,7 @@ Player::Player(string file)
 
 Player::~Player()
 {
+	delete _eventCollider;
 	delete _mainCollider;
 }
 
@@ -44,6 +49,7 @@ void Player::Render()
 	ModelAnimator::Render();
 
 	_mainCollider->Render();
+	_eventCollider->Render();
 }
 
 void Player::PostRender()
@@ -53,12 +59,34 @@ void Player::PostRender()
 
 void Player::Attack()
 {
+	if (behaviourState == War)
+		return;
+	behaviourState = War;
 	SetAnimation(Attack_A);
+}
+
+void Player::PushBack(Collider* other)
+{
+	_path.clear();
+	_velocity = Vector3::Zero;
+	Vector3 p1 = other->GlobalPos();
+	Vector3 p2 = _eventCollider->GlobalPos();
+	Vector3 dir = (p1 - p2);
+	float r1 = ((SphereCollider*)other)->Radius();
+	float r2 = ((SphereCollider*)_eventCollider)->Radius();
+	float d = (p1 - p2).Length();
+	float overlap = (r1 + r2) - d;
+	position -= (dir * overlap) * Timer::Get().GetElapsedTime();
 }
 
 void Player::CreateCollider()
 {
+	Vector3 minBox, maxBox;
+	SetBox(&minBox, &maxBox);
 	_mainCollider = new CapsuleCollider(15.0f, 100.0f);
+
+	float radius = (minBox - maxBox).Length() * 0.5f;
+	_eventCollider = new SphereCollider(radius);
 }
 
 void Player::UpdateMatrix()
@@ -77,6 +105,7 @@ void Player::UpdateMatrix()
 	_body = GetTransformByNode(i2) * _world;
 
 	_mainCollider->SetParent(&_body);
+	_eventCollider->SetParent(&_body);
 }
 
 void Player::Control()
@@ -89,9 +118,10 @@ void Player::Control()
 
 void Player::Move()
 {
-	SetVelocity();
+	if (behaviourState == Jump || behaviourState == War)
+		return;
 
-	// ¸¶Âû·Â Àû¿ë
+	SetVelocity();
 	if (_velocity.Length() > 0.0f)
 	{
 		Vector3 zero = Vector3::Zero;
@@ -106,7 +136,7 @@ void Player::Move()
 	}
 	else
 	{
-		if (state == Run)
+		if (animState == Run)
 		{
 			SetAnimation(Idle);
 		}
@@ -129,6 +159,13 @@ void Player::Rotate()
 		rotation.y += _rotateSpeed * Timer::Get().GetElapsedTime();
 	else
 		rotation.y -= _rotateSpeed * Timer::Get().GetElapsedTime();
+}
+
+void Player::SetIdle()
+{
+	SetAnimation(Idle);
+	if (behaviourState == War || behaviourState == Jump)
+		behaviourState = None;
 }
 
 void Player::SetPath()
@@ -167,9 +204,9 @@ void Player::SetHeight()
 
 void Player::SetAnimation(PlayerAnimState value, float speed)
 {
-	if (state != value)
+	if (animState != value)
 	{
-		state = value;
-		PlayClip(state, speed);
+		animState = value;
+		PlayClip(animState, speed);
 	}
 }

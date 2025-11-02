@@ -23,6 +23,13 @@ Node::~Node()
 		delete edge;
 }
 
+void Node::Update()
+{
+	_collider->UpdateWorld();
+	if (_obstacle != nullptr)
+		_obstacle->UpdateWorld();
+}
+
 void Node::Render()
 {
 	switch (state)

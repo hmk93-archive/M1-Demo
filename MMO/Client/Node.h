@@ -27,6 +27,7 @@ private:
 	Node(Vector3 pos, int index, Vector2 interval);
 	~Node();
 
+	void Update();
 	void Render();
 
 	void AddEdge(Node* node);
