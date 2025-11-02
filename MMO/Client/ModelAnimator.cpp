@@ -41,9 +41,7 @@ void ModelAnimator::ReadClip(string file, bool loopValue)
 	clip->duration = r->Float();
 	clip->tickPerSecond = r->Float();
 	clip->frameCount = r->UInt();
-	//
 	clip->loop = loopValue;
-	//
 
 	UINT keyFrameCount = r->UInt();
 	for (UINT i = 0; i < keyFrameCount; i++)
