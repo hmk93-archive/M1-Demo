@@ -5,7 +5,7 @@
 #include "Client.h"
 #include "Game.h"
 #include "Device.h"
-#include "Control.h"
+#include "Input.h"
 
 #define MAX_LOADSTRING 100
 

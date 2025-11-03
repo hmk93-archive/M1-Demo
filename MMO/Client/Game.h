@@ -15,15 +15,9 @@ public:
 private:
 	void RenderFPS();
 	void Debug();
+	void UpdateGuizmo();
 
 public:
 	static bool s_exit;
-
-	// TMP
-	class Cube* _cube;
-	class Sphere* _sphere;
-	class ModelObject* _modelObj;
-	class Player* _player;
-	class Terrain* _terrain;
 };
 

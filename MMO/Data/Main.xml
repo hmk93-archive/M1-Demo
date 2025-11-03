@@ -1,0 +1,14 @@
+<Map>
+    <ModelObject>
+        <Name>Stone</Name>
+        <Scale x="0.99990636" y="1" z="0.99990636"/>
+        <Rotation x="0" y="0.025240898" z="-3.1415927"/>
+        <Position x="256.9325" y="-19.998682" z="163.5446"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>House</Name>
+        <Scale x="0.0099947238" y="0.0099915974" z="0.0099916067"/>
+        <Rotation x="-1.5363729" y="0.0062322617" z="-3.1290793"/>
+        <Position x="58.386433" y="-20.168934" z="172.62456"/>
+    </ModelObject>
+</Map>

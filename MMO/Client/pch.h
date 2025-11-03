@@ -100,7 +100,14 @@ private:                                       \
 extern HWND g_hWnd;
 extern UINT g_screenWidth;
 extern UINT g_screenHeight;
-
+extern ImGuizmo::OPERATION g_guizmoOp;
+extern ImGuizmo::MODE g_guizmoMode;
+extern bool g_useSnap;
+extern float g_snap[3];
 
 // Disable Warning
 #pragma warning(disable:4244)
+
+// CallBack Define
+typedef function<void()> CallBack;
+typedef function<void(int)> CallBackParam;

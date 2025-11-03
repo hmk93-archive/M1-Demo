@@ -173,6 +173,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ComputeShader.h" />
     <ClInclude Include="ConstBuffer.h" />
+    <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Device.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InGameScene.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MenuScene.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelAnimator.h" />
@@ -236,7 +238,9 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="UICollider.h" />
+    <ClInclude Include="UIButton.h" />
+    <ClInclude Include="SquareCollider.h" />
+    <ClInclude Include="UIImage.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexLayouts.h" />
@@ -254,6 +258,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ComputeShader.cpp" />
     <ClCompile Include="ConstBuffer.cpp" />
+    <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Device.cpp" />
@@ -318,6 +323,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InGameScene.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelAnimator.cpp" />
@@ -361,7 +367,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UICollider.cpp" />
+    <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="SquareCollider.cpp" />
+    <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexLayouts.cpp" />

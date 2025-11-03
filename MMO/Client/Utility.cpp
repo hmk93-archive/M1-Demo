@@ -175,4 +175,44 @@ namespace Utility
      //   
         return;
     }
+
+    Vector3 ToEulerAngles(Quaternion q)
+    {
+        Vector3 angles;
+
+        // roll (x-axis rotation)
+        double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+        double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+        angles.x = (float)std::atan2(sinr_cosp, cosr_cosp);
+
+        // pitch (y-axis rotation)
+        double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+        double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+        angles.y = 2.f * (float)std::atan2(sinp, cosp) - 3.14159f / 2;
+
+        // yaw (z-axis rotation)
+        double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+        double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+        angles.z = (float)std::atan2(siny_cosp, cosy_cosp);
+
+        return angles;
+    }
+
+    void TransformUsingGuizmo(Matrix& world, OUT Vector3& scale, OUT Vector3& rotation, OUT Vector3& position)
+    {
+        float view[16], proj[16];
+        memcpy(view, &Environment::Get().GetMainCamera()->GetView(), sizeof(view));
+        memcpy(proj, &Environment::Get().GetProjection(), sizeof(proj));
+        ImGuizmo::Manipulate(
+            view,
+            proj,
+            g_guizmoOp,
+            g_guizmoMode,
+            (float*)&world,
+            nullptr,
+            g_useSnap ? &g_snap[0] : nullptr);
+        Quaternion q;
+        world.Decompose(scale, q, position);
+        rotation = ToEulerAngles(q);
+    }
 }

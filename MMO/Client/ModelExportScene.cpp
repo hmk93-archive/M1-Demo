@@ -15,7 +15,6 @@ ModelExportScene::ModelExportScene()
 	//	CreateAnimation("Paladin", "Attack_A");
 	//	_player = new Player("Paladin");
 	//}
-
 	//// Monster
 	//{
 	//	// Warrok
@@ -39,13 +38,22 @@ ModelExportScene::ModelExportScene()
 	// ModelObject
 	{
 		CreateModel("Stone");
+		CreateModel("House");
 	}
 
 	// Create ModelObject
 	{
-		ModelObject* obj = new ModelObject("Stone/Stone");
-		obj->rotation.z = XM_PI;
-		_models.emplace_back(obj);
+		{
+			ModelObject* obj = new ModelObject("Stone/Stone");
+			obj->rotation.z = XM_PI;
+			_models.emplace_back(obj);
+		}
+		{
+			ModelObject* obj = new ModelObject("House/House");
+			obj->scale = Vector3(0.01f);
+			obj->rotation.x = XM_PIDIV2;
+			_models.emplace_back(obj);
+		}
 	}
 }
 

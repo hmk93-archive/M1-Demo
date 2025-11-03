@@ -11,6 +11,7 @@ public:
 	void Filter(D3D11_FILTER value);
 	void Address(D3D11_TEXTURE_ADDRESS_MODE value);
 
+private:
 	void Changed();
 
 private:

@@ -2,11 +2,11 @@
 
 #include "Collider.h"
 
-class UICollider : public Collider
+class SquareCollider : public Collider
 {
 public:
-	UICollider(Vector4 box);
-	virtual ~UICollider();
+	SquareCollider(Vector4 square);
+	virtual ~SquareCollider();
 
 	virtual bool MouseCollision() override;
 	virtual void SetSize(Vector4 value) override;
@@ -19,5 +19,5 @@ private:
 	virtual bool CapsuleCollision(CapsuleCollider* collider) override;
 
 private:
-	Vector4 _box = {};
+	Vector4 _square = {};
 };

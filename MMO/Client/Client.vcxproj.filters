@@ -65,11 +65,14 @@
     <Filter Include="GameObjects">
       <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Models">
-      <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils\PathFinding">
       <UniqueIdentifier>{566c6d54-8ea8-4f5b-9c4e-b0d9b3c73ad2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{a8926333-a5b4-4564-bdb1-c4796411d98f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -167,13 +170,13 @@
       <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="ModelReader.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="ModelExporter.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="ModelType.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="tinyxml2.h">
       <Filter>Utils</Filter>
@@ -185,19 +188,19 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ModelMesh.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="ModelObject.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="ModelAnimator.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="ModelClip.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>GameObjects</Filter>
@@ -262,7 +265,7 @@
     <ClInclude Include="SphereCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
-    <ClInclude Include="UICollider.h">
+    <ClInclude Include="SquareCollider.h">
       <Filter>Collider</Filter>
     </ClInclude>
     <ClInclude Include="BoxCollider.h">
@@ -275,7 +278,7 @@
       <Filter>Collider</Filter>
     </ClInclude>
     <ClInclude Include="ModelAnimators.h">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="ModelExportScene.h">
       <Filter>Scene</Filter>
@@ -309,6 +312,18 @@
     </ClInclude>
     <ClInclude Include="RasterizerState.h">
       <Filter>Graphics\State</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilState.h">
+      <Filter>Graphics\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIButton.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -413,13 +428,13 @@
       <Filter>Geometry</Filter>
     </ClCompile>
     <ClCompile Include="ModelReader.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="ModelExporter.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="ModelType.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="tinyxml2.cpp">
       <Filter>Utils</Filter>
@@ -431,19 +446,19 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModelMesh.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="ModelObject.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="ModelAnimator.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="ModelClip.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>GameObjects</Filter>
@@ -496,7 +511,7 @@
     <ClCompile Include="SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
-    <ClCompile Include="UICollider.cpp">
+    <ClCompile Include="SquareCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
     <ClCompile Include="BoxCollider.cpp">
@@ -509,7 +524,7 @@
       <Filter>Collider</Filter>
     </ClCompile>
     <ClCompile Include="ModelAnimators.cpp">
-      <Filter>Models</Filter>
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="ModelExportScene.cpp">
       <Filter>Scene</Filter>
@@ -543,6 +558,18 @@
     </ClCompile>
     <ClCompile Include="RasterizerState.cpp">
       <Filter>Graphics\State</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>Graphics\State</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

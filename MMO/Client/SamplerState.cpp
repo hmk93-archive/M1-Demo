@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SamplerState.h"
 #include "Device.h"
+#include "DepthStencilState.h"
 
 SamplerState::SamplerState()
 	: _desc{}

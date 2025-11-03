@@ -15,8 +15,13 @@
 #include "Collider.h"
 #include "ModelExportScene.h"
 #include "NavMeshScene.h"
+#include "MenuScene.h"
 
 bool Game::s_exit = false;
+ImGuizmo::OPERATION g_guizmoOp = ImGuizmo::TRANSLATE;
+ImGuizmo::MODE g_guizmoMode = ImGuizmo::WORLD;
+bool g_useSnap = false;
+float g_snap[3] = { 1.0f, 1.0f, 1.0f };
 
 Game::Game()
 {
@@ -24,7 +29,7 @@ Game::Game()
 	Environment::Get();
 	Input::Get();
 	Timer::Get();
-	Font::Get().Add();
+	//Font::Get().Add();
 	SceneManager::Get();
 
 	ImGui::CreateContext();
@@ -37,7 +42,8 @@ Game::Game()
 	SceneManager::Get().Add("MapEditor", new MapEditorScene());
 	SceneManager::Get().Add("NavMesh", new NavMeshScene(true));
 	SceneManager::Get().Add("InGame", new InGameScene());
-	SceneManager::Get().Play("InGame");
+	SceneManager::Get().Add("Menu", new MenuScene());
+	SceneManager::Get().Play("Menu");
 }
 
 Game::~Game()
@@ -72,20 +78,20 @@ void Game::Render()
 
 void Game::PostRender()
 {
-	// Font
-	Font::Get().GetDC()->BeginDraw();
-	RenderFPS();
-	Font::Get().GetDC()->EndDraw();
+	//// Font
+	//Font::Get().GetDC()->BeginDraw();
+	//RenderFPS();
+	//Font::Get().GetDC()->EndDraw();
 
 	// ImGui
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
-	ImGuizmo::SetOrthographic(false);
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
+	UpdateGuizmo();
+	
 	Environment::Get().PostRender();
 	SceneManager::Get().PostRender();
 
@@ -104,5 +110,65 @@ void Game::Debug()
 	if (Input::Get().Down(VK_F5))
 	{
 		Collider::s_isColliderDraw = !Collider::s_isColliderDraw;
+	}
+}
+
+void Game::UpdateGuizmo()
+{
+	if (ImGuizmo::IsUsing())
+	{
+		ImGui::Text("Using gizmo");
+	}
+	else
+	{
+		ImGui::Text(ImGuizmo::IsOver() ? "Over gizmo" : "");
+		ImGui::SameLine();
+		ImGui::Text(ImGuizmo::IsOver(ImGuizmo::TRANSLATE) ? "Over translate gizmo" : "");
+		ImGui::SameLine();
+		ImGui::Text(ImGuizmo::IsOver(ImGuizmo::ROTATE) ? "Over rotate gizmo" : "");
+		ImGui::SameLine();
+		ImGui::Text(ImGuizmo::IsOver(ImGuizmo::SCALE) ? "Over scale gizmo" : "");
+	}
+
+	if (ImGui::IsKeyPressed('T'))
+		g_guizmoOp = ImGuizmo::TRANSLATE;
+	if (ImGui::IsKeyPressed('R'))
+		g_guizmoOp = ImGuizmo::ROTATE;
+	if (ImGui::IsKeyPressed('Y'))
+		g_guizmoOp = ImGuizmo::SCALE;
+
+	if (ImGui::RadioButton("Translate", g_guizmoOp == ImGuizmo::TRANSLATE))
+		g_guizmoOp = ImGuizmo::TRANSLATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", g_guizmoOp == ImGuizmo::ROTATE))
+		g_guizmoOp = ImGuizmo::ROTATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Scale", g_guizmoOp == ImGuizmo::SCALE))
+		g_guizmoOp = ImGuizmo::SCALE;
+
+	if (g_guizmoOp != ImGuizmo::SCALE)
+	{
+		if (ImGui::RadioButton("Local", g_guizmoMode == ImGuizmo::LOCAL))
+			g_guizmoMode = ImGuizmo::LOCAL;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("World", g_guizmoMode == ImGuizmo::WORLD))
+			g_guizmoMode = ImGuizmo::WORLD;
+	}
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Y))
+		g_useSnap = !g_useSnap;
+	ImGui::Checkbox(" ", &g_useSnap);
+	ImGui::SameLine();
+	switch (g_guizmoOp)
+	{
+	case ImGuizmo::TRANSLATE:
+		ImGui::InputFloat3("Snap", &g_snap[0]);
+		break;
+	case ImGuizmo::ROTATE:
+		ImGui::InputFloat("Angle Snap", &g_snap[0]);
+		break;
+	case ImGuizmo::SCALE:
+		ImGui::InputFloat("Scale Snap", &g_snap[0]);
+		break;
 	}
 }

@@ -12,47 +12,16 @@
 #include "Node.h"
 #include "Input.h"
 #include "NavMesh.h"
+#include "tinyxml2.h"
+#include "Utility.h"
+#include "ModelObject.h"
+using namespace Utility;
 
 InGameScene::InGameScene()
 {
-	// Terrain
-	_terrain = new Terrain();
+	Create();
 
-	// AStar
-	_astar = new AStar(100, 100);
-
-	// NavMesh
-	_navMesh = new NavMesh(_terrain->GetSize().x, _terrain->GetSize().y);
-	_navMesh->SetTerrain(_terrain);
-	_navMesh->Bake();
-
-	// Fields
-	for (UINT i = 0; i < 9; i++)
-	{
-		Field* field = new Field(_terrain, Field::Location(i));
-		_fields.emplace_back(field);
-	}
-	_astar->SetNode(_terrain->GetSize());
-
-	// Player
-	_player = new Player("Paladin");
-	_player->position = Vector3(25.0f, 0.0f, 25.0f);
-	_player->SetTerrain(_terrain);
-	_player->SetAStar(_astar);
-	_player->SetNavMesh(_navMesh);
-	Environment::Get().GetMainCamera()->SetTarget(_player);
-
-	// Warrok
-	_warrok = new Warrok("Warrok");
-	Transform* transform = _warrok->AddTransform();
-	transform->position = Vector3(50.0f, 0.0f, 50.0f);
-	transform->scale = Vector3(0.1f);
-	_warrok->UpdateTransforms();
-	float radius = (_warrok->worldMinBox - _warrok->worldMaxBox).Length() * 0.5f;
-	_warrok->mainCollider[0] = new SphereCollider(radius * 0.25f);
-	Vector3 offset = Vector3(0.0f, 10.0f, 0.0f);
-	_warrok->mainCollider[0]->SetTarget(transform, offset);
-
+	// For Field Wall Updates
 	Update();
 
 	// Set AStar Obstacle
@@ -96,10 +65,14 @@ InGameScene::~InGameScene()
 	delete _navMesh;
 	delete _astar;
 	delete _terrain;
+	for (ModelObject* model : _models)
+		delete model;
 }
 
 void InGameScene::Update()
 {
+	for (ModelObject* model : _models)
+		model->Update();
 	_terrain->Update();
 	_astar->Update();
 	for (Field* field : _fields)
@@ -118,6 +91,8 @@ void InGameScene::PreRender()
 
 void InGameScene::Render()
 {
+	for (ModelObject* model : _models)
+		model->Render();
 	_terrain->Render();
 	_astar->Render();
 	_navMesh->Render();
@@ -135,6 +110,53 @@ void InGameScene::PostRender()
 		field->PostRender();
 	_player->PostRender();
 	_warrok->PostRender();
+}
+
+void InGameScene::LoadMap()
+{
+	string file = "../Data/Main.xml";
+
+	XmlDocument* document = new XmlDocument();
+	document->LoadFile(file.c_str());
+
+	XmlElement* root = document->FirstChildElement();
+
+	XmlElement* modelNode = root->FirstChildElement();
+	
+	do
+	{
+		XmlElement* node = modelNode->FirstChildElement();
+
+		string text = "";
+		text = node->GetText();
+		ModelObject* model = new ModelObject(text + "/" + text);
+
+		Vector3 vec;
+		node = node->NextSiblingElement();
+		vec.x = node->FloatAttribute("x");
+		vec.y = node->FloatAttribute("y");
+		vec.z = node->FloatAttribute("z");
+		model->scale = vec;
+
+		node = node->NextSiblingElement();
+		vec.x = node->FloatAttribute("x");
+		vec.y = node->FloatAttribute("y");
+		vec.z = node->FloatAttribute("z");
+		model->rotation = vec;
+
+		node = node->NextSiblingElement();
+		vec.x = node->FloatAttribute("x");
+		vec.y = node->FloatAttribute("y");
+		vec.z = node->FloatAttribute("z");
+		model->position = vec;
+
+		modelNode = modelNode->NextSiblingElement();
+
+		_models.push_back(model);
+
+	} while (modelNode != nullptr);
+
+	delete document;
 }
 
 void InGameScene::PlayerAttackToWarrok()
@@ -176,4 +198,59 @@ void InGameScene::WarrokToPlayer()
 		if (warrokCol->Collision(playerMainCol))
 			_player->PushBack(warrokCol);
 	}
+}
+
+void InGameScene::Create()
+{
+	// Map Object
+	LoadMap();
+
+	// Terrain
+	_terrain = new Terrain();
+	
+	// AStar
+	_astar = new AStar(100, 100);
+
+	// NavMesh
+	_navMesh = new NavMesh(_terrain->GetSize().x, _terrain->GetSize().y);
+	_navMesh->SetTerrain(_terrain);
+	_navMesh->Bake();
+
+	// Fields
+	for (UINT i = 0; i < 9; i++)
+	{
+		Field* field = new Field(_terrain, Field::Location(i));
+		_fields.emplace_back(field);
+	}
+	_astar->SetNode(_terrain->GetSize());
+
+	// Player
+	CreatePlayer();
+
+	// Enemies
+	CreateEnemies();
+}
+
+void InGameScene::CreatePlayer()
+{
+	_player = new Player("Paladin");
+	_player->position = Vector3(25.0f, 0.0f, 25.0f);
+	_player->SetTerrain(_terrain);
+	_player->SetAStar(_astar);
+	_player->SetNavMesh(_navMesh);
+	Environment::Get().GetMainCamera()->SetTarget(_player);
+}
+
+void InGameScene::CreateEnemies()
+{
+	// Warrok
+	_warrok = new Warrok("Warrok");
+	Transform* transform = _warrok->AddTransform();
+	transform->position = Vector3(50.0f, 0.0f, 50.0f);
+	transform->scale = Vector3(0.1f);
+	_warrok->UpdateTransforms();
+	float radius = (_warrok->worldMinBox - _warrok->worldMaxBox).Length() * 0.5f;
+	_warrok->mainCollider[0] = new SphereCollider(radius * 0.25f);
+	Vector3 offset = Vector3(0.0f, 10.0f, 0.0f);
+	_warrok->mainCollider[0]->SetTarget(transform, offset);
 }

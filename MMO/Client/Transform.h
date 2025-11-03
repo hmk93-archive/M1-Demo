@@ -7,7 +7,7 @@ class Mesh;
 class Transform
 {
 public:
-	Transform();
+	Transform(string name = "Untagged");
 	virtual ~Transform();
 
 	Vector3 Forward() { return _world.Backward(); }
@@ -32,6 +32,7 @@ private:
 	void CreateAxis();
 
 public:
+	string tag = "";
 	Vector3 position = {};
 	Vector3 rotation = {};
 	Vector3 scale = Vector3(1.0f);

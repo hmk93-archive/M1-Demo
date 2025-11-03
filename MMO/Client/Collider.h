@@ -11,7 +11,7 @@ struct Contact
 class BoxCollider;
 class SphereCollider;
 class CapsuleCollider;
-class UICollider;
+class SquareCollider;
 class Material;
 class Mesh;
 
@@ -26,7 +26,7 @@ public:
 		Box,
 		Sphere,
 		Capsule,
-		Sqaure,
+		Square,
 		None
 	};
 

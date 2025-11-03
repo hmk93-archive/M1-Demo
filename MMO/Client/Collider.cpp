@@ -34,7 +34,7 @@ bool Collider::Collision(Collider* collider)
 		return SphereCollision(static_cast<SphereCollider*>(collider));
 	case Collider::Capsule:
 		return CapsuleCollision(static_cast<CapsuleCollider*>(collider));
-	case Collider::Sqaure:
+	case Collider::Square:
 		return MouseCollision();
 	}
 

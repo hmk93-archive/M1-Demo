@@ -26,4 +26,10 @@ namespace Utility
 	Vector3 ScreenToWorldHeightZero();
 
 	void Shuffle(vector<int>& arr);
+
+	// Quaternion to euler angle 
+	Vector3 ToEulerAngles(Quaternion q);
+
+	// Guizmo
+	void TransformUsingGuizmo(Matrix& world, OUT Vector3& scale, OUT Vector3& rotation, OUT Vector3& position);
 }
