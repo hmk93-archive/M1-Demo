@@ -10,7 +10,8 @@
 #include "FieldWall.h"
 #include "AStar.h"
 #include "Node.h"
-#include "Control.h"
+#include "Input.h"
+#include "NavMesh.h"
 
 InGameScene::InGameScene()
 {
@@ -19,6 +20,11 @@ InGameScene::InGameScene()
 
 	// AStar
 	_astar = new AStar(100, 100);
+
+	// NavMesh
+	_navMesh = new NavMesh(_terrain->GetSize().x, _terrain->GetSize().y);
+	_navMesh->SetTerrain(_terrain);
+	_navMesh->Bake();
 
 	// Fields
 	for (UINT i = 0; i < 9; i++)
@@ -33,6 +39,7 @@ InGameScene::InGameScene()
 	_player->position = Vector3(25.0f, 0.0f, 25.0f);
 	_player->SetTerrain(_terrain);
 	_player->SetAStar(_astar);
+	_player->SetNavMesh(_navMesh);
 	Environment::Get().GetMainCamera()->SetTarget(_player);
 
 	// Warrok
@@ -86,6 +93,7 @@ InGameScene::~InGameScene()
 	delete _player;
 	for (Field* field : _fields)
 		delete field;
+	delete _navMesh;
 	delete _astar;
 	delete _terrain;
 }
@@ -112,6 +120,7 @@ void InGameScene::Render()
 {
 	_terrain->Render();
 	_astar->Render();
+	_navMesh->Render();
 	for (Field* field : _fields)
 		field->Render();
 	_player->Render();
@@ -144,7 +153,7 @@ void InGameScene::PlayerAttackToWarrok()
 
 void InGameScene::WarrokToMouse()
 {
-	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
+	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
 	Collider* col = _warrok->mainCollider[0];
 	if (col->RayCollision(ray))
 		_warrok->onMouse = true;
@@ -159,7 +168,7 @@ void InGameScene::WarrokToPlayer()
 	Collider* playerEventCol = _player->GetEventCollider();
 	if (warrokCol->Collision(playerEventCol))
 	{
-		if (Control::Get().Down(VK_LBUTTON) && _warrok->onMouse)
+		if (Input::Get().Down(VK_LBUTTON) && _warrok->onMouse)
 		{
 			_player->Attack();
 		}

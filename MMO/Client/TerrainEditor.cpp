@@ -7,7 +7,7 @@
 #include "StructuredBuffer.h"
 #include "Environment.h"
 #include "Camera.h"
-#include "Control.h"
+#include "Input.h"
 #include "ComputeShader.h"
 #include "Timer.h"
 #include "Utility.h"
@@ -50,7 +50,7 @@ TerrainEditor::~TerrainEditor()
 
 void TerrainEditor::Update()
 {
-	if (Control::Get().Press(VK_LBUTTON) && !ImGui::GetIO().WantCaptureMouse)
+	if (Input::Get().Press(VK_LBUTTON) && !ImGui::GetIO().WantCaptureMouse)
 	{
 		if (_isPainting)
 			PaintBrush(_brushBuffer->data.location);
@@ -58,7 +58,7 @@ void TerrainEditor::Update()
 			AdjustY(_brushBuffer->data.location);
 	}
 
-	if (Control::Get().Up(VK_LBUTTON))
+	if (Input::Get().Up(VK_LBUTTON))
 	{
 		_mesh->UpdateVertex(_vertices.data(), (UINT)_vertices.size());
 	}
@@ -202,7 +202,7 @@ void TerrainEditor::SetInput()
 
 bool TerrainEditor::ComputePicking(OUT Vector3& position)
 {
-	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
+	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
 
 	_rayBuffer->data.position = ray.position;
 	_rayBuffer->data.direction = ray.direction;

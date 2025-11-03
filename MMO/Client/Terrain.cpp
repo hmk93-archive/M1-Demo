@@ -9,7 +9,7 @@
 #include "Device.h"
 #include "Environment.h"
 #include "Camera.h"
-#include "Control.h"
+#include "Input.h"
 
 Terrain::Terrain(Vector3 pos)
 {
@@ -176,7 +176,7 @@ void Terrain::CreateAlpha()
 
 bool Terrain::ComputePicking(OUT Vector3& position)
 {
-	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
+	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
 	_rayBuffer->data.position = ray.position;
 	_rayBuffer->data.direction = ray.direction;
 	_rayBuffer->data.size = (float)_computeSize;

@@ -6,6 +6,7 @@
 class Terrain;
 class Collider;
 class AStar;
+class NavMesh;
 
 class Player : public ModelAnimator, public Transform
 {
@@ -35,6 +36,7 @@ public:
 
 	void SetTerrain(Terrain* terrain) { _terrain = terrain; }
 	void SetAStar(AStar* astar) { _astar = astar; }
+	void SetNavMesh(NavMesh* navMesh) { _navMesh = navMesh; }
 
 	Collider* GetMainCollider() { return _mainCollider; }
 	Collider* GetEventCollider() { return _eventCollider; }
@@ -62,6 +64,7 @@ private:
 private:
 	Terrain* _terrain = nullptr;
 	AStar* _astar = nullptr;
+	NavMesh* _navMesh = nullptr;
 
 	Vector3 _destPos = Vector3(0.0f);
 

@@ -1,11 +1,14 @@
 #include "pch.h"
 #include "Player.h"
 #include "Terrain.h"
-#include "Control.h"
+#include "Input.h"
 #include "Timer.h"
 #include "CapsuleCollider.h"
 #include "SphereCollider.h"
 #include "AStar.h"
+#include "Environment.h"
+#include "Camera.h"
+#include "NavMesh.h"
 
 Player::Player(string file)
 	: ModelAnimator(file + "/" + file)
@@ -20,7 +23,7 @@ Player::Player(string file)
 	ReadClip(file + "/Attack_A0", false);
 
 	SetEndEvent(Attack_A, bind(&Player::SetIdle, this));
-	
+
 	SetAnimation(Idle);
 
 	CreateCollider();
@@ -110,9 +113,37 @@ void Player::UpdateMatrix()
 
 void Player::Control()
 {
-	if (Control::Get().Down(VK_LBUTTON))
+	// Path Finding
+	if (Input::Get().Down(VK_LBUTTON) && Input::Get().Press(VK_LCONTROL))
 	{
+		_velocity = {};
 		SetPath();
+	}
+
+	// WSAD 
+	if (Input::Get().Press('W'))
+	{
+		_path.clear();
+		_velocity += Environment::Get().GetMainCamera()->Forward();
+		_velocity.Normalize();
+	}
+	if (Input::Get().Press('S'))
+	{
+		_path.clear();
+		_velocity -= Environment::Get().GetMainCamera()->Forward();
+		_velocity.Normalize();
+	}
+	if (Input::Get().Press('A'))
+	{
+		_path.clear();
+		_velocity -= Environment::Get().GetMainCamera()->Right();
+		_velocity.Normalize();
+	}
+	if (Input::Get().Press('D'))
+	{
+		_path.clear();
+		_velocity += Environment::Get().GetMainCamera()->Right();
+		_velocity.Normalize();
 	}
 }
 
@@ -128,7 +159,12 @@ void Player::Move()
 		_velocity = Vector3::Lerp(_velocity, zero, _deceleration * Timer::Get().GetElapsedTime());
 	}
 
-	position += _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
+	// Check
+	Vector3 nextPos = position + _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
+	if (_navMesh->PointInTriangle(position))
+	{
+		position = nextPos;
+	}
 
 	if (_velocity.Length() > 0.5f)
 	{
@@ -145,6 +181,8 @@ void Player::Move()
 
 void Player::Rotate()
 {
+	if (behaviourState == War)
+		return;
 	if (_velocity.Length() < 0.1f)
 		return;
 	Vector3 start = Forward() * -1.0f;
@@ -180,16 +218,17 @@ void Player::SetPath()
 
 void Player::SetVelocity()
 {
-	if (_path.empty())
-		return;
+	// Path Finding
+	if (!_path.empty())
+	{
+		Vector3 dest = _path.back();
+		Vector3 direction = dest - position;
+		if (direction.Length() < 0.1f)
+			_path.pop_back();
 
-	Vector3 dest = _path.back();
-	Vector3 direction = dest - position;
-	if (direction.Length() < 0.1f)
-		_path.pop_back();
-
-	_velocity = direction;
-	_velocity.Normalize();
+		_velocity = direction;
+		_velocity.Normalize();
+	}
 }
 
 void Player::SetHeight()

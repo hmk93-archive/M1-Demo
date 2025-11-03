@@ -14,6 +14,8 @@ class Terrain : public Transform
 {
 	using VertexType = VertexUVNormalTangentAlpha;
 
+	friend class NavMesh;
+
 	struct InputDesc
 	{
 		UINT index;
@@ -38,6 +40,9 @@ public:
 
 	float GetHeight(Vector3 position);
 	Vector2 GetSize() { return Vector2((float)_width, (float)_height); }
+
+	vector<VertexType>& GetVertices() { return _vertices; }
+	vector<UINT>& GetIndices() { return _indices; }
 
 private:
 	void CreateMesh();

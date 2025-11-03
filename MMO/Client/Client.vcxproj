@@ -173,7 +173,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ComputeShader.h" />
     <ClInclude Include="ConstBuffer.h" />
-    <ClInclude Include="Control.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="dirent.h" />
@@ -212,10 +212,13 @@
     <ClInclude Include="ModelObject.h" />
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="ModelType.h" />
+    <ClInclude Include="NavMesh.h" />
+    <ClInclude Include="NavMeshScene.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RasterizerState.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SamplerState.h" />
     <ClInclude Include="Scene.h" />
@@ -251,7 +254,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ComputeShader.cpp" />
     <ClCompile Include="ConstBuffer.cpp" />
-    <ClCompile Include="Control.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DomainShader.cpp" />
@@ -326,6 +329,8 @@
     <ClCompile Include="ModelObject.cpp" />
     <ClCompile Include="ModelReader.cpp" />
     <ClCompile Include="ModelType.cpp" />
+    <ClCompile Include="NavMesh.cpp" />
+    <ClCompile Include="NavMeshScene.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -335,6 +340,7 @@
     </ClCompile>
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RasterizerState.cpp" />
     <ClCompile Include="SamplerState.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />

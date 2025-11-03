@@ -157,7 +157,7 @@
     <ClInclude Include="Timer.h">
       <Filter>Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Control.h">
+    <ClInclude Include="Input.h">
       <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
@@ -301,6 +301,15 @@
     <ClInclude Include="ImGuizmo.h">
       <Filter>Utils\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="NavMesh.h">
+      <Filter>Utils\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="NavMeshScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerState.h">
+      <Filter>Graphics\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -394,7 +403,7 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Control.cpp">
+    <ClCompile Include="Input.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
@@ -525,6 +534,15 @@
     </ClCompile>
     <ClCompile Include="ImGuizmo.cpp">
       <Filter>Utils\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMesh.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerState.cpp">
+      <Filter>Graphics\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Camera.h"
-#include "Control.h"
+#include "Input.h"
 #include "Timer.h"
 #include "Environment.h"
 
@@ -44,6 +44,10 @@ void Camera::SetVS(UINT slot)
 
 void Camera::FollowMode()
 {
+	_yaw += Input::Get().GetDeltaMouse().x * 0.005f;
+	_pitch += Input::Get().GetDeltaMouse().y * 0.005f;
+	_pitch = clamp(_pitch, _minPitch, _maxPitch);
+
 	if (!_target)
 		return;
 
@@ -55,27 +59,31 @@ void Camera::FollowMode()
 			_destRot = std::lerp(_destRot, _target->rotation.y + XM_PI, _rotDamping * Timer::Get().GetElapsedTime());
 		}
 
-		rotMatrix = Matrix::CreateRotationY(_destRot);
+		rotMatrix = XMMatrixRotationY(_destRot);
 	}
 	else
 	{
-		// rotMatrix = Matrix::CreateRotationY()
+		// FollowControl();
+		// rotMatrix = XMMatrixRotationY(rotY);
 	}
-
+	
 	Vector3 forward = Vector3::Transform(Vector3::Backward, rotMatrix);
 	_destPos = forward * -_distance;
 	_destPos += _target->GlobalPos();
 	_destPos.y += _height;
 
 	position = Vector3::Lerp(position, _destPos, _moveDamping * Timer::Get().GetElapsedTime());
+	// rotation.y = _yaw;
 
 	_view = XMMatrixLookAtLH(position, _target->GlobalPos(), Up());
 	_viewBuffer->Set(_view);
+
+	UpdateWorld();
 }
 
 void Camera::EditorMode()
 {
-	if (Control::Get().Down('F'))
+	if (Input::Get().Down('F'))
 		_fpv = !_fpv;
 	EditorMove();
 	EditorRotate();
@@ -84,17 +92,17 @@ void Camera::EditorMode()
 
 void Camera::EditorMove()
 {
-	if (Control::Get().Press('W'))
+	if (Input::Get().Press('W'))
 		position += Forward() * _moveSpeed * Timer::Get().GetElapsedTime();
-	if (Control::Get().Press('S'))
+	if (Input::Get().Press('S'))
 		position -= Forward() * _moveSpeed * Timer::Get().GetElapsedTime();
-	if (Control::Get().Press('A'))
+	if (Input::Get().Press('A'))
 		position -= Right() * _moveSpeed * Timer::Get().GetElapsedTime();
-	if (Control::Get().Press('D'))
+	if (Input::Get().Press('D'))
 		position += Right() * _moveSpeed * Timer::Get().GetElapsedTime();
-	if (Control::Get().Press('Q'))
+	if (Input::Get().Press('Q'))
 		position -= Up() * _moveSpeed * Timer::Get().GetElapsedTime();
-	if (Control::Get().Press('E'))
+	if (Input::Get().Press('E'))
 		position += Up() * _moveSpeed * Timer::Get().GetElapsedTime();
 }
 
@@ -104,8 +112,8 @@ void Camera::EditorRotate()
 		return;
 
 	// Rotation
-	float ndcX = Control::Get().GetMouse().x / g_screenWidth * 2.0f - 1.0f;
-	float ndcY = -Control::Get().GetMouse().y / g_screenHeight * 2.0f + 1.0f;
+	float ndcX = Input::Get().GetMouse().x / g_screenWidth * 2.0f - 1.0f;
+	float ndcY = -Input::Get().GetMouse().y / g_screenHeight * 2.0f + 1.0f;
 
 	float yaw = ndcX * XM_PI * _rotSpeed;
 	float pitch = -ndcY * XM_PIDIV2 * _rotSpeed;

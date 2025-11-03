@@ -2,7 +2,7 @@
 #include "Utility.h"
 #include "Environment.h"
 #include "Camera.h"
-#include "Control.h"
+#include "Input.h"
 
 namespace Utility
 {
@@ -155,7 +155,7 @@ namespace Utility
 
     Vector3 ScreenToWorldHeightZero()
     {
-        Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
+        Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
         Vector3 S = ray.position;
         Vector3 D = ray.direction;
         float l = abs(S.y / D.y);

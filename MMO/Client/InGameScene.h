@@ -7,6 +7,7 @@ class Player;
 class Warrok;
 class Field;
 class AStar;
+class NavMesh;
 
 class InGameScene : public Scene
 {
@@ -32,5 +33,7 @@ private:
 	vector<Field*> _fields = {};
 
 	AStar* _astar = nullptr;
+
+	NavMesh* _navMesh = nullptr;
 };
 

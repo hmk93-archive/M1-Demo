@@ -5,7 +5,7 @@
 #include "Collider.h"
 #include "ModelObject.h"
 #include "Utility.h"
-#include "Control.h"
+#include "Input.h"
 #include "Environment.h"
 #include "Camera.h"
 using namespace Utility;
@@ -39,9 +39,9 @@ void AStar::Update()
 	if (makeObsMode == false)
 		return;
 	
-	if (Control::Get().Down(VK_LBUTTON))
+	if (Input::Get().Down(VK_LBUTTON))
 	{
-		Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Control::Get().GetMouse());
+		Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
 
 		for (int z = -2; z < 2; ++z)
 			for (int x = -2; x < 2; ++x)

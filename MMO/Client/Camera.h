@@ -76,5 +76,10 @@ private:
 	Vector3 _destPos = Vector3::Zero;
 	float _distance = 60.0f;
 	float _height = 60.0f;
+
+	float _yaw = 0.0f;
+	float _pitch = 0.0f;
+	float _minPitch = -XM_PIDIV4;
+	float _maxPitch = XM_PIDIV4;
 };
 

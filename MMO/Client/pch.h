@@ -15,6 +15,7 @@ using Microsoft::WRL::ComPtr;
 #include <algorithm>
 #include <functional>
 #include <cmath>
+#include <iostream>
 
 // D3D
 #include <d3d11.h>

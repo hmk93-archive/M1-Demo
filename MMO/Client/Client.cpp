@@ -166,7 +166,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_MOUSEMOVE:
-        Control::Get().SetMouse(lParam);
+        Input::Get().SetMouse(lParam);
         break;
     case WM_PAINT:
         {

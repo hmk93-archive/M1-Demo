@@ -5,7 +5,7 @@
 #include "ConstBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "Control.h"
+#include "Input.h"
 #include "Timer.h"
 #include "Font.h"
 #include "Camera.h"
@@ -14,6 +14,7 @@
 #include "InGameScene.h"
 #include "Collider.h"
 #include "ModelExportScene.h"
+#include "NavMeshScene.h"
 
 bool Game::s_exit = false;
 
@@ -21,7 +22,7 @@ Game::Game()
 {
 	Device::Get();
 	Environment::Get();
-	Control::Get();
+	Input::Get();
 	Timer::Get();
 	Font::Get().Add();
 	SceneManager::Get();
@@ -34,8 +35,9 @@ Game::Game()
 
 	SceneManager::Get().Add("ModelExport", new ModelExportScene());
 	SceneManager::Get().Add("MapEditor", new MapEditorScene());
+	SceneManager::Get().Add("NavMesh", new NavMeshScene(true));
 	SceneManager::Get().Add("InGame", new InGameScene());
-	SceneManager::Get().Play("MapEditor");
+	SceneManager::Get().Play("InGame");
 }
 
 Game::~Game()
@@ -50,7 +52,7 @@ Game::~Game()
 void Game::Update()
 {
 	Debug();
-	Control::Get().Update();
+	Input::Get().Update();
 	Timer::Get().Update();
 	Environment::Get().GetMainCamera()->Update();
 	SceneManager::Get().Update();
@@ -99,7 +101,7 @@ void Game::RenderFPS()
 
 void Game::Debug()
 {
-	if (Control::Get().Down(VK_F5))
+	if (Input::Get().Down(VK_F5))
 	{
 		Collider::s_isColliderDraw = !Collider::s_isColliderDraw;
 	}

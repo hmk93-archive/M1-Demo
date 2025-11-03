@@ -4,6 +4,7 @@
 #include "FieldWall.h"
 #include "Cube.h"
 #include "Timer.h"
+#include "RasterizerState.h"
 
 vector<string> Field::locNames
 {

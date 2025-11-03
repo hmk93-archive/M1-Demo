@@ -18,7 +18,7 @@ bool UICollider::MouseCollision()
 {
 	UpdateWorld();
 
-	Vector3 p = Control::Get().GetMouse();
+	Vector3 p = Input::Get().GetMouse();
 	p.y = g_screenHeight - p.y;
     float l = _box.x + position.x;
 	float r = _box.z + position.x;
