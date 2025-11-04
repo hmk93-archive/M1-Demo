@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "UIImage.h"
 #include "UIButton.h"
+#include "SceneManager.h"
 
 MenuScene::MenuScene()
 {
@@ -18,8 +19,10 @@ MenuScene::MenuScene()
 	
 	const float offset = 5.0f;
 	button = new UIButton("GameStartButton", Vector3(g_screenWidth * 0.5f, g_screenHeight * 0.5f, 0), Vector3(200.0f, 80.0f, 0), L"GameStartButton");
+	button->SetLeftButtonEvent(bind(&MenuScene::GameStartButton, this));
 	_buttons.emplace_back(button);
 	button = new UIButton("MapEitdorButton", Vector3(g_screenWidth * 0.5f, g_screenHeight * 0.5f - 80.0f - offset, 0), Vector3(200.0f, 80.0f, 0), L"MapEditorButton");
+	button->SetLeftButtonEvent(bind(&MenuScene::MapEditorButton, this));
 	_buttons.emplace_back(button);
 }
 
@@ -52,4 +55,16 @@ void MenuScene::PostRender()
 	_background->Render();
 	for (UIButton* button : _buttons)
 		button->Render();
+}
+
+void MenuScene::GameStartButton()
+{
+	SceneManager::Get().Delete("Menu");
+	SceneManager::Get().Play("InGame");
+}
+
+void MenuScene::MapEditorButton()
+{
+	SceneManager::Get().Delete("Menu");
+	SceneManager::Get().Play("MapEditor");
 }

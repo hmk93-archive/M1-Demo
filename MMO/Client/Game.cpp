@@ -29,7 +29,7 @@ Game::Game()
 	Environment::Get();
 	Input::Get();
 	Timer::Get();
-	//Font::Get().Add();
+	Font::Get().Add();
 	SceneManager::Get();
 
 	ImGui::CreateContext();
@@ -40,10 +40,10 @@ Game::Game()
 
 	SceneManager::Get().Add("ModelExport", new ModelExportScene());
 	SceneManager::Get().Add("MapEditor", new MapEditorScene());
-	SceneManager::Get().Add("NavMesh", new NavMeshScene(true));
 	SceneManager::Get().Add("InGame", new InGameScene());
 	SceneManager::Get().Add("Menu", new MenuScene());
-	SceneManager::Get().Play("Menu");
+	SceneManager::Get().Add("NavMesh", new NavMeshScene(true)); // 카메라 주의
+	SceneManager::Get().Play("NavMesh");
 }
 
 Game::~Game()
@@ -78,10 +78,10 @@ void Game::Render()
 
 void Game::PostRender()
 {
-	//// Font
-	//Font::Get().GetDC()->BeginDraw();
-	//RenderFPS();
-	//Font::Get().GetDC()->EndDraw();
+	// Font
+	Font::Get().GetDC()->BeginDraw();
+	RenderFPS();
+	Font::Get().GetDC()->EndDraw();
 
 	// ImGui
 	ImGui_ImplDX11_NewFrame();
@@ -110,6 +110,20 @@ void Game::Debug()
 	if (Input::Get().Down(VK_F5))
 	{
 		Collider::s_isColliderDraw = !Collider::s_isColliderDraw;
+	}
+	if (Input::Get().Down(VK_ESCAPE))
+	{
+		Scene* scene = SceneManager::Get().GetCurrentScene();
+		if (InGameScene* dynamic = dynamic_cast<InGameScene*>(scene))
+		{
+			SceneManager::Get().Delete("InGame");
+			SceneManager::Get().Play("Menu");
+		}
+		else if (MapEditorScene* dynamic = dynamic_cast<MapEditorScene*>(scene))
+		{
+			SceneManager::Get().Delete("MapEditor");
+			SceneManager::Get().Play("Menu");
+		}
 	}
 }
 

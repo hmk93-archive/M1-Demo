@@ -191,9 +191,7 @@ void InGameScene::WarrokToPlayer()
 	if (warrokCol->Collision(playerEventCol))
 	{
 		if (Input::Get().Down(VK_LBUTTON) && _warrok->onMouse)
-		{
 			_player->Attack();
-		}
 
 		if (warrokCol->Collision(playerMainCol))
 			_player->PushBack(warrokCol);

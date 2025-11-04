@@ -17,6 +17,10 @@ public:
 	virtual void PostRender() override;
 
 private:
+	void GameStartButton();
+	void MapEditorButton();
+
+private:
 	UIImage* _background = nullptr;
 	
 	vector<UIButton*> _buttons = {};

@@ -37,7 +37,7 @@ private:
 
 private:
 	const float CELL_SIZE = 1.0f;
-	const float MAX_STEP_HEIGHT = 0.5f;
+	const float MAX_STEP_HEIGHT = 1.0f;
 
 	UINT _gridWidth = 0;
 	UINT _gridHeight = 0;

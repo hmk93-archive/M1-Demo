@@ -40,11 +40,17 @@ Terrain::~Terrain()
 
 void Terrain::Update()
 {
+	if (!isActive)
+		return;
+
 	UpdateWorld();
 }
 
 void Terrain::Render()
 {
+	if (!isActive)
+		return;
+
 	_mesh->IASet();
 	_worldBuffer->SetVSBuffer(0);
 	_typeBuffer->SetVSBuffer(5);
@@ -58,7 +64,8 @@ void Terrain::Render()
 
 void Terrain::PostRender()
 {
-
+	if (!isActive)
+		return;
 }
 
 void Terrain::CreateMesh()
@@ -78,6 +85,7 @@ void Terrain::CreateMesh()
 			VertexType vertex;
 			vertex.position = Vector3((float)x, 0.0f, (float)z);
 			vertex.uv = Vector2((float)x / (float)_width, 1.0f -(z / (float)_height));
+			vertex.uv *= _layout;
 
 			UINT index = z * (_width + 1) + x;
 			vertex.position.y += pixels[index].x * 20.0f;

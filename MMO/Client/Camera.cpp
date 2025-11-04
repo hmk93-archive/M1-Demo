@@ -72,8 +72,12 @@ void Camera::FollowMode()
 	_destPos += _target->GlobalPos();
 	_destPos.y += _height;
 
+	cout << _destPos.x << " " << _destPos.y << " " << _destPos.z << endl;
+
 	position = Vector3::Lerp(position, _destPos, _moveDamping * Timer::Get().GetElapsedTime());
 	// rotation.y = _yaw;
+
+	cout << position.x << " " << position.y << " " << position.z << endl;
 
 	_view = XMMatrixLookAtLH(position, _target->GlobalPos(), Up());
 	_viewBuffer->Set(_view);

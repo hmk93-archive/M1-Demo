@@ -23,6 +23,13 @@ public:
 	virtual void Render();
 	virtual void PostRender();
 
+	void SetLeftButtonEvent(CallBack callback) { LeftBtnEvent = callback; }
+	void SetRightButtonEvent(CallBack callback) { RightBtnEvent = callback; }
+
+private:
+	void SetState();
+	void SetColor();
+
 public:
 	bool isActive = true;
 
@@ -32,7 +39,7 @@ private:
 	Texture* _texture = nullptr;
 	MaterialBuffer* _materialBuffer = nullptr;
 	
-	CallBack leftBtnEvent = nullptr;
-	CallBack rightBtnEvent = nullptr;
+	CallBack LeftBtnEvent = nullptr;
+	CallBack RightBtnEvent = nullptr;
 };
 

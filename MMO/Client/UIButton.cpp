@@ -4,6 +4,7 @@
 #include "UIImage.h"
 #include "Material.h"
 #include "SquareCollider.h"
+#include "Input.h"
 
 UIButton::UIButton(string tag, Vector3 pos, Vector3 size, wstring file)
 {
@@ -33,6 +34,9 @@ void UIButton::Update()
 {
 	if (isActive == false)
 		return;
+
+	SetState();
+	SetColor();
 }
 
 void UIButton::Render()
@@ -47,4 +51,43 @@ void UIButton::PostRender()
 {
 	if (isActive == false)
 		return;
+}
+
+void UIButton::SetState()
+{
+	if (_collider->MouseCollision())
+	{
+		btnState = Over;
+		if (Input::Get().Press(VK_LBUTTON) || Input::Get().Press(VK_RBUTTON))
+			btnState = Press;
+		if (Input::Get().Up(VK_LBUTTON))
+			if (LeftBtnEvent)
+				LeftBtnEvent();
+		if (Input::Get().Up(VK_RBUTTON))
+			if (RightBtnEvent)
+				RightBtnEvent();
+	}
+	else
+	{
+		btnState = None;
+	}
+}
+
+void UIButton::SetColor()
+{
+	switch (btnState)
+	{
+	case None:
+		_collider->SetColor(Vector4(0, 1.0f, 0, 1.0f));
+		_materialBuffer->data.diffuse = Vector4(1.0f);
+		break;
+	case Over:
+		_collider->SetColor(Vector4(1.0f, 0.0f, 0, 1.0f));
+		_materialBuffer->data.diffuse = Vector4(0.7f, 0.7f, 0.9f, 1.0f);
+		break;
+	case Press:
+		_collider->SetColor(Vector4(0, 0, 1.0f, 1.0f));
+		_materialBuffer->data.diffuse = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+		break;
+	}
 }

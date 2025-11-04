@@ -4,6 +4,7 @@
 
 class Terrain;
 class NavMesh;
+class Player;
 
 class NavMeshScene : public Scene
 {
@@ -19,8 +20,11 @@ public:
 private:
 	void BakeTest();
 
+	void CreatePlayer();
+
 private:
 	Terrain* _terrain = nullptr;
 	NavMesh* _navMesh = nullptr;
+	Player* _player = nullptr;
 };
 

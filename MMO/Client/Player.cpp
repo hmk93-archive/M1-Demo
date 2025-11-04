@@ -161,7 +161,7 @@ void Player::Move()
 
 	// Check
 	Vector3 nextPos = position + _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
-	if (_navMesh->PointInTriangle(position))
+	if (_navMesh->PointInTriangle(nextPos))
 	{
 		position = nextPos;
 	}

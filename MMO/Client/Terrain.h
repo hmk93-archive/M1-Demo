@@ -76,5 +76,7 @@ private:
 
 	InputDesc* _input = nullptr;
 	OutputDesc* _output = nullptr;
+
+	int _layout = 16;
 };
 
