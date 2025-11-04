@@ -325,6 +325,9 @@
     <ClInclude Include="UIButton.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Graphics\Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -570,6 +573,9 @@
     </ClCompile>
     <ClCompile Include="UIButton.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Graphics\Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

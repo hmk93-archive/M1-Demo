@@ -61,7 +61,7 @@ void NavMesh::Bake()
 	cout << "Complete ClassifyHoles()" << endl;
 	for (size_t i = 0; i < _regionContours.size(); i++)
 	{
-		TriangulateRegion(i, _regionContours[i]);
+		TriangulateRegion((int)i, _regionContours[i]);
 		cout << "Complete TriangulateContour() RegionID:" << i << endl;
 	}
 

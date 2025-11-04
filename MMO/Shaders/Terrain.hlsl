@@ -30,8 +30,8 @@ Texture2D thirdMap : register(t12);
 float4 PS(PixelInput input) : SV_TARGET
 {
     float4 albedo = 1;
-    if (hasDiffuseMap)
-        albedo = diffuseMap.Sample(linearWrapSS, input.uv);
+    if (hasAlbedoMap)
+        albedo = albedoMap.Sample(linearWrapSS, input.uv);
     
     float4 second = secondMap.Sample(linearWrapSS, input.uv);
     float4 third = thirdMap.Sample(linearWrapSS, input.uv);

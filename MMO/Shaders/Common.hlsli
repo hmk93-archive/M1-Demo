@@ -69,13 +69,13 @@ cbuffer MaterialInfo : register(b1)
     
     float shininess;
     
-    int hasDiffuseMap;
+    int hasAlbedoMap;
     int hasSpecularMap;
     int hasNormalMap;
 }
 
 SamplerState linearWrapSS : register(s0);
-Texture2D diffuseMap : register(t0);
+Texture2D albedoMap : register(t0);
 Texture2D specularMap : register(t1);
 Texture2D normalMap : register(t2);
 

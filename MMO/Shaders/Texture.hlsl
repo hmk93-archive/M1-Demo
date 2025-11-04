@@ -21,5 +21,5 @@ PixelInput VS(VertexUVNormal input)
 
 float4 PS(PixelInput input) : SV_TARGET
 {
-    return diffuseMap.Sample(linearWrapSS, input.uv) * mDiffuse;
+    return albedoMap.Sample(linearWrapSS, input.uv) * mDiffuse;
 }

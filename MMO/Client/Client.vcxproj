@@ -221,6 +221,7 @@
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RasterizerState.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SamplerState.h" />
     <ClInclude Include="Scene.h" />
@@ -347,6 +348,7 @@
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RasterizerState.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="SamplerState.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />

@@ -1,15 +1,17 @@
 #include "pch.h"
 #include "Device.h"
+#include "Environment.h"
+#include "Camera.h"
 
 Device::Device()
 {
 	CreateDeviceAndSwapchain();
-	CreateBackBuffer();
+	CreateRenderTarget();
+	CreateDepthStencil();
 }
 
 Device::~Device()
 {
-
 }
 
 void Device::CreateDeviceAndSwapchain()
@@ -27,6 +29,7 @@ void Device::CreateDeviceAndSwapchain()
 	desc.SampleDesc.Quality = 0;
 	desc.Windowed = true;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
 	if (FAILED(D3D11CreateDeviceAndSwapChain(
 		nullptr,
@@ -47,53 +50,6 @@ void Device::CreateDeviceAndSwapchain()
 	}
 }
 
-void Device::CreateBackBuffer()
-{
-	ID3D11Texture2D* backBuffer;
-
-	if (FAILED(_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer)))
-	{
-		__debugbreak();
-	}
-	if (FAILED(_device->CreateRenderTargetView(backBuffer, nullptr, &_renderTargetView)))
-	{
-		__debugbreak();
-	}
-	backBuffer->Release();
-
-	ID3D11Texture2D* depthBuffer;
-
-	{
-		D3D11_TEXTURE2D_DESC desc = {};
-		desc.Width = g_screenWidth;
-		desc.Height = g_screenHeight;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-
-		if (FAILED(_device->CreateTexture2D(&desc, nullptr, &depthBuffer)))
-		{
-			__debugbreak();
-		}
-	}
-
-	{
-		D3D11_DEPTH_STENCIL_VIEW_DESC desc = {};
-		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-
-		if (FAILED(_device->CreateDepthStencilView(depthBuffer, &desc, &_depthStencilView)))
-		{
-			__debugbreak();
-		}
-		depthBuffer->Release();
-	}
-}
-
 void Device::SetRenderTarget()
 {
 	_deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
@@ -107,5 +63,90 @@ void Device::Clear(Vector4 color)
 
 void Device::Present()
 {
-	_swapChain->Present(0, 0);
+	_swapChain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
+}
+
+void Device::UpdateWindowSize(UINT width, UINT height)
+{
+	// @TODO:
+	if (!(width * height))
+		return;
+
+	if (g_screenWidth == width && g_screenHeight == height)
+		return;
+
+	if (_renderTargetView)
+		_renderTargetView.Reset();
+
+	if (_depthStencilView)
+		_depthStencilView.Reset();
+
+	_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+
+	CreateRenderTarget();
+	CreateDepthStencil();
+
+	g_screenWidth = width;
+	g_screenHeight = height;
+
+	Environment::Get().SetViewport();
+	Environment::Get().CreatePerspective();
+
+	ImGui_ImplWin32_Init(g_hWnd);
+	ImGui_ImplDX11_Init(Device::Get().GetDevice(), Device::Get().GetDeviceContext());
+}
+
+void Device::CreateRenderTarget()
+{
+	ID3D11Texture2D* backBuffer;
+	if (FAILED(_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer)))
+	{
+		__debugbreak();
+	}
+	if (FAILED(_device->CreateRenderTargetView(backBuffer, nullptr, &_renderTargetView)))
+	{
+		__debugbreak();
+	}
+	backBuffer->Release();
+}
+
+void Device::CreateDepthStencil()
+{
+	ID3D11Texture2D* depthBuffer;
+	{
+		D3D11_TEXTURE2D_DESC desc = {};
+		desc.Width = g_screenWidth;
+		desc.Height = g_screenHeight;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		if (FAILED(_device->CreateTexture2D(&desc, nullptr, &depthBuffer)))
+		{
+			__debugbreak();
+		}
+	}
+	{
+		D3D11_DEPTH_STENCIL_VIEW_DESC desc = {};
+		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		if (FAILED(_device->CreateDepthStencilView(depthBuffer, &desc, &_depthStencilView)))
+		{
+			__debugbreak();
+		}
+		depthBuffer->Release();
+	}
+}
+
+void Device::Debug()
+{
+	IDXGIDebug1* dxgiDebug;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebug))))
+	{
+		dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
+		dxgiDebug->Release();
+	}
 }

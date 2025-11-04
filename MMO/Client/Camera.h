@@ -58,6 +58,8 @@ private:
 
 	void View();
 
+	void MouseWheel();
+
 private:
 	bool _fpv = false;
 	float _moveSpeed = 50.0f;

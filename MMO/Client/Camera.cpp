@@ -44,45 +44,59 @@ void Camera::SetVS(UINT slot)
 
 void Camera::FollowMode()
 {
-	_yaw += Input::Get().GetDeltaMouse().x * 0.005f;
-	_pitch += Input::Get().GetDeltaMouse().y * 0.005f;
-	_pitch = clamp(_pitch, _minPitch, _maxPitch);
-
 	if (!_target)
 		return;
 
-	Matrix rotMatrix = Matrix::Identity;
-	if (_rotDamping > 0.0f)
+	if (Input::Get().Press(VK_RBUTTON))
 	{
-		if (_target->rotation.y != _destRot)
-		{
-			_destRot = std::lerp(_destRot, _target->rotation.y + XM_PI, _rotDamping * Timer::Get().GetElapsedTime());
-		}
+		_yaw += Input::Get().GetDeltaMouse().x * 0.01f;
+		_pitch += Input::Get().GetDeltaMouse().y;
+		_pitch = clamp(_pitch, _minPitch, _maxPitch);
 
-		rotMatrix = XMMatrixRotationY(_destRot);
+		Matrix rotMatrix = XMMatrixRotationRollPitchYaw(0.0f, _yaw, 0.0f);
+		Vector3 offset = Vector3(0.0f, _height, -_distance);  // µÚ + ³ôÀÌ
+		Vector3 rotatedOffset = Vector3::Transform(offset, rotMatrix);
+		position = _target->GlobalPos() + rotatedOffset;
+		rotation.y = _yaw;
 	}
 	else
 	{
-		// FollowControl();
-		// rotMatrix = XMMatrixRotationY(rotY);
-	}
-	
-	Vector3 forward = Vector3::Transform(Vector3::Backward, rotMatrix);
-	_destPos = forward * -_distance;
-	_destPos += _target->GlobalPos();
-	_destPos.y += _height;
+		rotation.y = 0.0f;
+		Matrix rotMatrix = Matrix::Identity;
+		if (_rotDamping > 0.0f)
+		{
+			if (_target->rotation.y != _destRot)
+			{
+				_destRot = std::lerp(_destRot, _target->rotation.y + XM_PI, _rotDamping * Timer::Get().GetElapsedTime());
+			}
 
-	cout << _destPos.x << " " << _destPos.y << " " << _destPos.z << endl;
+			rotMatrix = XMMatrixRotationY(_destRot);
+		}
+		else
+		{
+			// FollowControl();
+			// rotMatrix = XMMatrixRotationY(rotY);
+		}
+
+		Vector3 forward = Vector3::Transform(Vector3::Backward, rotMatrix);
+		_destPos = forward * -_distance;
+		_destPos += _target->GlobalPos();
+		_destPos.y += _height;
+	}
+
+	if (Input::Get().Up(VK_RBUTTON))
+	{
+		_yaw = 0;
+	}
 
 	position = Vector3::Lerp(position, _destPos, _moveDamping * Timer::Get().GetElapsedTime());
-	// rotation.y = _yaw;
-
-	cout << position.x << " " << position.y << " " << position.z << endl;
 
 	_view = XMMatrixLookAtLH(position, _target->GlobalPos(), Up());
 	_viewBuffer->Set(_view);
 
 	UpdateWorld();
+
+	MouseWheel();
 }
 
 void Camera::EditorMode()
@@ -137,6 +151,16 @@ void Camera::View()
 	_view = XMMatrixLookAtLH(position, focus, Up());
 
 	_viewBuffer->Set(_view);
+}
+
+void Camera::MouseWheel()
+{
+	_distance += Input::Get().GetWheel() * 50.0f * Timer::Get().GetElapsedTime();
+	_height += Input::Get().GetWheel() * 50.0f * Timer::Get().GetElapsedTime();
+	if (_distance < 30.0f)
+		_distance = 30.0f;
+	if (_height < 30.0f)
+		_height = 30.0f;
 }
 
 Ray Camera::ScreenPointToRay(Vector3 pos)

@@ -25,12 +25,15 @@ using Microsoft::WRL::ComPtr;
 #include <d2d1_2.h>
 #include <dwrite.h>
 #include <DirectXTex/DirectXTex.h>
+#include <dxgi1_3.h>
+#include <dxgidebug.h>
 using namespace DirectX;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "dxgi.lib")
 
 // Assimp
 #include <Assimp/Importer.hpp>

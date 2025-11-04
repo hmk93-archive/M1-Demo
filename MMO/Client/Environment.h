@@ -19,7 +19,6 @@ public:
 	Matrix GetProjection() { return _projection; }
 	MatrixBuffer* GetProjectionBuffer() { return _projectionBuffer; }
 
-private:
 	void CreatePerspective();
 
 private:

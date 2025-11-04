@@ -31,5 +31,5 @@ PixelInput VS(VertexUVNormalTangentBlend input)
 
 float4 PS(PixelInput input) : SV_TARGET
 {
-    return diffuseMap.Sample(linearWrapSS, input.uv);
+    return albedoMap.Sample(linearWrapSS, input.uv);
 }

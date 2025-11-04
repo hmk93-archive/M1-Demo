@@ -54,6 +54,9 @@ void Environment::SetViewport(UINT width, UINT height)
 
 void Environment::CreatePerspective()
 {
+	if (_projectionBuffer)
+		delete _projectionBuffer;
+
 	_projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, (float)g_screenWidth / (float)g_screenHeight, 0.1f, 1000.0f);
 
 	_projectionBuffer = new MatrixBuffer();

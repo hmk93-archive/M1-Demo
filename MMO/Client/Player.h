@@ -15,15 +15,17 @@ public:
 	{
 		Idle,
 		Run,
+		Jump,
 		Attack_A,
-		End
+		Attack_B,
+		End,
 	} animState = Idle;
 
 	enum PlayerBehaviourState
 	{
 		None,
 		War,
-		Jump,
+		Air,
 	} behaviourState = None;
 
 public:
@@ -56,6 +58,8 @@ private:
 	void Rotate();
 
 	void SetIdle();
+	void Combo();
+	void AttackEnd();
 
 	void SetPath();
 	void SetVelocity();
@@ -81,5 +85,7 @@ private:
 	Matrix _body = Matrix::Identity;
 
 	vector<Vector3> _path = {};
+
+	bool _isCombo = false;
 };
 

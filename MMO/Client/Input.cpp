@@ -38,7 +38,6 @@ void Input::Update()
 			_mapState[i] = NONE;		
 	}
 
-
 	_deltaMousePos.x = (_mousePos.x - _lastMousePos.x);
 	_deltaMousePos.y = (_mousePos.y - _lastMousePos.y);
 

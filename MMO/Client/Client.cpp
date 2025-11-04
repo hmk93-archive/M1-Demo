@@ -16,6 +16,7 @@ UINT g_screenHeight;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+Game* g_game;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -56,11 +57,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg = {};
 
-    Game* game = new Game();
+    g_game = new Game();
 
     while (msg.message != WM_QUIT)
     {
-        if (game->s_exit == true)
+        if (g_game->s_exit == true)
             break;
         
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -73,19 +74,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            game->Update();
-            game->PreRender();
+            g_game->Update();
+            g_game->PreRender();
 
             Device::Get().Clear();
 
-            game->Render();
-            game->PostRender();
+            g_game->Render();
+            g_game->PostRender();
 
             Device::Get().Present();
         }
     }
 
-    delete game;
+    delete g_game;
 
     return (int) msg.wParam;
 }
@@ -165,8 +166,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+    case WM_SIZE:
+        if (g_game)
+        {
+            Device::Get().UpdateWindowSize(LOWORD(lParam), HIWORD(lParam));
+        }
+        break;
     case WM_MOUSEMOVE:
         Input::Get().SetMouse(lParam);
+        break;
+    case WM_MOUSEWHEEL:
+        {
+            short value = (short)HIWORD(wParam);
+            Input::Get().SetWheel((float)value);
+        }
         break;
     case WM_PAINT:
         {

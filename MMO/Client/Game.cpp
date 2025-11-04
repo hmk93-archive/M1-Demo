@@ -62,6 +62,7 @@ void Game::Update()
 	Timer::Get().Update();
 	Environment::Get().GetMainCamera()->Update();
 	SceneManager::Get().Update();
+	Input::Get().SetWheel(0.0f);
 }
 
 void Game::PreRender()

@@ -22,9 +22,14 @@ Player::Player(string file)
 
 	ReadClip(file + "/Idle0");
 	ReadClip(file + "/Run0");
-	ReadClip(file + "/Attack_A0", false);
+	ReadClip(file + "/Jump0", false);
+	ReadClip(file + "/Attack_A0");
+	ReadClip(file + "/Attack_B0", false);
 
-	SetEndEvent(Attack_A, bind(&Player::SetIdle, this));
+	SetEndEvent(Jump, bind(&Player::SetIdle, this));
+	SetEndEvent(Attack_A, bind(&Player::AttackEnd, this));
+	SetEndEvent(Attack_B, bind(&Player::AttackEnd, this));
+	SetFrameEvent(Attack_A, bind(&Player::Combo, this), { 40, 50, 60, 70, 80 });
 
 	SetAnimation(Idle);
 
@@ -126,40 +131,48 @@ void Player::Control()
 	// Path Finding
 	if (Input::Get().Down(VK_LBUTTON) && Input::Get().Press(VK_LCONTROL))
 	{
-		_velocity = {};
-		SetPath();
+		if (behaviourState != Air)
+		{
+			_velocity = {};
+			SetPath();
+		}
 	}
 
 	// WSAD 
 	if (Input::Get().Press('W'))
 	{
 		_path.clear();
-		_velocity += Environment::Get().GetMainCamera()->Forward();
+		_velocity += Vector3::Backward;
 		_velocity.Normalize();
 	}
 	if (Input::Get().Press('S'))
 	{
 		_path.clear();
-		_velocity -= Environment::Get().GetMainCamera()->Forward();
+		_velocity += Vector3::Forward;
 		_velocity.Normalize();
 	}
 	if (Input::Get().Press('A'))
 	{
 		_path.clear();
-		_velocity -= Environment::Get().GetMainCamera()->Right();
+		_velocity += Vector3::Left;
 		_velocity.Normalize();
 	}
 	if (Input::Get().Press('D'))
 	{
 		_path.clear();
-		_velocity += Environment::Get().GetMainCamera()->Right();
+		_velocity += Vector3::Right;
 		_velocity.Normalize();
+	}
+	if (Input::Get().Down(VK_SPACE) && behaviourState != War)
+	{
+		behaviourState = Air;
+		SetAnimation(Jump);
 	}
 }
 
 void Player::Move()
 {
-	if (behaviourState == Jump || behaviourState == War)
+	if (behaviourState == War)
 		return;
 
 	SetVelocity();
@@ -175,6 +188,10 @@ void Player::Move()
 	{
 		position = nextPos;
 	}
+
+	// 공중에 있을 경우 다른 애니메이션 재생 하지 않음
+	if (behaviourState == Air)
+		return;
 
 	if (_velocity.Length() > 0.5f)
 	{
@@ -211,9 +228,30 @@ void Player::Rotate()
 
 void Player::SetIdle()
 {
-	SetAnimation(Idle);
-	if (behaviourState == War || behaviourState == Jump)
+	if (behaviourState == War || behaviourState == Air)
 		behaviourState = None;
+	SetAnimation(Idle);
+}
+
+void Player::Combo()
+{
+	Input::Get().Update();
+	if (Input::Get().Press(VK_LBUTTON))
+		_isCombo = true;
+}
+
+void Player::AttackEnd()
+{
+	if (_isCombo)
+	{
+		_isCombo = false;
+		behaviourState = War;
+		SetAnimation(Attack_B);
+	}
+	else
+	{
+		SetIdle();
+	}
 }
 
 void Player::SetPath()
