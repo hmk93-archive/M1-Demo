@@ -13,7 +13,7 @@ public:
 		None,
 		Over,
 		Press
-	} btnState;
+	} btnState = None;
 
 public:
 	UIButton(string tag = "NoTag", Vector3 pos = {}, Vector3 size = { 100.0f, 100.0f, 0 }, wstring file = L"ButtonDefault");

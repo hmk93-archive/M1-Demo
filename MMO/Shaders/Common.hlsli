@@ -229,3 +229,24 @@ matrix SkinWorld(float4 indices, float4 weights)
 
     return transform;
 }
+
+float3 GetNormal(float3 inNormalWorld, float2 uv, float3 tangentWorld)
+{
+    float3 normalWorld = normalize(inNormalWorld);
+    
+    if (hasNormalMap)
+    {
+        float3 normal = normalMap.Sample(linearWrapSS, uv).rgb;
+        normal = 2.0 * normal - 1.0; 
+
+        float3 N = normalWorld;
+        float3 T = normalize(tangentWorld - dot(tangentWorld, N) * N);
+        float3 B = cross(N, T);
+        
+        // matrix는 float4x4, 여기서는 벡터 변환용이라서 3x3 사용
+        float3x3 TBN = float3x3(T, B, N);
+        normalWorld = normalize(mul(normal, TBN));
+    }
+    
+    return normalWorld;
+}

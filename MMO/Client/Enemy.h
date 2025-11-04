@@ -13,8 +13,16 @@ public:
 	{
 		Idle,
 		Run,
-		Attack,
+		Punch,
+		Hit,
 	} state = Idle;
+
+	enum EnemyBehaviourState
+	{
+		None,
+		War,
+		Jump,
+	} behaviourState = None;
 
 public:
 	Enemy(string file);
@@ -28,15 +36,16 @@ public:
 
 	void SetPlayer(Player* player) { _player = player; }
 
-	void Hit(UINT instanceID, UINT damage);
+	void Damage(UINT instanceID, UINT damage);
 	void UpdateAI(UINT instanceID);
 	void SetAnimation(UINT instanceID, EnemyAnimState value, float speed = 1.0f);
+
+	void SetIdle(int instanceID);
 
 protected:
 	void CheckDistance(UINT instanceID);
 	void RotateTo(UINT instanceID);
 	void MoveTo(UINT instanceID);
-	void SetIdle(UINT instanceID);
 
 public:
 	bool onMouse = false;

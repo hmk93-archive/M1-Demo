@@ -62,9 +62,6 @@
     <Filter Include="Collider">
       <UniqueIdentifier>{d70fe33d-2aa6-48f8-9447-5846a70042dd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObjects">
-      <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils\PathFinding">
       <UniqueIdentifier>{566c6d54-8ea8-4f5b-9c4e-b0d9b3c73ad2}</UniqueIdentifier>
     </Filter>
@@ -73,6 +70,9 @@
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{a8926333-a5b4-4564-bdb1-c4796411d98f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -194,7 +194,7 @@
       <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="ModelObject.h">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="ModelAnimator.h">
       <Filter>Model</Filter>
@@ -203,7 +203,7 @@
       <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="TerrainEditor.h">
       <Filter>Landscape</Filter>
@@ -284,7 +284,7 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Heap.h">
       <Filter>Utils\PathFinding</Filter>
@@ -296,10 +296,10 @@
       <Filter>Utils\PathFinding</Filter>
     </ClInclude>
     <ClInclude Include="Field.h">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="FieldWall.h">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="ImGuizmo.h">
       <Filter>Utils\ImGui</Filter>
@@ -452,7 +452,7 @@
       <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="ModelObject.cpp">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="ModelAnimator.cpp">
       <Filter>Model</Filter>
@@ -461,7 +461,7 @@
       <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="TerrainEditor.cpp">
       <Filter>Landscape</Filter>
@@ -530,7 +530,7 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Node.cpp">
       <Filter>Utils\PathFinding</Filter>
@@ -542,10 +542,10 @@
       <Filter>Utils\PathFinding</Filter>
     </ClCompile>
     <ClCompile Include="Field.cpp">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="FieldWall.cpp">
-      <Filter>GameObjects</Filter>
+      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="ImGuizmo.cpp">
       <Filter>Utils\ImGui</Filter>

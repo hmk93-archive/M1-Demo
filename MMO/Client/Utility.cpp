@@ -163,6 +163,16 @@ namespace Utility
         return result;
     }
 
+    void LookAt(OUT float& rotationY, Vector3 direction)
+    {
+        float f1 = atan2f(direction.x, direction.z);
+        float f2 = atan2f(Vector3::Forward.x, Vector3::Forward.z);
+        float result = f1 - f2;
+        if (result < 0)
+            result += XM_2PI;
+        rotationY = result;
+    }
+
     void Shuffle(vector<int>& arr)
     {
         //for (int i = arr.size() - 1; i != 1; --i)

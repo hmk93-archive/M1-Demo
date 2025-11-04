@@ -8,7 +8,7 @@
 
 UIButton::UIButton(string tag, Vector3 pos, Vector3 size, wstring file)
 {
-	wstring filePath = L"../Assets/Textures/" + file + L".png";
+	wstring filePath = L"../Assets/Textures/UI/" + file + L".png";
 	_texture = Texture::Add(filePath);
 
 	_uiImage = new UIImage(L"Texture");

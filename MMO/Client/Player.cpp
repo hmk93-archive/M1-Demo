@@ -9,13 +9,13 @@
 #include "Environment.h"
 #include "Camera.h"
 #include "NavMesh.h"
+#include "Utility.h"
+using namespace Utility;
 
 Player::Player(string file)
 	: ModelAnimator(file + "/" + file)
 	, behaviourState(None)
 {
-	Environment::Get().GetMainCamera()->mode = Camera::CamMode::Follow;
-
 	scale = Vector3(0.05f);
 
 	SetShader(L"Default");
@@ -82,6 +82,11 @@ void Player::PushBack(Collider* other)
 	float d = (p1 - p2).Length();
 	float overlap = (r1 + r2) - d;
 	position -= (dir * overlap) * Timer::Get().GetElapsedTime();
+}
+
+void Player::LookAt(Vector3 direction)
+{
+	Utility::LookAt(rotation.y, direction);
 }
 
 void Player::CreateCollider()

@@ -24,6 +24,7 @@ namespace Utility
 	
 	Vector3 ClosestPointOnLineSegment(const Vector3& v1, const Vector3& v2, const Vector3& point);
 	Vector3 ScreenToWorldHeightZero();
+	void LookAt(OUT float& rotationY, Vector3 direction);
 
 	void Shuffle(vector<int>& arr);
 

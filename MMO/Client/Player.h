@@ -10,20 +10,21 @@ class NavMesh;
 
 class Player : public ModelAnimator, public Transform
 {
+public:
 	enum PlayerAnimState
 	{
 		Idle,
 		Run,
 		Attack_A,
 		End
-	} animState;
+	} animState = Idle;
 
 	enum PlayerBehaviourState
 	{
 		None,
 		War,
 		Jump,
-	} behaviourState;
+	} behaviourState = None;
 
 public:
 	Player(string file);
@@ -43,6 +44,7 @@ public:
 
 	void Attack();
 	void PushBack(Collider* other);
+	void LookAt(Vector3 direction);
 
 private:
 	void CreateCollider();
@@ -54,7 +56,6 @@ private:
 	void Rotate();
 
 	void SetIdle();
-
 
 	void SetPath();
 	void SetVelocity();

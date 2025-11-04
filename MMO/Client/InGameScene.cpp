@@ -19,7 +19,7 @@ using namespace Utility;
 
 InGameScene::InGameScene()
 {
-	Create();
+	InitScene();
 
 	// For Field Wall Updates
 	Update();
@@ -166,9 +166,11 @@ void InGameScene::PlayerAttackToWarrok()
 	Collider* warrok = _warrok->mainCollider[0];
 	if (!warrok->isActive)
 		return;
+	if (_player->behaviourState != Player::PlayerBehaviourState::War)
+		return;
 	if (player->Collision(warrok))
 	{
-		_warrok->Hit(0, 0);
+		_warrok->Damage(0, 0);
 	}
 }
 
@@ -190,14 +192,25 @@ void InGameScene::WarrokToPlayer()
 	if (warrokCol->Collision(playerEventCol))
 	{
 		if (Input::Get().Down(VK_LBUTTON) && _warrok->onMouse)
+		{
+			_player->LookAt(warrokCol->position - _player->position);
 			_player->Attack();
+		}
 
 		if (warrokCol->Collision(playerMainCol))
 			_player->PushBack(warrokCol);
 	}
 }
 
-void InGameScene::Create()
+void InGameScene::SetCamera()
+{
+	Environment::Get().GetMainCamera()->position = { 0, 100.0f, -70.0f };
+	Environment::Get().GetMainCamera()->rotation = { 0.6f, 0, 0 };
+	Environment::Get().GetMainCamera()->mode = Camera::CamMode::Follow;
+	Environment::Get().GetMainCamera()->SetTarget(_player);
+}
+
+void InGameScene::InitScene()
 {
 	// Map Object
 	LoadMap();
@@ -226,6 +239,9 @@ void InGameScene::Create()
 
 	// Enemies
 	CreateEnemies();
+
+	// Camera
+	SetCamera();
 }
 
 void InGameScene::CreatePlayer()
@@ -235,7 +251,6 @@ void InGameScene::CreatePlayer()
 	_player->SetTerrain(_terrain);
 	_player->SetAStar(_astar);
 	_player->SetNavMesh(_navMesh);
-	Environment::Get().GetMainCamera()->SetTarget(_player);
 }
 
 void InGameScene::CreateEnemies()
@@ -250,9 +265,10 @@ void InGameScene::CreateEnemies()
 	transform->scale = Vector3(0.1f);
 	_warrok->UpdateTransforms();
 	_warrok->SetAnimation(0, Enemy::EnemyAnimState::Idle);
+	_warrok->SetEndEvents(0, (UINT)Enemy::EnemyAnimState::Hit, bind(&Enemy::SetIdle, _warrok, 0));
 
 	float radius = (_warrok->worldMinBox - _warrok->worldMaxBox).Length() * 0.5f;
-	_warrok->mainCollider[0] = new SphereCollider(radius * 0.25f);
+	_warrok->mainCollider[0] = new SphereCollider(radius * 0.5f);
 	
 	Vector3 offset = Vector3(0.0f, 10.0f, 0.0f);
 	_warrok->mainCollider[0]->SetTarget(transform, offset);

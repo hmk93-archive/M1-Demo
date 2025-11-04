@@ -22,7 +22,7 @@ public:
 	virtual void PostRender() override;
 
 private:
-	void Create();
+	void InitScene();
 
 	void CreatePlayer();
 	void CreateEnemies();
@@ -33,6 +33,8 @@ private:
 	void PlayerAttackToWarrok();
 	void WarrokToMouse();
 	void WarrokToPlayer();
+
+	void SetCamera();
 
 private:
 	Terrain* _terrain = nullptr;

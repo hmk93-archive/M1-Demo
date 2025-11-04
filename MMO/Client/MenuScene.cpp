@@ -8,7 +8,7 @@
 MenuScene::MenuScene()
 {
 	Texture* texture = nullptr;
-	wstring path = L"../Assets/Textures/Background.png";
+	wstring path = L"../Assets/Textures/UI/Background.png";
 	texture = Texture::Add(path);
 	_background = new UIImage(L"Texture");
 	_background->SetSRV(texture->GetSRV());

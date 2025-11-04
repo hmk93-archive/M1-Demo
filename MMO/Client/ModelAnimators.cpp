@@ -49,7 +49,7 @@ void ModelAnimators::Update()
 			{
 				if (desc.curFrame + desc.time >= clip->frameCount)
 				{
-					if (!EndEvents.empty() && EndEvents[i].count(desc.clip) > 0)
+					if (EndEvents[i].count(desc.clip) > 0)
 						EndEvents[i][desc.clip](params[i][desc.clip]);
 				}
 
@@ -133,6 +133,8 @@ Transform* ModelAnimators::AddTransform()
 {
 	Transform* transform = new Transform();
 	_transforms.emplace_back(transform);
+	EndEvents.emplace_back();
+	params.emplace_back();
 	return transform;
 }
 

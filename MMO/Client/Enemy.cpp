@@ -3,6 +3,8 @@
 #include "SphereCollider.h"
 #include "Player.h"
 #include "Timer.h"
+#include "Utility.h"
+using namespace Utility;
 
 Enemy::Enemy(string file)
 	: ModelAnimators(file + "/" + file)
@@ -11,6 +13,8 @@ Enemy::Enemy(string file)
 
 	ReadClip(file + "/Idle0");
 	ReadClip(file + "/Run0");
+	ReadClip(file + "/Punch0");
+	ReadClip(file + "/Hit0");
 }
 
 Enemy::~Enemy()
@@ -43,15 +47,23 @@ void Enemy::PostRender()
 
 }
 
-void Enemy::Hit(UINT instanceID, UINT damage)
+void Enemy::Damage(UINT instanceID, UINT damage)
 {
 	mainCollider[instanceID]->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	behaviourState = War;
+
+	SetAnimation(instanceID, EnemyAnimState::Hit);
 }
 
 void Enemy::CheckDistance(UINT instanceID)
 {
 	if (!_player)
 		return;
+
+	if (behaviourState == War)
+		return;
+
 	const float distance = (_player->position - _transforms[instanceID]->position).Length();
 	if (distance > _attackRange)
 	{
@@ -71,22 +83,20 @@ void Enemy::RotateTo(UINT instanceID)
 		return;
 	Vector3 direction = (_player->position - _transforms[instanceID]->position);
 	direction.Normalize();
-	float a1 = atan2f(direction.x, direction.z);
-	float a2 = atan2f(0.0f, -1.0f);
-	float a = a1 - a2;
-	if (a < 0.0f)
-		a += XM_2PI;
-	_transforms[instanceID]->rotation.y = a;
+	LookAt(_transforms[instanceID]->rotation.y, direction);
 }
 
-void Enemy::SetIdle(UINT instanceID)
+void Enemy::SetIdle(int instanceID)
 {
+	behaviourState = None;
+	SetAnimation(instanceID, Idle);
 }
 
 void Enemy::MoveTo(UINT instanceID)
 {
 	if (!_player)
 		return;
+
 	Vector3 direction = (_player->position - _transforms[instanceID]->position);
 	direction.Normalize();
 
