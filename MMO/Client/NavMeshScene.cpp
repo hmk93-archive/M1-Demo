@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "NavMeshScene.h"
+#include "TerrainEditor.h"
 #include "Terrain.h"
 #include "NavMesh.h"
 #include "Player.h"
@@ -11,18 +12,17 @@ NavMeshScene::NavMeshScene(bool showConsole)
 	if (showConsole)
 		CreateConsole();
 
-	// TerrainEditor
-	
 	// Terrain
 	_terrain = new Terrain();
+
 	// NavMesh
 	_navMesh = new NavMesh(_terrain->GetSize().x, _terrain->GetSize().y);
 	_navMesh->SetTerrain(_terrain);
 	_navMesh->Bake();
+	// BakeTest();
+
 	// Player
 	CreatePlayer();
-
-	// BakeTest();
 }
 
 NavMeshScene::~NavMeshScene()
@@ -34,7 +34,7 @@ NavMeshScene::~NavMeshScene()
 
 void NavMeshScene::Update()
 {
-	// _terrain->Update();
+	_terrain->Update();
 	_player->Update();
 }
 
@@ -51,7 +51,7 @@ void NavMeshScene::Render()
 
 void NavMeshScene::PostRender()
 {
-	// _terrain->PostRender();
+	_terrain->PostRender();
 	_player->PostRender();
 
 	ImGui::Begin("[NavMesh]");

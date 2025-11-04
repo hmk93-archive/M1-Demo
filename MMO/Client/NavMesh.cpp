@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "NavMesh.h"
 #include "Terrain.h"
 #include "Mesh.h"
@@ -55,9 +55,13 @@ void NavMesh::Bake()
 	cout << "Complete CreateHeightAndWalkableMap()" << endl;
 	CreateContours();
 	cout << "Complete CreateHeightAndWalkableMap()" << endl;
-	for (UINT i = 0; i < _contours.size(); i++)
+	SimplifyContours();
+	cout << "Complete SimplifyContour()" << endl;
+	ClassifyHoles();
+	cout << "Complete ClassifyHoles()" << endl;
+	for (size_t i = 0; i < _regionContours.size(); i++)
 	{
-		TriangulateContour(i, _contours[i]);
+		TriangulateRegion(i, _regionContours[i]);
 		cout << "Complete TriangulateContour() RegionID:" << i << endl;
 	}
 
@@ -103,9 +107,11 @@ void NavMesh::CreateHeightAndWalkableMap()
 					if (nx < 0 || nz < 0 || nx >= (int)_gridWidth || nz >= (int)_gridHeight)
 						continue;
 					float nh = _terrain->GetHeight(Vector3(nx, 0, nz));
+					cout << nh << endl;
 					float delta = abs(nh - h);
 					if (delta > MAX_STEP_HEIGHT)
 					{
+						cout << x << " " << z << endl;
 						walkable = false;
 						break;
 					}
@@ -167,7 +173,7 @@ void NavMesh::CreateContours()
 		for (UINT x = 0; x < _gridWidth; x++)
 		{
 			int regionID = _regionMap[z][x];
-			if (regionID == -1 || visited[z][x])
+			if (regionID == -1 || visited[z][x] || !IsBoundaryCell(x, z, regionID))
 				continue;
 			vector<Vector2> contour;
 			Vector2 start = { (float)x, (float)z };
@@ -185,7 +191,7 @@ void NavMesh::CreateContours()
 					int nz = (int)current.y + dz[ndir];
 					if (nx < 0 || nz < 0 || nx >= (int)_gridWidth || nz >= (int)_gridHeight)
 						continue;
-					if (_regionMap[nz][nx] == regionID && !visited[nz][nx])
+					if (_regionMap[nz][nx] == regionID && IsBoundaryCell(nx, nz, regionID) && !visited[nz][nx])
 					{
 						current = { (float)nx, (float)nz };
 						dir = ndir;
@@ -203,6 +209,161 @@ void NavMesh::CreateContours()
 	}
 }
 
+void NavMesh::SimplifyContours()
+{
+	for (auto& contour : _contours)
+	{
+		vector<Vector2> simplified;
+		if (contour.size() < 3)
+		{
+			continue;
+		}
+		for (size_t i = 0; i < contour.size(); i++)
+		{
+			Vector2 prev = contour[(i + contour.size() - 1) % contour.size()];
+			Vector2 curr = contour[i];
+			Vector2 next = contour[(i + 1) % contour.size()];
+
+			Vector2 dir1 = curr - prev;
+			Vector2 dir2 = next - curr;
+
+			float cross = dir1.x * dir2.y - dir1.y * dir2.x;
+			if (fabs(cross) > 0.001f)
+				simplified.push_back(curr);
+		}
+		reverse(simplified.begin(), simplified.end());
+		_simpleContours.push_back(simplified);
+	}
+}
+
+void NavMesh::ClassifyHoles()
+{
+	vector<bool> used(_simpleContours.size(), false);
+	for (size_t i = 0; i < _simpleContours.size(); i++)
+	{
+		if (used[i])
+			continue;
+		if (_simpleContours[i].empty())
+			continue;
+
+		RegionContour rc = {};
+		rc.outer = _simpleContours[(int)i];
+		used[i] = true;
+		for (size_t j = 0; j < _simpleContours.size(); j++)
+		{
+			if (i == j || used[j])
+				continue;
+			if (_simpleContours[j].empty())
+				continue;
+
+			// 첫번째 point 가 outer 의 내부에 있을 경우 hole로 판단
+			if (IsPointInPolygon(_simpleContours[j][0], _simpleContours[i]))
+			{
+				rc.holes.push_back(_simpleContours[j]);
+				used[j] = true;
+			}
+		}
+		_regionContours.push_back(rc);
+	}
+}
+
+float ComputeSignedArea(const vector<Vector2>& contour)
+{
+	float area = 0;
+	for (size_t i = 0; i < contour.size(); i++)
+	{
+		const Vector2& p0 = contour[i];
+		const Vector2& p1 = contour[(i + 1) % contour.size()];
+		area += (p0.x * p1.y - p1.x * p0.y);
+	}
+	return area * 0.5f;
+}
+
+void NavMesh::TriangulateRegion(int regionID, RegionContour& region)
+{
+	// @TODO:
+	vector<Vector2> merged = region.outer;
+	for (auto& hole : region.holes)
+	{
+		if (hole.empty()) continue;
+
+		// hole의 winding 반시계로 맞춤
+		float holeArea = ComputeSignedArea(hole);
+		if (holeArea > 0)
+			reverse(hole.begin(), hole.end());
+
+		// hole에서 가장 왼쪽 점
+		Vector2 holePoint = hole[0];
+		for (auto& p : hole)
+			if (p.x < holePoint.x)
+				holePoint = p;
+
+		// outer에서 holePoint에 가장 가까운 점
+		float minDist = FLT_MAX;
+		int outerIndex = -1;
+		for (int i = 0; i < (int)merged.size(); i++)
+		{
+			Vector2 p = merged[i];
+			float d = (p.x - holePoint.x) * (p.x - holePoint.x) + (p.y - holePoint.y) * (p.y - holePoint.y);
+			if (d < minDist)
+			{
+				minDist = d;
+				outerIndex = i;
+			}
+		}
+		if (outerIndex == -1) continue;
+
+		// bridge 삽입
+		vector<Vector2> newMerged;
+
+		// ① outerIndex까지 복사
+		for (int i = 0; i <= outerIndex; i++)
+			newMerged.push_back(merged[i]);
+
+		// ② outer → hole 연결
+		newMerged.push_back(holePoint);
+
+		// ③ hole vertex 추가 (반시계)
+		for (auto& p : hole)
+			newMerged.push_back(p);
+
+		// ④ hole → outer 복귀
+		newMerged.push_back(merged[outerIndex]);
+
+		// ⑤ 나머지 outer vertex 추가
+		for (int i = outerIndex + 1; i < (int)merged.size(); i++)
+			newMerged.push_back(merged[i]);
+
+		merged = newMerged;
+	}
+
+	vector<Triangle> triangles = TriangulateContour(regionID, merged);
+	vector<Triangle> validTriangles;
+	for (auto& tri : triangles)
+	{
+		Vector2 center = 
+		{
+			(tri.v0.x + tri.v1.x + tri.v2.x) / 3.0f,
+			(tri.v0.z + tri.v1.z + tri.v2.z) / 3.0f
+		};
+
+		bool insideHole = false;
+		for (auto& hole : region.holes)
+		{
+			if (IsPointInPolygon(center, hole))
+			{
+				insideHole = true;
+				break;
+			}
+		}
+
+		if (!insideHole)
+			validTriangles.push_back(tri);
+	}
+
+	_regionIdToTriList[regionID] = validTriangles;
+}
+
 float Cross(const Vector2& a, const Vector2& b, const Vector2& c)
 {
 	float abx = b.x - a.x;
@@ -212,11 +373,11 @@ float Cross(const Vector2& a, const Vector2& b, const Vector2& c)
 	return abx * acy - aby * acx;
 }
 
-void NavMesh::TriangulateContour(UINT regionID, const vector<Vector2>& contour)
+vector<NavMesh::Triangle> NavMesh::TriangulateContour(int regionID, const vector<Vector2>& contour)
 {
 	vector<Triangle> triangles;
 	if (contour.size() < 3)
-		return;
+		return triangles;
 	vector<UINT> indices(contour.size());
 	for (UINT i = 0; i < contour.size(); i++)
 		indices[i] = i;
@@ -236,9 +397,8 @@ void NavMesh::TriangulateContour(UINT regionID, const vector<Vector2>& contour)
 			Vector2 v2 = contour[i2];
 
 			float cross = Cross(v0, v1, v2);
-			if (cross <= 0.0f)
+			if (cross >= 0.0f)
 				continue;
-			//@TODO:
 
 			Vector3 ta = { v0.x, _terrain->GetHeight(Vector3(v0.x, 0.0f, v0.y)), v0.y };
 			Vector3 tb = { v1.x, _terrain->GetHeight(Vector3(v1.x, 0.0f, v1.y)), v1.y };
@@ -255,7 +415,7 @@ void NavMesh::TriangulateContour(UINT regionID, const vector<Vector2>& contour)
 			break;
 		}
 	}
-	_regionIdToTriList[regionID] = triangles;
+	return triangles;
 }
 
 void NavMesh::CreateMesh()
@@ -285,6 +445,22 @@ void NavMesh::CreateMesh()
 	_mesh = new Mesh(_vertices.data(), sizeof(Vertex), (UINT)_vertices.size(), _indices.data(), (UINT)_indices.size());
 }
 
+bool NavMesh::IsBoundaryCell(int x, int z, int regionID)
+{
+	static const int dx[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+	static const int dz[8] = { -1, -1, 0, 1, 1, 1, 0, -1 };
+	for (int i = 0; i < 4; i++)
+	{
+		int nx = x + dx[i * 2];
+		int nz = z + dz[i * 2];
+		if (nx < 0 || nz < 0 || nx >= (int)_gridWidth || nz >= (int)_gridHeight)
+			return true;
+		if (_regionMap[nz][nx] != regionID)
+			return true;
+	}
+	return false;
+}
+
 bool NavMesh::CheckPointInTriangle(Vector3 pos, Triangle tri)
 {
 	Vector3 a = tri.v0;
@@ -297,4 +473,20 @@ bool NavMesh::CheckPointInTriangle(Vector3 pos, Triangle tri)
 	float gamma = 1.0f - alpha - beta;
 
 	return alpha >= 0 && beta >= 0 && gamma >= 0;
+}
+
+bool NavMesh::IsPointInPolygon(Vector2 point, vector<Vector2>& polygon)
+{
+	int count = 0;
+	for (size_t i = 0; i < polygon.size(); i++)
+	{
+		Vector2 a = polygon[i];
+		Vector2 b = polygon[(i + 1) % polygon.size()];
+
+		if (((a.y <= point.y && b.y > point.y) || (a.y > point.y && b.y <= point.y)) && (point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x))
+		{
+			count++;
+		}
+	}
+	return (count % 2 == 1);
 }

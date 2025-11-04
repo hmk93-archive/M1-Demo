@@ -96,6 +96,9 @@ void Camera::EditorMode()
 
 void Camera::EditorMove()
 {
+	if (ImGui::GetIO().WantCaptureKeyboard)
+		return;
+
 	if (Input::Get().Press('W'))
 		position += Forward() * _moveSpeed * Timer::Get().GetElapsedTime();
 	if (Input::Get().Press('S'))

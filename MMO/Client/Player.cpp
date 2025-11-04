@@ -113,6 +113,9 @@ void Player::UpdateMatrix()
 
 void Player::Control()
 {
+	if (Environment::Get().GetMainCamera()->mode != Camera::CamMode::Follow)
+		return;
+
 	// Path Finding
 	if (Input::Get().Down(VK_LBUTTON) && Input::Get().Press(VK_LCONTROL))
 	{

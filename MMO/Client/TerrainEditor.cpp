@@ -12,17 +12,24 @@
 #include "Timer.h"
 #include "Utility.h"
 #include "Texture.h"
+#include "RasterizerState.h"
 using namespace Utility;
 
 TerrainEditor::TerrainEditor(UINT width, UINT height)
 	: _width(width)
 	, _height(height)
 {
+	isActive = false;
+
 	_material = new Material(L"TerrainEditor");
 	_material->SetDiffuseMap(L"../Assets/Textures/WallDiffuse.png");
 
 	_secondMap = Texture::Add(L"../Assets/Textures/Floor.png");
 	_thirdMap = Texture::Add(L"../Assets/Textures/Stones.png");
+
+	_fillModes[0] = new RasterizerState();
+	_fillModes[1] = new RasterizerState();
+	_fillModes[1]->FillMode(D3D11_FILL_WIREFRAME);
 
 	CreateMesh();
 	CreateCompute();
@@ -34,11 +41,15 @@ TerrainEditor::TerrainEditor(UINT width, UINT height)
 		_uvOrigin.push_back(v.uv);
 	}
 
+	Environment::Get().GetMainCamera()->mode = Camera::CamMode::Editor;
+
 	InitFileSystem();
 }
 
 TerrainEditor::~TerrainEditor()
 {
+	delete _fillModes[1];
+	delete _fillModes[0];
 	delete _brushBuffer;
 	delete _rayBuffer;
 	delete _structuredBuffer;
@@ -50,6 +61,9 @@ TerrainEditor::~TerrainEditor()
 
 void TerrainEditor::Update()
 {
+	if (!isActive)
+		return;
+
 	if (Input::Get().Press(VK_LBUTTON) && !ImGui::GetIO().WantCaptureMouse)
 	{
 		if (_isPainting)
@@ -79,7 +93,9 @@ void TerrainEditor::Render()
 
 	_worldBuffer->SetVSBuffer(0);
 
+	if (_isWire) _fillModes[1]->SetState();
 	Device::Get().GetDeviceContext()->DrawIndexed((UINT)_indices.size(), 0, 0);
+	if (_isWire) _fillModes[0]->SetState();
 }
 
 void TerrainEditor::PostRender()
@@ -89,7 +105,9 @@ void TerrainEditor::PostRender()
 	_brushBuffer->data.location = temp;
 
 	ImGui::Text("[Terrain Editor]");
+	ImGui::Checkbox("Active", &isActive);
 	ImGui::Text("Mouse Position: (%f %f %f)", _brushBuffer->data.location.x, _brushBuffer->data.location.y, _brushBuffer->data.location.z);
+	ImGui::Checkbox("Wire", &_isWire);
 	ImGui::SliderInt("Type", &_brushBuffer->data.type, 0, 1);
 	ImGui::ColorEdit3("Color", (float*)&_brushBuffer->data.color);
 	ImGui::Checkbox("Raise", &_isRaise);
@@ -101,7 +119,30 @@ void TerrainEditor::PostRender()
 		for (auto& v : _vertices)
 			v.uv = _uvOrigin[idx++] * _layout;
 	}
-
+	_resolution.x = _width;
+	_resolution.y = _height;
+	if (ImGui::InputInt("Width", (int*)&_resolution.x, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		if(_width != _resolution.x)
+		{
+			if (_resolution.x == 0 || _resolution.x == 1)
+				_width = 2;
+			else
+				_width = _resolution.x;
+			CreateMesh();
+		}
+	}
+	if (ImGui::InputInt("Height", (int*)&_resolution.y, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		if(_height != _resolution.y)
+		{
+			if (_resolution.y == 0 || _resolution.y == 1)
+				_height = 2;
+			else
+				_height = _resolution.y;
+			CreateMesh();
+		}
+	}
 	FileSystem();
 }
 

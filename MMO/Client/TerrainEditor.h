@@ -9,6 +9,7 @@ class Texture;
 class ComputeShader;
 class StructuredBuffer;
 class RayBuffer;
+class RasterizerState;
 
 class TerrainEditor : public Transform
 {
@@ -103,6 +104,8 @@ private:
 	UINT _width = 0;
 	UINT _height = 0;
 
+	POINT _resolution = {};
+
 	RayBuffer* _rayBuffer = nullptr;
 
 	ComputeShader* _computeShader = nullptr;
@@ -116,6 +119,9 @@ private:
 	int _layout = 0;
 
 	vector<Vector2> _uvOrigin = {};
+
+	bool _isWire = false;
+	RasterizerState* _fillModes[2] = {};
 
 	// Filesystem
 	string _projectPath = "";

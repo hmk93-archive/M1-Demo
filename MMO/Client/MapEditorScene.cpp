@@ -12,8 +12,8 @@ using namespace Utility;
 
 MapEditorScene::MapEditorScene()
 {
+	// Terrain Editor
 	_terrainEditor = new TerrainEditor(300, 300);
-
 	// Create ModelObject
 	{
 		{
@@ -71,7 +71,7 @@ void MapEditorScene::Update()
 		// Reset active
 		for (ModelObject* model : _models)
 			model->isActive = false;
-		
+
 		closestModel->isActive = true;
 	}
 }
@@ -185,7 +185,7 @@ void MapEditorScene::SaveMap(string path)
 		element->SetAttribute("z", model->position.z);
 		node->LinkEndChild(element);
 	}
-	
+
 	document->SaveFile(path.c_str());
 
 	delete document;
@@ -194,3 +194,4 @@ void MapEditorScene::SaveMap(string path)
 void MapEditorScene::LoadMap(string path)
 {
 }
+
