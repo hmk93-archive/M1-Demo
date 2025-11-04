@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "Environment.h"
 #include "Camera.h"
-#include "Warrok.h"
+#include "Enemy.h"
 #include "SphereCollider.h"
 #include "Field.h"
 #include "FieldWall.h"
@@ -81,8 +81,7 @@ void InGameScene::Update()
 	_warrok->Update();
 
 	PlayerAttackToWarrok();
-	WarrokToMouse();
-	WarrokToPlayer();
+	UpdateEnemies();
 }
 
 void InGameScene::PreRender()
@@ -241,14 +240,30 @@ void InGameScene::CreatePlayer()
 
 void InGameScene::CreateEnemies()
 {
+	if (!_player)
+		return;
+
 	// Warrok
-	_warrok = new Warrok("Warrok");
+	_warrok = new Enemy("Warrok");
 	Transform* transform = _warrok->AddTransform();
 	transform->position = Vector3(50.0f, 0.0f, 50.0f);
 	transform->scale = Vector3(0.1f);
 	_warrok->UpdateTransforms();
+	_warrok->SetAnimation(0, Enemy::EnemyAnimState::Idle);
+
 	float radius = (_warrok->worldMinBox - _warrok->worldMaxBox).Length() * 0.5f;
 	_warrok->mainCollider[0] = new SphereCollider(radius * 0.25f);
+	
 	Vector3 offset = Vector3(0.0f, 10.0f, 0.0f);
 	_warrok->mainCollider[0]->SetTarget(transform, offset);
+	_warrok->SetPlayer(_player);
+}
+
+void InGameScene::UpdateEnemies()
+{
+	_warrok->UpdateAI(0);
+	_warrok->UpdateTransforms();
+
+	WarrokToMouse();
+	WarrokToPlayer();
 }

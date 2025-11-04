@@ -14,6 +14,8 @@ Player::Player(string file)
 	: ModelAnimator(file + "/" + file)
 	, behaviourState(None)
 {
+	Environment::Get().GetMainCamera()->mode = Camera::CamMode::Follow;
+
 	scale = Vector3(0.05f);
 
 	SetShader(L"Default");

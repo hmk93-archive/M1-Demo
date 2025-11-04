@@ -4,7 +4,7 @@
 
 class Terrain;
 class Player;
-class Warrok;
+class Enemy;
 class Field;
 class AStar;
 class NavMesh;
@@ -27,6 +27,8 @@ private:
 	void CreatePlayer();
 	void CreateEnemies();
 
+	void UpdateEnemies();
+
 	void LoadMap();
 	void PlayerAttackToWarrok();
 	void WarrokToMouse();
@@ -35,7 +37,7 @@ private:
 private:
 	Terrain* _terrain = nullptr;
 	Player* _player = nullptr;
-	Warrok* _warrok = nullptr;
+	Enemy* _warrok = nullptr;
 
 	vector<Field*> _fields = {};
 

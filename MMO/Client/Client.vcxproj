@@ -245,7 +245,7 @@
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexLayouts.h" />
     <ClInclude Include="VertexShader.h" />
-    <ClInclude Include="Warrok.h" />
+    <ClInclude Include="Enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AStar.cpp" />
@@ -374,7 +374,7 @@
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexLayouts.cpp" />
     <ClCompile Include="VertexShader.cpp" />
-    <ClCompile Include="Warrok.cpp" />
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc" />

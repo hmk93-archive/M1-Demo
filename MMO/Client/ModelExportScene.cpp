@@ -2,38 +2,39 @@
 #include "ModelExportScene.h"
 #include "ModelExporter.h"
 #include "Player.h"
-#include "Warrok.h"
+#include "Enemy.h"
 #include "ModelObject.h"
 
 ModelExportScene::ModelExportScene()
 {
-	//// Player
-	//{
-	//	CreateModel("Paladin");
-	//	CreateAnimation("Paladin", "Idle");
-	//	CreateAnimation("Paladin", "Run");
-	//	CreateAnimation("Paladin", "Attack_A");
-	//	_player = new Player("Paladin");
-	//}
-	//// Monster
-	//{
-	//	// Warrok
-	//	{
-	//		CreateModel("Warrok");
-	//		CreateAnimation("Warrok", "Idle");
-	//		_warrok = new Warrok("Warrok");
-	//		for (float z = -10.0f; z < 10.0f; z++)
-	//		{
-	//			for (float x = -10.0f; x < 10.0f; x++)
-	//			{
-	//				Transform* transform = _warrok->AddTransform();
-	//				// Tag??
-	//				transform->position = Vector3(20 * x, 0.0f, 20 * z);
-	//				transform->scale = Vector3(0.1f);
-	//			}
-	//		}
-	//	}
-	//}
+	// Player
+	{
+		CreateModel("Paladin");
+		CreateAnimation("Paladin", "Idle");
+		CreateAnimation("Paladin", "Run");
+		CreateAnimation("Paladin", "Attack_A");
+		_player = new Player("Paladin");
+	}
+	// Monster
+	{
+		// Warrok
+		{
+			CreateModel("Warrok");
+			CreateAnimation("Warrok", "Idle");
+			CreateAnimation("Warrok", "Run");
+			_warrok = new Enemy("Warrok");
+			for (float z = -10.0f; z < 10.0f; z++)
+			{
+				for (float x = -10.0f; x < 10.0f; x++)
+				{
+					Transform* transform = _warrok->AddTransform();
+					// Tag??
+					transform->position = Vector3(20 * x, 0.0f, 20 * z);
+					transform->scale = Vector3(0.1f);
+				}
+			}
+		}
+	}
 
 	// ModelObject
 	{

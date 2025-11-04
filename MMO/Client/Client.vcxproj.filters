@@ -283,7 +283,7 @@
     <ClInclude Include="ModelExportScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Warrok.h">
+    <ClInclude Include="Enemy.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Heap.h">
@@ -529,7 +529,7 @@
     <ClCompile Include="ModelExportScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Warrok.cpp">
+    <ClCompile Include="Enemy.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Node.cpp">

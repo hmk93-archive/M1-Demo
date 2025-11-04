@@ -108,7 +108,7 @@ void ModelAnimators::Render()
 {
 	if (texture == nullptr)
 		CreateTexture();
-
+	
 	frameBuffer->SetVSBuffer(4);
 	Device::Get().GetDeviceContext()->VSSetShaderResources(0, 1, &srv);
 

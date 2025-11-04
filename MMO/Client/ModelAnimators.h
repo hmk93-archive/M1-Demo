@@ -15,7 +15,7 @@ class ModelAnimators : public ModelAnimator
 
 public:
 	ModelAnimators(string file);
-	~ModelAnimators();
+	virtual ~ModelAnimators();
 
 	virtual void Update() override;
 	virtual void Render() override;
@@ -35,12 +35,11 @@ public:
 
 protected:
 	UINT _drawCount = 0;
+	vector<Transform*> _transforms = {};
 
 private:
 	InstanceData _instanceData[MAX_INSTANCE] = {};
 	VertexBuffer* _instanceBuffer = nullptr;
-
-	vector<Transform*> _transforms = {};
 
 	Vector3 _minBox, _maxBox;
 
