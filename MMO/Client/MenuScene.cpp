@@ -4,26 +4,12 @@
 #include "UIImage.h"
 #include "UIButton.h"
 #include "SceneManager.h"
+#include "Game.h"
 
 MenuScene::MenuScene()
 {
-	Texture* texture = nullptr;
-	wstring path = L"../Assets/Textures/UI/Background.png";
-	texture = Texture::Add(path);
-	_background = new UIImage(L"Texture");
-	_background->SetSRV(texture->GetSRV());
-	_background->scale = { (float)g_screenWidth, (float)g_screenHeight, 0 };
-	_background->position = { g_screenWidth * 0.5f, g_screenHeight * 0.5f, 0 };
-
-	UIButton* button = nullptr;
-	
-	const float offset = 5.0f;
-	button = new UIButton("GameStartButton", Vector3(g_screenWidth * 0.5f, g_screenHeight * 0.5f, 0), Vector3(200.0f, 80.0f, 0), L"GameStartButton");
-	button->SetLeftButtonEvent(bind(&MenuScene::GameStartButton, this));
-	_buttons.emplace_back(button);
-	button = new UIButton("MapEitdorButton", Vector3(g_screenWidth * 0.5f, g_screenHeight * 0.5f - 80.0f - offset, 0), Vector3(200.0f, 80.0f, 0), L"MapEditorButton");
-	button->SetLeftButtonEvent(bind(&MenuScene::MapEditorButton, this));
-	_buttons.emplace_back(button);
+	CreateBackground();
+	CreateButtons();
 }
 
 MenuScene::~MenuScene()
@@ -57,6 +43,35 @@ void MenuScene::PostRender()
 		button->Render();
 }
 
+void MenuScene::CreateBackground()
+{
+	Texture* texture = nullptr;
+	wstring path = L"../Assets/Textures/UI/Background.png";
+	texture = Texture::Add(path);
+	_background = new UIImage(L"Texture");
+	_background->SetSRV(texture->GetSRV());
+	_background->scale = { (float)g_screenWidth, (float)g_screenHeight, 0 };
+	_background->position = { g_screenWidth * 0.5f, g_screenHeight * 0.5f, 0 };
+}
+
+void MenuScene::CreateButtons()
+{
+	UIButton* button = nullptr;
+	const float offset = 5.0f;
+	
+	button = new UIButton("GameStartButton", Vector3(g_screenWidth * 0.5f, g_screenHeight * 0.5f + 80.0f, 0), Vector3(200.0f, 80.0f, 0), L"GameStartButton");
+	button->SetLeftButtonEvent(bind(&MenuScene::GameStartButton, this));
+	_buttons.emplace_back(button);
+
+	button = new UIButton("MapEitdorButton", Vector3(g_screenWidth * 0.5f, g_screenHeight * 0.5f - offset, 0), Vector3(200.0f, 80.0f, 0), L"MapEditorButton");
+	button->SetLeftButtonEvent(bind(&MenuScene::MapEditorButton, this));
+	_buttons.emplace_back(button);
+
+	button = new UIButton("ExitButton", Vector3(g_screenWidth * 0.5f, g_screenHeight * 0.5f - 80.0f - offset, 0), Vector3(200.0f, 80.0f, 0), L"ExitButton");
+	button->SetLeftButtonEvent(bind(&MenuScene::ExitButton, this));
+	_buttons.emplace_back(button);
+}
+
 void MenuScene::GameStartButton()
 {
 	SceneManager::Get().Delete("Menu");
@@ -67,4 +82,9 @@ void MenuScene::MapEditorButton()
 {
 	SceneManager::Get().Delete("Menu");
 	SceneManager::Get().Play("MapEditor");
+}
+
+void MenuScene::ExitButton()
+{
+	Game::s_exit = true;
 }

@@ -17,8 +17,12 @@ public:
 	virtual void PostRender() override;
 
 private:
+	void CreateBackground();
+	void CreateButtons();
+	// Callback
 	void GameStartButton();
 	void MapEditorButton();
+	void ExitButton();
 
 private:
 	UIImage* _background = nullptr;

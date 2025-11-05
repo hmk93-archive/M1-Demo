@@ -18,7 +18,7 @@ public:
 	Model* GetModel() { return _model; }
 
 public:
-	Collider* pickingCollider = nullptr;
+	Collider* collider = nullptr;
 
 protected:
 	Model* _model = nullptr;

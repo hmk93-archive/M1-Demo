@@ -16,26 +16,27 @@ ModelObject::ModelObject(string file)
 	Vector3 minBox, maxBox;
 	_model->SetBox(&minBox, &maxBox);
 
-	pickingCollider = new BoxCollider(minBox, maxBox);
-	pickingCollider->SetParent(&_world);
+	collider = new BoxCollider(minBox, maxBox);
+	collider->SetParent(&_world);
 }
 
 ModelObject::~ModelObject()
 {
-	delete pickingCollider;
+	delete collider;
 	delete _model;
 }
 
 void ModelObject::Update()
 {
-	
+	Transform::UpdateWorld();
+	collider->UpdateWorld();
 }
 
 void ModelObject::Render()
 {
 	SetWorldBuffer();
 	_model->Render();
-	pickingCollider->Render();
+	collider->Render();
 }
 
 void ModelObject::PostRender()

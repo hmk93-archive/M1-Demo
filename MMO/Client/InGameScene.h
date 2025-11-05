@@ -36,6 +36,8 @@ private:
 
 	void SetCamera();
 
+	void SetAStarObstacles();
+
 private:
 	Terrain* _terrain = nullptr;
 	Player* _player = nullptr;

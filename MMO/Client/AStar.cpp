@@ -133,23 +133,21 @@ void AStar::SetNode(Vector2 size)
 	}
 }
 
-void AStar::SetObstacle(vector<class ModelObject*> value)
+void AStar::SetObstacle(vector<ModelObject*> objs)
 {
-	//for (ModelObject* object : value)
-	//{
-	//	Collider* obstacle = object->GetCollider();
-
-	//	for (Node* node : nodes)
-	//	{
-	//		node->collider->UpdateWorld();
-	//		if (obstacle->Collision(node->collider))
-	//		{
-	//			node->state = Node::OBSTACLE;
-	//		}
-	//	}
-
-	//	obstacles.emplace_back(obstacle);
-	//}
+	for (ModelObject* object : objs)
+	{
+		Collider* obstacle = object->collider;
+		for (Node* node : nodes)
+		{
+			node->_collider->UpdateWorld();
+			if (obstacle->Collision(node->_collider))
+			{
+				node->state = Node::Obstacle;
+			}
+		}
+		_obstacles.emplace_back(obstacle);
+	}
 }
 
 int AStar::FindCloseNode(Vector3 pos)
@@ -359,8 +357,7 @@ void AStar::Extend(int center, int end)
 	{
 		int index = edges[i]->index;
 
-		if (nodes[index]->state == Node::Closed ||
-			nodes[index]->state == Node::Obstacle)
+		if (nodes[index]->state == Node::Closed || nodes[index]->state == Node::Obstacle)
 			continue;
 
 		float G = nodes[center]->_g + edges[i]->edgeCost;

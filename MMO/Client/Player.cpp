@@ -260,6 +260,10 @@ void Player::SetPath()
 	_path.clear();
 	_terrain->ComputePicking(_destPos);
 	_astar->SetPath(_path, position, _destPos);
+
+
+	wstring log = to_wstring(_path.size()) + L"\n";
+	OutputDebugString(log.c_str());
 }
 
 void Player::SetVelocity()

@@ -54,7 +54,7 @@ void MapEditorScene::Update()
 		{
 			Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
 			Contact contact = {};
-			if (model->pickingCollider->RayCollision(ray, &contact))
+			if (model->collider->RayCollision(ray, &contact))
 			{
 				if (minDistance > contact.distance)
 				{

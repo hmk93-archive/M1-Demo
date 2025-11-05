@@ -20,40 +20,8 @@ using namespace Utility;
 InGameScene::InGameScene()
 {
 	InitScene();
-
-	// For Field Wall Updates
-	Update();
-
-	// Set AStar Obstacle
-	UINT width = _astar->width;
-	UINT height = _astar->height;
-	UINT patchWidth = ((float)_astar->width / 3.0f);
-	UINT patchHeight = ((float)_astar->height / 3.0f);
-	UINT cnt = 0;
-	for (UINT i = 0; i < _fields.size(); ++i)
-		for (FieldWall* wall : _fields[i]->walls)
-		{
-			Collider* wallCol = wall->GetCollider();
-			UINT startX = (i % 3) * patchWidth;
-			UINT startZ = (i / 3) * patchHeight;
-			for (UINT z = startZ; z < startZ + patchHeight; ++z)
-				for (UINT x = startX; x < startX + patchWidth; ++x)
-				{
-					UINT idx = z * width + x;
-					idx = clamp(idx, (UINT)0, (UINT)_astar->nodes.size() - 1);
-
-					Node* node = _astar->nodes[idx];
-					if (node->state == Node::State::Obstacle)
-						continue;
-
-					Collider* nodeCol = node->GetCollider();
-					if (nodeCol->Collision(wallCol))
-					{
-						_astar->MakeObsAt(idx);
-						cnt++;
-					}
-				}
-		}
+	Update(); // For Field Wall Updates
+	SetAStarObstacles();
 }
 
 InGameScene::~InGameScene()
@@ -215,6 +183,44 @@ void InGameScene::SetCamera()
 	Environment::Get().GetMainCamera()->SetTarget(_player);
 }
 
+void InGameScene::SetAStarObstacles()
+{
+	UINT width = _astar->width;
+	UINT height = _astar->height;
+	UINT patchWidth = ((float)_astar->width / 3.0f);
+	UINT patchHeight = ((float)_astar->height / 3.0f);
+	UINT cnt = 0;
+	// Field Wall
+	for (UINT i = 0; i < _fields.size(); ++i)
+		for (FieldWall* wall : _fields[i]->walls)
+		{
+			Collider* wallCol = wall->GetCollider();
+			UINT startX = (i % 3) * patchWidth;
+			UINT startZ = (i / 3) * patchHeight;
+			for (UINT z = startZ; z < startZ + patchHeight; ++z)
+				for (UINT x = startX; x < startX + patchWidth; ++x)
+				{
+					UINT idx = z * width + x;
+					idx = clamp(idx, (UINT)0, (UINT)_astar->nodes.size() - 1);
+
+					Node* node = _astar->nodes[idx];
+					if (node->state == Node::State::Obstacle)
+						continue;
+
+					Collider* nodeCol = node->GetCollider();
+					if (nodeCol->Collision(wallCol))
+					{
+						_astar->MakeObsAt(idx);
+						cnt++;
+					}
+				}
+		}
+	// ModelObject
+	if (_models.empty())
+		return;
+	_astar->SetObstacle(_models);
+}
+
 void InGameScene::InitScene()
 {
 	// Map Object
@@ -232,11 +238,13 @@ void InGameScene::InitScene()
 	// _navMesh->Bake();
 
 	// Fields
-	for (UINT i = 0; i < 9; i++)
-	{
-		Field* field = new Field(_terrain, Field::Location(i));
-		_fields.emplace_back(field);
-	}
+	//for (UINT i = 0; i < 9; i++)
+	//{
+	//	Field* field = new Field(_terrain, Field::Location(i));
+	//	_fields.emplace_back(field);
+	//}
+
+	// Set AStar Node
 	_astar->SetNode(_terrain->GetSize());
 
 	// Player

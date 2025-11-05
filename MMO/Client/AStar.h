@@ -3,6 +3,7 @@
 class Node;
 class Heap;
 class Collider;
+class ModelObject;
 
 class AStar
 {
@@ -15,7 +16,7 @@ public:
 	void PostRender();
 
 	void SetNode(Vector2 size);
-	void SetObstacle(vector<class ModelObject*> value);
+	void SetObstacle(vector<ModelObject*> objs);
 
 	int FindCloseNode(Vector3 pos);
 	vector<Vector3> FindPath(int start, int end);
