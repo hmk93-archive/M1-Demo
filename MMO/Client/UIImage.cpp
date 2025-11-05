@@ -26,7 +26,7 @@ UIImage::~UIImage()
 
 	delete _viewBuffer;
 	delete _orthoBuffer;
-	
+
 	delete _mesh;
 	delete _material;
 }

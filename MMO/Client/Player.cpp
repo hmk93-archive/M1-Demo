@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "NavMesh.h"
 #include "Utility.h"
+#include "Cursor.h"
 using namespace Utility;
 
 Player::Player(string file)
@@ -29,21 +30,25 @@ Player::Player(string file)
 	SetEndEvent(Jump, bind(&Player::SetIdle, this));
 	SetEndEvent(Attack_A, bind(&Player::AttackEnd, this));
 	SetEndEvent(Attack_B, bind(&Player::AttackEnd, this));
-	SetFrameEvent(Attack_A, bind(&Player::Combo, this), { 40, 50, 60, 70, 80 });
 
 	SetAnimation(Idle);
 
 	CreateCollider();
+
+	_cursor = new Cursor();
 }
 
 Player::~Player()
 {
+	delete _cursor;
 	delete _eventCollider;
 	delete _mainCollider;
 }
 
 void Player::Update()
 {
+	_cursor->Update();
+
 	Control();
 	Move();
 	Rotate();
@@ -55,6 +60,8 @@ void Player::Update()
 
 void Player::Render()
 {
+	_cursor->Render();
+
 	SetWorldBuffer();
 	ModelAnimator::Render();
 
@@ -67,12 +74,21 @@ void Player::PostRender()
 
 }
 
-void Player::Attack()
+void Player::Attack(int type)
 {
 	if (behaviourState == War)
 		return;
 	behaviourState = War;
-	SetAnimation(Attack_A);
+	
+	switch (type)
+	{
+	case 0:
+		SetAnimation(Attack_A);
+		break;
+	case 1:
+		SetAnimation(Attack_B);
+		break;
+	}
 }
 
 void Player::PushBack(Collider* other)
@@ -129,7 +145,7 @@ void Player::Control()
 		return;
 
 	// Path Finding
-	if (Input::Get().Down(VK_LBUTTON) && Input::Get().Press(VK_LCONTROL))
+	if (Input::Get().Down(VK_LBUTTON))
 	{
 		if (behaviourState != Air)
 		{
@@ -138,31 +154,32 @@ void Player::Control()
 		}
 	}
 
-	// WSAD 
-	if (Input::Get().Press('W'))
-	{
-		_path.clear();
-		_velocity += Vector3::Backward;
-		_velocity.Normalize();
-	}
-	if (Input::Get().Press('S'))
-	{
-		_path.clear();
-		_velocity += Vector3::Forward;
-		_velocity.Normalize();
-	}
-	if (Input::Get().Press('A'))
-	{
-		_path.clear();
-		_velocity += Vector3::Left;
-		_velocity.Normalize();
-	}
-	if (Input::Get().Press('D'))
-	{
-		_path.clear();
-		_velocity += Vector3::Right;
-		_velocity.Normalize();
-	}
+	//// WSAD 
+	//if (Input::Get().Press('W'))
+	//{
+	//	_path.clear();
+	//	_velocity += Vector3::Backward;
+	//	_velocity.Normalize();
+	//}
+	//if (Input::Get().Press('S'))
+	//{
+	//	_path.clear();
+	//	_velocity += Vector3::Forward;
+	//	_velocity.Normalize();
+	//}
+	//if (Input::Get().Press('A'))
+	//{
+	//	_path.clear();
+	//	_velocity += Vector3::Left;
+	//	_velocity.Normalize();
+	//}
+	//if (Input::Get().Press('D'))
+	//{
+	//	_path.clear();
+	//	_velocity += Vector3::Right;
+	//	_velocity.Normalize();
+	//}
+
 	if (Input::Get().Down(VK_SPACE) && behaviourState != War)
 	{
 		behaviourState = Air;
@@ -182,12 +199,9 @@ void Player::Move()
 		_velocity = Vector3::Lerp(_velocity, zero, _deceleration * Timer::Get().GetElapsedTime());
 	}
 
-	// Check
-	Vector3 nextPos = position + _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
-	if (_navMesh->PointInTriangle(nextPos))
-	{
-		position = nextPos;
-	}
+	position += _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
+
+	//@TODO: WSAD 사용 시 NavMesh 로 다음 위치 판정 필요
 
 	// 공중에 있을 경우 다른 애니메이션 재생 하지 않음
 	if (behaviourState == Air)
@@ -233,25 +247,9 @@ void Player::SetIdle()
 	SetAnimation(Idle);
 }
 
-void Player::Combo()
-{
-	Input::Get().Update();
-	if (Input::Get().Press(VK_LBUTTON))
-		_isCombo = true;
-}
-
 void Player::AttackEnd()
 {
-	if (_isCombo)
-	{
-		_isCombo = false;
-		behaviourState = War;
-		SetAnimation(Attack_B);
-	}
-	else
-	{
-		SetIdle();
-	}
+	SetIdle();
 }
 
 void Player::SetPath()
@@ -296,4 +294,11 @@ void Player::SetAnimation(PlayerAnimState value, float speed)
 		animState = value;
 		PlayClip(animState, speed);
 	}
+}
+
+void Player::SetTerrain(Terrain* terrain)
+{
+	_terrain = terrain;
+	if (_cursor)
+		_cursor->SetTerrain(_terrain);
 }

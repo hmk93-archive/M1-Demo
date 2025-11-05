@@ -32,28 +32,7 @@ Font::Font()
 		__debugbreak();
 	}
 
-	IDXGISurface* dxgiSurface;
-	if (FAILED((Device::Get().GetSwapChain()->GetBuffer(0, __uuidof(IDXGISurface),(void**)&dxgiSurface))))
-	{
-		__debugbreak();
-	}
-
-	D2D1_BITMAP_PROPERTIES1 bp;
-	bp.pixelFormat.format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	bp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
-	bp.dpiX = 96;
-	bp.dpiY = 96;
-	bp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
-	bp.colorContext = nullptr;
-
-	if (FAILED(context->CreateBitmapFromDxgiSurface(dxgiSurface, &bp, &targetBitmap)))
-	{
-		__debugbreak();
-	}
-
-	dxgiSurface->Release();
-
-	context->SetTarget(targetBitmap);
+	CreateTargetBitmap();
 }
 
 Font::~Font()
@@ -64,7 +43,7 @@ Font::~Font()
 	factory->Release();
 	writeFactory->Release();
 
-	targetBitmap->Release();
+	ReleaseTargetBitmap();
 
 	context->Release();
 	device->Release();
@@ -112,4 +91,36 @@ void Font::RenderText(wstring text, Vector3 pos, float fontSize, DXGI_RGBA color
 	brush->SetColor(oldColor);
 	// Relese Layout //
 	layout->Release();
+}
+
+void Font::CreateTargetBitmap()
+{
+	IDXGISurface* dxgiSurface;
+	if (FAILED((Device::Get().GetSwapChain()->GetBuffer(0, __uuidof(IDXGISurface), (void**)&dxgiSurface))))
+	{
+		__debugbreak();
+	}
+
+	D2D1_BITMAP_PROPERTIES1 bp;
+	bp.pixelFormat.format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	bp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
+	bp.dpiX = 96;
+	bp.dpiY = 96;
+	bp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
+	bp.colorContext = nullptr;
+
+	if (FAILED(context->CreateBitmapFromDxgiSurface(dxgiSurface, &bp, &targetBitmap)))
+	{
+		__debugbreak();
+	}
+
+	dxgiSurface->Release();
+
+	context->SetTarget(targetBitmap);
+}
+
+void Font::ReleaseTargetBitmap()
+{
+	context->SetTarget(nullptr);
+	targetBitmap->Release();
 }

@@ -2,6 +2,7 @@
 #include "Device.h"
 #include "Environment.h"
 #include "Camera.h"
+#include "Font.h"
 
 Device::Device()
 {
@@ -68,7 +69,6 @@ void Device::Present()
 
 void Device::UpdateWindowSize(UINT width, UINT height)
 {
-	// @TODO:
 	if (!(width * height))
 		return;
 
@@ -81,19 +81,23 @@ void Device::UpdateWindowSize(UINT width, UINT height)
 	if (_depthStencilView)
 		_depthStencilView.Reset();
 
-	_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+	Font::Get().ReleaseTargetBitmap();
 
-	CreateRenderTarget();
-	CreateDepthStencil();
+	if (FAILED(_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)))
+	{
+		__debugbreak();
+	}
+
+	Font::Get().CreateTargetBitmap();
 
 	g_screenWidth = width;
 	g_screenHeight = height;
 
+	CreateRenderTarget();
+	CreateDepthStencil();
+
 	Environment::Get().SetViewport();
 	Environment::Get().CreatePerspective();
-
-	ImGui_ImplWin32_Init(g_hWnd);
-	ImGui_ImplDX11_Init(Device::Get().GetDevice(), Device::Get().GetDeviceContext());
 }
 
 void Device::CreateRenderTarget()

@@ -43,6 +43,7 @@ Game::Game()
 	SceneManager::Get().Add("InGame", new InGameScene());
 	SceneManager::Get().Add("Menu", new MenuScene());
 	// SceneManager::Get().Add("NavMesh", new NavMeshScene(true)); // 카메라 주의: InGameScene 보다 먼저 로딩될 경우 Follow 카메라 동작하지 않음
+	
 	SceneManager::Get().Play("InGame");
 }
 

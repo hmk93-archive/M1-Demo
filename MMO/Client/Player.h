@@ -7,6 +7,7 @@ class Terrain;
 class Collider;
 class AStar;
 class NavMesh;
+class Cursor;
 
 class Player : public ModelAnimator, public Transform
 {
@@ -37,14 +38,14 @@ public:
 	void Render();
 	void PostRender();
 
-	void SetTerrain(Terrain* terrain) { _terrain = terrain; }
+	void SetTerrain(Terrain* terrain);
 	void SetAStar(AStar* astar) { _astar = astar; }
 	void SetNavMesh(NavMesh* navMesh) { _navMesh = navMesh; }
 
 	Collider* GetMainCollider() { return _mainCollider; }
 	Collider* GetEventCollider() { return _eventCollider; }
 
-	void Attack();
+	void Attack(int type);
 	void PushBack(Collider* other);
 	void LookAt(Vector3 direction);
 
@@ -58,7 +59,6 @@ private:
 	void Rotate();
 
 	void SetIdle();
-	void Combo();
 	void AttackEnd();
 
 	void SetPath();
@@ -87,5 +87,7 @@ private:
 	vector<Vector3> _path = {};
 
 	bool _isCombo = false;
+
+	Cursor* _cursor = nullptr;
 };
 

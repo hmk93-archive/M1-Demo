@@ -67,7 +67,7 @@ void Camera::FollowMode()
 		{
 			if (_target->rotation.y != _destRot)
 			{
-				_destRot = std::lerp(_destRot, _target->rotation.y + XM_PI, _rotDamping * Timer::Get().GetElapsedTime());
+				_destRot = LERP(_destRot, _target->rotation.y + XM_PI, _rotDamping * Timer::Get().GetElapsedTime());
 			}
 
 			rotMatrix = XMMatrixRotationY(_destRot);

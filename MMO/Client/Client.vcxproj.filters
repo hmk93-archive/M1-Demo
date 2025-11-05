@@ -328,6 +328,24 @@
     <ClInclude Include="RenderTarget.h">
       <Filter>Graphics\Device</Filter>
     </ClInclude>
+    <ClInclude Include="Recast.h">
+      <Filter>Utils\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="RecastAlloc.h">
+      <Filter>Utils\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="RecastAssert.h">
+      <Filter>Utils\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>Graphics\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -576,6 +594,48 @@
     </ClCompile>
     <ClCompile Include="RenderTarget.cpp">
       <Filter>Graphics\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Recast.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastAlloc.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastArea.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastAssert.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastContour.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastFilter.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastLayers.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastMesh.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastMeshDetail.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastRasterization.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="RecastRegion.cpp">
+      <Filter>Utils\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>Graphics\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

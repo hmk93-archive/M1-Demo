@@ -191,10 +191,15 @@ void InGameScene::WarrokToPlayer()
 	Collider* playerEventCol = _player->GetEventCollider();
 	if (warrokCol->Collision(playerEventCol))
 	{
-		if (Input::Get().Down(VK_LBUTTON) && _warrok->onMouse)
+		if (Input::Get().Down('1') && _warrok->onMouse)
 		{
 			_player->LookAt(warrokCol->position - _player->position);
-			_player->Attack();
+			_player->Attack(0);
+		}
+		if (Input::Get().Down('2') && _warrok->onMouse)
+		{
+			_player->LookAt(warrokCol->position - _player->position);
+			_player->Attack(1);
 		}
 
 		if (warrokCol->Collision(playerMainCol))
@@ -223,8 +228,8 @@ void InGameScene::InitScene()
 
 	// NavMesh
 	_navMesh = new NavMesh(_terrain->GetSize().x, _terrain->GetSize().y);
-	_navMesh->SetTerrain(_terrain);
-	_navMesh->Bake();
+	// _navMesh->SetTerrain(_terrain);
+	// _navMesh->Bake();
 
 	// Fields
 	for (UINT i = 0; i < 9; i++)

@@ -6,6 +6,7 @@
 #include "CapsuleCollider.h"
 #include "Device.h"
 #include "Mesh.h"
+#include "Circle.h"
 
 bool Collider::s_isColliderDraw = true;
 
@@ -59,7 +60,7 @@ void Collider::Render()
     //RenderAxis();
 }
 
-void Collider::SetColor(Vector4 color) 
+void Collider::SetColor(Vector4 color)
 {
     _material->GetBuffer()->data.diffuse = color; 
 }
