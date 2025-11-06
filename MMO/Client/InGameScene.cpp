@@ -15,6 +15,7 @@
 #include "tinyxml2.h"
 #include "Utility.h"
 #include "ModelObject.h"
+#include "Shadow.h"
 using namespace Utility;
 
 InGameScene::InGameScene()
@@ -22,10 +23,13 @@ InGameScene::InGameScene()
 	InitScene();
 	Update(); // For Field Wall Updates
 	SetAStarObstacles();
+
+	_shadow = new Shadow();
 }
 
 InGameScene::~InGameScene()
 {
+	delete _shadow;
 	delete _warrok;
 	delete _player;
 	for (Field* field : _fields)
@@ -54,10 +58,21 @@ void InGameScene::Update()
 
 void InGameScene::PreRender()
 {
+	// _shadow->PreRender();
+
+	//for (ModelObject* model : _models)
+	//	model->Render();
+	//_terrain->Render();
+	//for (Field* field : _fields)
+	//	field->Render();
+	//_player->Render();
+	//_warrok->Render();
 }
 
 void InGameScene::Render()
 {
+	// _shadow->Render();
+
 	for (ModelObject* model : _models)
 		model->Render();
 	_terrain->Render();
@@ -71,6 +86,8 @@ void InGameScene::Render()
 
 void InGameScene::PostRender()
 {
+	// _shadow->PostRender();
+
 	_terrain->PostRender();
 	_astar->PostRender();
 	for (Field* field : _fields)
@@ -89,7 +106,7 @@ void InGameScene::LoadMap()
 	XmlElement* root = document->FirstChildElement();
 
 	XmlElement* modelNode = root->FirstChildElement();
-	
+
 	do
 	{
 		XmlElement* node = modelNode->FirstChildElement();
@@ -128,17 +145,20 @@ void InGameScene::LoadMap()
 
 void InGameScene::PlayerAttackToWarrok()
 {
-	Collider* player = _player->GetMainCollider();
-	if (!player->isActive)
+	Collider* playerCol = _player->GetMainCollider();
+	if (!playerCol->isActive)
 		return;
-	Collider* warrok = _warrok->mainCollider[0];
-	if (!warrok->isActive)
+
+	Collider* warrokCol = _warrok->mainCollider[0];
+	if (!warrokCol->isActive)
 		return;
+
 	if (_player->behaviourState != Player::PlayerBehaviourState::War)
 		return;
-	if (player->Collision(warrok))
+
+	if (playerCol->Collision(warrokCol))
 	{
-		_warrok->Damage(0, 0);
+		_warrok->Damage(0, 1);
 	}
 }
 
@@ -155,6 +175,9 @@ void InGameScene::WarrokToMouse()
 void InGameScene::WarrokToPlayer()
 {
 	Collider* warrokCol = _warrok->mainCollider[0];
+	if (!warrokCol->isActive)
+		return;
+
 	Collider* playerMainCol = _player->GetMainCollider();
 	Collider* playerEventCol = _player->GetEventCollider();
 	if (warrokCol->Collision(playerEventCol))
@@ -228,7 +251,7 @@ void InGameScene::InitScene()
 
 	// Terrain
 	_terrain = new Terrain();
-	
+
 	// AStar
 	_astar = new AStar(100, 100);
 
@@ -277,12 +300,14 @@ void InGameScene::CreateEnemies()
 	transform->position = Vector3(50.0f, 0.0f, 50.0f);
 	transform->scale = Vector3(0.1f);
 	_warrok->UpdateTransforms();
+	_warrok->AddHPBar();
 	_warrok->SetAnimation(0, Enemy::EnemyAnimState::Idle);
 	_warrok->SetEndEvents(0, (UINT)Enemy::EnemyAnimState::Hit, bind(&Enemy::SetIdle, _warrok, 0));
+	_warrok->SetEndEvents(0, (UINT)Enemy::EnemyAnimState::Dead, bind(&Enemy::DeathEnd, _warrok, 0));
 
 	float radius = (_warrok->worldMinBox - _warrok->worldMaxBox).Length() * 0.5f;
 	_warrok->mainCollider[0] = new SphereCollider(radius * 0.5f);
-	
+
 	Vector3 offset = Vector3(0.0f, 10.0f, 0.0f);
 	_warrok->mainCollider[0]->SetTarget(transform, offset);
 	_warrok->SetPlayer(_player);

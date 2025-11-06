@@ -361,6 +361,12 @@
     <ClInclude Include="Light.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Shadow.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="HUDHPBar.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -660,6 +666,12 @@
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="HUDHPBar.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

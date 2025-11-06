@@ -3,30 +3,10 @@
 #include "ConstBuffer.h"
 #include "Transform.h"
 
+class ViewBuffer;
+
 class Camera : public Transform
 {
-	class ViewBuffer : public ConstBuffer
-	{
-	private:
-		struct Data
-		{
-			Matrix matrix;
-			Matrix invMatrix;
-		} data;
-
-	public:
-		ViewBuffer() : ConstBuffer(&data, sizeof(Data))
-		{
-			data.matrix = Matrix::Identity;
-			data.invMatrix = Matrix::Identity;
-		}
-
-		void Set(Matrix value)
-		{
-			data.matrix = value.Transpose();
-			data.invMatrix = value.Invert().Transpose();
-		}
-	};
 public:
 	enum CamMode
 	{

@@ -26,6 +26,7 @@ ModelExportScene::ModelExportScene()
 			CreateAnimation("Warrok", "Run");
 			CreateAnimation("Warrok", "Punch");
 			CreateAnimation("Warrok", "Hit");
+			CreateAnimation("Warrok", "Dead");
 			_warrok = new Enemy("Warrok");
 			for (float z = -10.0f; z < 10.0f; z++)
 			{

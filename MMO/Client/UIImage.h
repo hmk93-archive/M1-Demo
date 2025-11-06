@@ -13,6 +13,7 @@ public:
 	enum Pivot
 	{
 		Center,
+		LC,
 	} pivot = Center;
 
 public:

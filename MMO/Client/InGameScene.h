@@ -9,6 +9,7 @@ class Field;
 class AStar;
 class NavMesh;
 class ModelObject;
+class Shadow;
 
 class InGameScene : public Scene
 {
@@ -50,5 +51,7 @@ private:
 	NavMesh* _navMesh = nullptr;
 
 	vector<ModelObject*> _models = {};
+
+	Shadow* _shadow = nullptr;
 };
 

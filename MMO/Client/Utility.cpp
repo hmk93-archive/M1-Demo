@@ -163,6 +163,22 @@ namespace Utility
         return result;
     }
 
+    Vector3 WorldToScreen(Vector3 worldPos)
+    {
+        Vector3 screenPos;
+
+        screenPos = XMVector3TransformCoord(worldPos, Environment::Get().GetMainCamera()->GetView());
+        screenPos = XMVector3TransformCoord(screenPos, Environment::Get().GetProjection());
+
+        screenPos.x = (screenPos.x + 1.0f) * 0.5f;
+        screenPos.y = (screenPos.y + 1.0f) * 0.5f;
+        
+        screenPos.x *= g_screenWidth;
+        screenPos.y *= g_screenHeight;
+
+        return screenPos;
+    }
+
     void LookAt(OUT float& rotationY, Vector3 direction)
     {
         float f1 = atan2f(direction.x, direction.z);

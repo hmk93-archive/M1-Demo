@@ -178,6 +178,7 @@
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="DepthStencilState.h" />
+    <ClInclude Include="HUDHPBar.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Device.h" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Shadow.h" />
     <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SphereCollider.h" />
@@ -273,6 +275,7 @@
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
+    <ClCompile Include="HUDHPBar.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Device.cpp" />
@@ -434,6 +437,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SphereCollider.cpp" />

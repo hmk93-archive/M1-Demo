@@ -59,11 +59,17 @@ void UIImage::CreateMesh()
 
 	switch (pivot)
 	{
-	case UIImage::Pivot::Center:
+	case Center:
 		_vertices[0].position = { -0.5f, -0.5f, 0.0f };
 		_vertices[1].position = { -0.5f, +0.5f, 0.0f };
 		_vertices[2].position = { +0.5f, -0.5f, 0.0f };
 		_vertices[3].position = { +0.5f, +0.5f, 0.0f };
+		break;
+	case LC:
+		_vertices[0].position = { +0.0f, -0.5f, 0.0f };
+		_vertices[1].position = { +0.0f, +0.5f, 0.0f };
+		_vertices[2].position = { +1.0f, -0.5f, 0.0f };
+		_vertices[3].position = { +1.0f, +0.5f, 0.0f };
 		break;
 	}
 

@@ -37,7 +37,6 @@ void ModelAnimators::Update()
 	for (UINT i = 0; i < _transforms.size(); i++)
 	{
 		FrameBuffer::TweenDesc& tweenDesc = frameBuffer->data.tweenDesc[i];
-
 		{
 			FrameBuffer::KeyFrameDesc& desc = tweenDesc.cur;
 			ModelClip* clip = clips[desc.clip];
@@ -51,6 +50,7 @@ void ModelAnimators::Update()
 				{
 					if (EndEvents[i].count(desc.clip) > 0)
 						EndEvents[i][desc.clip](params[i][desc.clip]);
+
 				}
 
 				desc.curFrame = (desc.curFrame + 1) % clip->frameCount;
@@ -108,7 +108,7 @@ void ModelAnimators::Render()
 {
 	if (texture == nullptr)
 		CreateTexture();
-	
+
 	frameBuffer->SetVSBuffer(4);
 	Device::Get().GetDeviceContext()->VSSetShaderResources(0, 1, &srv);
 
@@ -143,12 +143,16 @@ void ModelAnimators::UpdateTransforms()
 	_drawCount = 0;
 	for (UINT i = 0; i < _transforms.size(); i++)
 	{
+		if (!_transforms[i]->isActive)
+			continue;
+
 		_transforms[i]->UpdateWorld();
 		worldMinBox = Vector3::Transform(_minBox, *_transforms[i]->GetWorld());
 		worldMaxBox = Vector3::Transform(_maxBox, *_transforms[i]->GetWorld());
 
 		_instanceData[_drawCount].world = (*_transforms[i]->GetWorld()).Transpose();
 		_instanceData[_drawCount].index = i;
+		_instanceData[_drawCount].instanceID = i;
 		_drawCount++;
 	}
 

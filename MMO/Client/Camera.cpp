@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "Timer.h"
 #include "Environment.h"
+#include "GlobalBuffers.h"
 
 Camera::Camera()
 {

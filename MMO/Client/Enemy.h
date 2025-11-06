@@ -5,6 +5,7 @@
 class Terrain;
 class Collider;
 class Player;
+class HUDHPBar;
 
 class Enemy : public ModelAnimators
 {
@@ -15,6 +16,7 @@ public:
 		Run,
 		Punch,
 		Hit,
+		Dead,
 	} state = Idle;
 
 	enum EnemyBehaviourState
@@ -22,6 +24,7 @@ public:
 		None,
 		War,
 		Jump,
+		Die,
 	} behaviourState = None;
 
 public:
@@ -41,6 +44,12 @@ public:
 	void SetAnimation(UINT instanceID, EnemyAnimState value, float speed = 1.0f);
 
 	void SetIdle(int instanceID);
+	void SetHP(UINT instanceID, int damage);
+
+	HUDHPBar* AddHPBar();
+
+	void Death(UINT instanceID);
+	void DeathEnd(int instanceID);
 
 protected:
 	void CheckDistance(UINT instanceID);
@@ -52,6 +61,7 @@ public:
 
 public:
 	Collider* mainCollider[MAX_INSTANCE] = {};
+	HUDHPBar* hpBar[MAX_INSTANCE] = {};
 
 protected:
 	float _attackRange = 25.0f;
@@ -60,5 +70,8 @@ protected:
 private:
 	Terrain* _terrain = nullptr;
 	Player* _player = nullptr;
+
+	int _curHP = 100;
+	int _maxHP = 100;
 };
 

@@ -23,6 +23,20 @@ public:
 	}
 };
 
+class SizeBuffer : public ConstBuffer
+{
+public:
+	struct Data
+	{
+		Vector2 size = Vector2(0, 0);
+		float padding[2];
+	} data;
+
+	SizeBuffer() : ConstBuffer(&data, sizeof(Data))
+	{
+	}
+};
+
 class TypeBuffer : public ConstBuffer
 {
 public:
@@ -33,6 +47,29 @@ public:
 	} data;
 
 	TypeBuffer() : ConstBuffer(&data, sizeof(Data)) {}
+};
+
+class ViewBuffer : public ConstBuffer
+{
+private:
+	struct Data
+	{
+		Matrix matrix;
+		Matrix invMatrix;
+	} data;
+
+public:
+	ViewBuffer() : ConstBuffer(&data, sizeof(Data))
+	{
+		data.matrix = Matrix::Identity;
+		data.invMatrix = Matrix::Identity;
+	}
+
+	void Set(Matrix value)
+	{
+		data.matrix = value.Transpose();
+		data.invMatrix = value.Invert().Transpose();
+	}
 };
 
 class BoneBuffer : public ConstBuffer

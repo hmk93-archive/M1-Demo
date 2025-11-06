@@ -11,6 +11,7 @@ class ModelAnimators : public ModelAnimator
 	{
 		Matrix world;
 		UINT index;
+		UINT instanceID;
 	};
 
 public:
@@ -36,9 +37,9 @@ public:
 protected:
 	UINT _drawCount = 0;
 	vector<Transform*> _transforms = {};
+	InstanceData _instanceData[MAX_INSTANCE] = {};
 
 private:
-	InstanceData _instanceData[MAX_INSTANCE] = {};
 	VertexBuffer* _instanceBuffer = nullptr;
 
 	Vector3 _minBox, _maxBox;

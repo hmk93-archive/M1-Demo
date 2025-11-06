@@ -78,6 +78,7 @@ void Game::Update()
 
 void Game::PreRender()
 {
+	// Environment::Get().Set();
 	SceneManager::Get().PreRender();
 }
 

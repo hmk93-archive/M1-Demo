@@ -57,6 +57,16 @@ cbuffer ModelType : register(b5)
     int modelType;
 }
 
+cbuffer LightView : register(b11)
+{
+    matrix lightView;
+}
+
+cbuffer LightProjection : register(b12)
+{
+    matrix lightProjection;
+}
+
 Texture2DArray transformMap : register(t0);
 
 // Pixel Shader
@@ -103,10 +113,21 @@ cbuffer MaterialInfo : register(b1)
     int hasNormalMap;
 }
 
+cbuffer Quality : register(b10)
+{
+    int quality;
+}
+
+cbuffer SizeBuffer : register(b11)
+{
+    float2 mapSize;
+}
+
 SamplerState linearWrapSS : register(s0);
 Texture2D albedoMap : register(t0);
 Texture2D specularMap : register(t1);
 Texture2D normalMap : register(t2);
+Texture2D depthMap : register(t10);
 
 // Vertex layouts
 struct Vertex

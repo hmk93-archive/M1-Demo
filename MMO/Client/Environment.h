@@ -19,6 +19,7 @@ public:
 
 	Matrix GetProjection() { return _projection; }
 	MatrixBuffer* GetProjectionBuffer() { return _projectionBuffer; }
+	LightBuffer* GetLight() { return _lightBuffer; }
 
 	void CreatePerspective();
 

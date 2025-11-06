@@ -111,6 +111,7 @@ RenderTarget::~RenderTarget()
 void RenderTarget::Set(DepthStencil* depthStencil)
 {
 	Device::Get().GetDeviceContext()->OMSetRenderTargets(1, _rtv.GetAddressOf(), depthStencil->GetDSV());
+
 	Vector4 color = {};
 	Device::Get().GetDeviceContext()->ClearRenderTargetView(_rtv.Get(), (float*)&color);
 	depthStencil->Clear();
