@@ -77,6 +77,9 @@
     <Filter Include="Utils\PathFinding\Recast">
       <UniqueIdentifier>{bc989612-c080-45fe-9e4d-e5979c1233cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\PostPorcess">
+      <UniqueIdentifier>{232256bf-6a07-439a-ad82-61c7e5cb633e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SimpleMath.h">
@@ -348,6 +351,15 @@
     </ClInclude>
     <ClInclude Include="Recast.h">
       <Filter>Utils\PathFinding\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencil.h">
+      <Filter>Graphics\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcess.h">
+      <Filter>GameObject\PostPorcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -640,6 +652,15 @@
     <ClCompile Include="Recast.cpp">
       <Filter>Utils\PathFinding\Recast</Filter>
     </ClCompile>
+    <ClCompile Include="DepthStencil.cpp">
+      <Filter>Graphics\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcess.cpp">
+      <Filter>GameObject\PostPorcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -672,6 +693,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\Terrain.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\PostProcess.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

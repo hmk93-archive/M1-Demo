@@ -15,6 +15,8 @@ Terrain::Terrain(Vector3 pos)
 {
 	_material = new Material(L"Terrain");
 	_material->SetDiffuseMap(L"../Assets/Textures/WallDiffuse.png");
+	_material->SetSpecularMap(L"../Assets/Textures/WallSpecular.png");
+	_material->SetNormalMap(L"../Assets/Textures/WallNormal.png");
 
 	_secondMap = Texture::Add(L"../Assets/Textures/Floor.png");
 	_thirdMap = Texture::Add(L"../Assets/Textures/Stones.png");
@@ -84,7 +86,7 @@ void Terrain::CreateMesh()
 		{
 			VertexType vertex;
 			vertex.position = Vector3((float)x, 0.0f, (float)z);
-			vertex.uv = Vector2((float)x / (float)_width, 1.0f -(z / (float)_height));
+			vertex.uv = Vector2((float)x / (float)_width, 1.0f - (z / (float)_height));
 			vertex.uv *= _layout;
 
 			UINT index = z * (_width + 1) + x;
@@ -112,6 +114,8 @@ void Terrain::CreateMesh()
 	_computeSize = (UINT)_indices.size() / 3;
 
 	CreateInput();
+	CreateNormal();
+	CreateTangent();
 
 	if (_mesh)
 		delete _mesh;
@@ -128,7 +132,7 @@ void Terrain::CreateCompute()
 	_structuredBuffer = new StructuredBuffer(_input, sizeof(InputDesc), _computeSize, sizeof(OutputDesc), _computeSize);
 
 	_rayBuffer = new RayBuffer();
-	
+
 	_output = new OutputDesc[_computeSize];
 }
 
@@ -179,6 +183,83 @@ void Terrain::CreateAlpha()
 				}
 			}
 		}
+	}
+}
+
+void Terrain::CreateNormal()
+{
+	for (UINT i = 0; i < _indices.size() / 3; i++)
+	{
+		UINT index0 = _indices[(i * 3) + 0];
+		UINT index1 = _indices[(i * 3) + 1];
+		UINT index2 = _indices[(i * 3) + 2];
+
+		Vector3 v0 = _vertices[index0].position;
+		Vector3 v1 = _vertices[index1].position;
+		Vector3 v2 = _vertices[index2].position;
+
+		Vector3 A = v1 - v0;
+		Vector3 B = v2 - v0;
+
+		Vector3 normal = A.Cross(B);
+		normal.Normalize();
+
+		_vertices[index0].normal = normal + _vertices[index0].normal;
+		_vertices[index1].normal = normal + _vertices[index1].normal;
+		_vertices[index2].normal = normal + _vertices[index2].normal;
+	}
+
+	for (VertexType& vertex : _vertices)
+	{
+		vertex.normal = Vector3(vertex.normal);
+		vertex.normal.Normalize();
+	}
+}
+
+void Terrain::CreateTangent()
+{
+	for (UINT i = 0; i < _indices.size() / 3; i++)
+	{
+		UINT index0 = _indices[(i * 3) + 0];
+		UINT index1 = _indices[(i * 3) + 1];
+		UINT index2 = _indices[(i * 3) + 2];
+
+		VertexType vertex0 = _vertices[index0];
+		VertexType vertex1 = _vertices[index1];
+		VertexType vertex2 = _vertices[index2];
+
+		Vector3 p0 = vertex0.position;
+		Vector3 p1 = vertex1.position;
+		Vector3 p2 = vertex2.position;
+
+		Vector2 uv0 = vertex0.uv;
+		Vector2 uv1 = vertex1.uv;
+		Vector2 uv2 = vertex2.uv;
+
+		Vector3 e0 = p1 - p0;
+		Vector3 e1 = p2 - p0;
+
+		float u0 = uv1.x - uv0.x;
+		float u1 = uv2.x - uv0.x;
+		float v0 = uv1.y - uv0.y;
+		float v1 = uv2.y - uv0.y;
+
+		Vector3 tangent = (v1 * e0 - v0 * e1);
+
+		_vertices[index0].tangent = tangent + _vertices[index0].tangent;
+		_vertices[index1].tangent = tangent + _vertices[index1].tangent;
+		_vertices[index2].tangent = tangent + _vertices[index2].tangent;
+	}
+
+	for (VertexType& vertex : _vertices)
+	{
+		Vector3 t = vertex.tangent;
+		Vector3 n = vertex.normal;
+
+		Vector3 temp = t - n * n.Dot(t);
+		temp.Normalize();
+
+		vertex.tangent = temp;
 	}
 }
 

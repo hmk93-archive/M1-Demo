@@ -60,6 +60,35 @@ cbuffer ModelType : register(b5)
 Texture2DArray transformMap : register(t0);
 
 // Pixel Shader
+struct Light
+{
+    float4 color;
+    float3 direction;
+    int type;
+    float3 position;
+    int active;
+};
+
+cbuffer Light : register(b0)
+{
+    Light lights[MAX_LIGHT];
+    uint lightCount;
+    float3 padding;
+    float4 ambient;
+    float4 ambientCeil;
+}
+
+struct Material
+{
+    float3 normal;
+    float4 diffuseColor;
+    float4 emissive;
+    float4 specularIntensity;
+    float shininess;
+    float3 eyePos;
+    float3 posWorld;
+};
+
 cbuffer MaterialInfo : register(b1)
 {
     float4 mDiffuse;
@@ -155,10 +184,10 @@ matrix BoneWorld(float4 indices, float4 weights)
 {
     matrix transform = 0;
     
-    transform += mul(weights.x, bones[(uint)indices.x]);
-    transform += mul(weights.y, bones[(uint)indices.y]);
-    transform += mul(weights.z, bones[(uint)indices.z]);
-    transform += mul(weights.w, bones[(uint)indices.w]);
+    transform += mul(weights.x, bones[(uint) indices.x]);
+    transform += mul(weights.y, bones[(uint) indices.y]);
+    transform += mul(weights.z, bones[(uint) indices.z]);
+    transform += mul(weights.w, bones[(uint) indices.w]);
     
     return transform;
 }
@@ -226,27 +255,69 @@ matrix SkinWorld(float4 indices, float4 weights)
         
         transform += mul(weights[i], curAnim);
     }
-
+    
     return transform;
 }
 
-float3 GetNormal(float3 inNormalWorld, float2 uv, float3 tangentWorld)
+float3 NormalMapping(float3 T, float3 B, float3 N, float2 uv)
 {
-    float3 normalWorld = normalize(inNormalWorld);
-    
-    if (hasNormalMap)
+    T = normalize(T);
+    B = normalize(B);
+    N = normalize(N);
+    if(hasNormalMap)
     {
         float3 normal = normalMap.Sample(linearWrapSS, uv).rgb;
-        normal = 2.0 * normal - 1.0; 
-
-        float3 N = normalWorld;
-        float3 T = normalize(tangentWorld - dot(tangentWorld, N) * N);
-        float3 B = cross(N, T);
-        
-        // matrix는 float4x4, 여기서는 벡터 변환용이라서 3x3 사용
         float3x3 TBN = float3x3(T, B, N);
-        normalWorld = normalize(mul(normal, TBN));
+        
+        N = normal * 2.0 - 1.0;
+        N = normalize(mul(N, TBN));
     }
     
-    return normalWorld;
+    return N;
+}
+
+float4 SpecularMapping(float2 uv)
+{
+    [flatten]
+    if(hasSpecularMap)
+        return specularMap.Sample(linearWrapSS, uv);
+    
+    return float4(1, 1, 1, 1);
+}
+
+float4 CalcAmbient(Material material)
+{
+    float up = material.normal.y * 0.5f + 0.5f;
+    float4 resultAmbient = ambient + up * ambientCeil;
+    
+    return resultAmbient * material.diffuseColor;
+}
+
+float4 CalcDirectional(Material material, Light light)
+{
+    float3 toLight = -normalize(light.direction);
+    float ndotl = dot(toLight, material.normal);
+    float4 finalColor = light.color * saturate(ndotl);
+    
+    float3 toEye = normalize(material.eyePos - material.posWorld);
+    float3 halfWay = normalize(toEye + toLight);
+    float ndoth = saturate(dot(material.normal, halfWay));
+    
+    finalColor += light.color * pow(ndoth, material.shininess) * material.specularIntensity;
+    
+    return finalColor * material.diffuseColor;
+}
+
+float4 CalcEmissive(Material material)
+{
+    float emissive = 0;
+    [flatten]
+    if(material.emissive.a > 0.0)
+    {
+        float3 toEye = normalize(material.eyePos - material.posWorld);
+        float ndote = dot(material.normal, toEye);
+        emissive = smoothstep(1.0 - mEmissive.a, 1.0, saturate(ndote));
+    }
+    
+    return float4(material.emissive.rgb * emissive, 1.0);
 }

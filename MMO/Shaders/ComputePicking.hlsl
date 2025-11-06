@@ -58,6 +58,6 @@ void CS(uint3 groupID : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = groupID.x * 32 * 32 + groupIndex;
     
-    if(outputSize > index)
+    if (outputSize > (float) index)
         Intersection(index);
 }

@@ -176,6 +176,7 @@
     <ClInclude Include="ComputeShader.h" />
     <ClInclude Include="ConstBuffer.h" />
     <ClInclude Include="Cursor.h" />
+    <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Cube.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InGameScene.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MenuScene.h" />
     <ClInclude Include="Mesh.h" />
@@ -223,6 +225,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PostProcess.h" />
     <ClInclude Include="RasterizerState.h" />
     <ClInclude Include="Recast.h" />
     <ClInclude Include="RecastAlloc.h" />
@@ -268,6 +271,7 @@
     <ClCompile Include="ComputeShader.cpp" />
     <ClCompile Include="ConstBuffer.cpp" />
     <ClCompile Include="Cursor.cpp" />
+    <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -332,6 +336,7 @@
     </ClCompile>
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InGameScene.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -356,6 +361,7 @@
     </ClCompile>
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="RasterizerState.cpp" />
     <ClCompile Include="Recast.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -508,6 +514,20 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="..\Shaders\Instancing.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\PostProcess.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

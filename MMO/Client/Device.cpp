@@ -3,6 +3,9 @@
 #include "Environment.h"
 #include "Camera.h"
 #include "Font.h"
+#include "RenderTarget.h"
+#include "Game.h"
+#include "PostProcess.h"
 
 Device::Device()
 {
@@ -13,6 +16,8 @@ Device::Device()
 
 Device::~Device()
 {
+	delete _floatRTV;
+	delete _resolvedRTV;
 }
 
 void Device::CreateDeviceAndSwapchain()
@@ -53,13 +58,17 @@ void Device::CreateDeviceAndSwapchain()
 
 void Device::SetRenderTarget()
 {
-	_deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
+	ID3D11RenderTargetView* rtvs[] =
+	{
+		_floatRTV->GetRTV()
+	};
+	_deviceContext->OMSetRenderTargets(_countof(rtvs), rtvs, _backDSV.Get());
 }
 
 void Device::Clear(Vector4 color)
 {
-	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), (float*)&color);
-	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	_deviceContext->ClearRenderTargetView(_floatRTV->GetRTV(), (float*)&color);
+	_deviceContext->ClearDepthStencilView(_backDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 void Device::Present()
@@ -75,43 +84,74 @@ void Device::UpdateWindowSize(UINT width, UINT height)
 	if (g_screenWidth == width && g_screenHeight == height)
 		return;
 
-	if (_renderTargetView)
-		_renderTargetView.Reset();
+	if (_backRTV)
+		_backRTV.Reset();
 
-	if (_depthStencilView)
-		_depthStencilView.Reset();
+	if (_backDSV)
+		_backDSV.Reset();
+
+	if (_floatRTV)
+		delete _floatRTV;
+
+	if (_resolvedRTV)
+		delete _resolvedRTV;
+
+	if (Game::s_postProcess)
+		delete Game::s_postProcess;
 
 	Font::Get().ReleaseTargetBitmap();
 
-	if (FAILED(_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)))
+	g_screenWidth = width;
+	g_screenHeight = height;
+	if (FAILED(_swapChain->ResizeBuffers(0, g_screenWidth, g_screenHeight, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)))
 	{
 		__debugbreak();
 	}
 
 	Font::Get().CreateTargetBitmap();
 
-	g_screenWidth = width;
-	g_screenHeight = height;
-
 	CreateRenderTarget();
 	CreateDepthStencil();
 
 	Environment::Get().SetViewport();
 	Environment::Get().CreatePerspective();
+
+	// PostProcess
+	Game::s_postProcess = new PostProcess();
+	Game::s_postProcess->scale = { (float)g_screenWidth, (float)g_screenHeight, 1.0f };
+	Game::s_postProcess->position = { g_screenWidth * 0.5f, g_screenHeight * 0.5f, 0.0f };
+	Game::s_postProcess->SetSRV(_resolvedRTV->GetSRV());
 }
 
 void Device::CreateRenderTarget()
 {
+	// Backbuffer RenderTarget
 	ID3D11Texture2D* backBuffer;
 	if (FAILED(_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer)))
 	{
 		__debugbreak();
 	}
-	if (FAILED(_device->CreateRenderTargetView(backBuffer, nullptr, &_renderTargetView)))
+	if (FAILED(_device->CreateRenderTargetView(backBuffer, nullptr, &_backRTV)))
 	{
 		__debugbreak();
 	}
 	backBuffer->Release();
+
+	D3D11_TEXTURE2D_DESC desc = {};
+	backBuffer->GetDesc(&desc);
+
+	// Float RenderTarget
+	_numQualityLevel = 0;
+	if (FAILED(_device->CheckMultisampleQualityLevels(DXGI_FORMAT_R16G16B16A16_FLOAT, 4, &_numQualityLevel)))
+	{
+		__debugbreak();
+	}
+	
+	if (_numQualityLevel > 0)
+		_useMSAA = true;
+
+	_floatRTV = new RenderTarget(_device.Get(), g_screenWidth, g_screenHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, true, _numQualityLevel);
+	_resolvedRTV = new RenderTarget(_device.Get(), g_screenWidth, g_screenHeight, DXGI_FORMAT_R16G16B16A16_FLOAT);
 }
 
 void Device::CreateDepthStencil()
@@ -124,10 +164,18 @@ void Device::CreateDepthStencil()
 		desc.MipLevels = 1;
 		desc.ArraySize = 1;
 		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		if (_useMSAA)
+		{
+			desc.SampleDesc.Count = 4;
+			desc.SampleDesc.Quality = _numQualityLevel - 1;
+		}
+		else
+		{
+			desc.SampleDesc.Count = 1;
+			desc.SampleDesc.Quality = 0;
+		}
 		if (FAILED(_device->CreateTexture2D(&desc, nullptr, &depthBuffer)))
 		{
 			__debugbreak();
@@ -136,8 +184,8 @@ void Device::CreateDepthStencil()
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC desc = {};
 		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		if (FAILED(_device->CreateDepthStencilView(depthBuffer, &desc, &_depthStencilView)))
+		desc.ViewDimension = _useMSAA ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D;
+		if (FAILED(_device->CreateDepthStencilView(depthBuffer, &desc, &_backDSV)))
 		{
 			__debugbreak();
 		}

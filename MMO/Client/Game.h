@@ -1,5 +1,7 @@
 #pragma once
 
+class PostProcess;
+
 class Game
 {
 public:
@@ -12,6 +14,9 @@ public:
 	void Render();
 	void PostRender();
 
+public:
+	static void InitPostProcess();
+
 private:
 	void RenderFPS();
 	void Debug();
@@ -19,5 +24,6 @@ private:
 
 public:
 	static bool s_exit;
+	static PostProcess* s_postProcess;
 };
 

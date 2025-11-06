@@ -24,7 +24,7 @@ class Camera : public Transform
 		void Set(Matrix value)
 		{
 			data.matrix = value.Transpose();
-			data.invMatrix = value.Invert();
+			data.invMatrix = value.Invert().Transpose();
 		}
 	};
 public:

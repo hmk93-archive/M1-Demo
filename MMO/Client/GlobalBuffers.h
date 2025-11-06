@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConstBuffer.h"
+#include "Light.h"
 
 class MatrixBuffer : public ConstBuffer
 {
@@ -96,6 +97,40 @@ public:
 	}
 };
 
+#define MAX_LIGHT 10
+class Light;
+
+class LightBuffer : public ConstBuffer
+{
+public:
+	struct Data
+	{
+		Light lights[MAX_LIGHT];
+		UINT lightCount;
+		float padding[3];
+		
+		Vector4 ambient;
+		Vector4 ambientCeil;
+
+	} data;
+
+	LightBuffer() : ConstBuffer(&data, sizeof(Data))
+	{
+		data.lightCount = 0;
+		data.ambient = { 0.1f, 0.1f, 0.1f, 1.0f };
+		data.ambientCeil = { 0.1f, 0.1f, 0.1f, 1.0f };
+	}
+
+	void Add(Light light)
+	{
+		data.lights[data.lightCount++] = light;
+	}
+
+	void Add()
+	{
+		data.lightCount++;
+	}
+};
 
 class RayBuffer : public ConstBuffer
 {

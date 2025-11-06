@@ -11,7 +11,8 @@
 using namespace Utility;
 
 AStar::AStar(UINT width, UINT height)
-	: width(width), height(height)
+	: width(width)
+	, height(height)
 {
 	_heap = new Heap();
 }

@@ -184,7 +184,7 @@ void NavMesh::InitNavMesh()
 
 	// Heightfield 생성
 	float bmin[3] = { 0, 0, 0 };
-	float bmax[3] = { _width, 25, _height };
+	float bmax[3] = { (float)_width, 25, (float)_height };
 	float width = (int)((bmax[0] - bmin[0]) / _cfg.cs + 0.5f);
 	float height = (int)((bmax[2] - bmin[2]) / _cfg.cs + 0.5f);
 	_solid = rcAllocHeightfield();

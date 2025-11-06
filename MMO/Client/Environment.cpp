@@ -14,10 +14,14 @@ Environment::Environment()
 
 	_mainCamera = new Camera();
 	_mainCamera->position = Vector3(0.0f, 5.0f, -5.0f);
+
+	_lightBuffer = new LightBuffer();
+	_lightBuffer->Add();
 }
 
 Environment::~Environment()
 {
+	delete _lightBuffer;
 	delete _mainCamera;
 	delete _samplerState;
 	delete _projectionBuffer;
@@ -28,6 +32,7 @@ void Environment::Set()
 	SetViewport();
 	SetProjection();
 	_mainCamera->SetVS(1);
+	_lightBuffer->SetPSBuffer(0);
 }
 
 void Environment::PostRender()

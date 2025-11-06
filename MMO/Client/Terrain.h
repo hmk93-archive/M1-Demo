@@ -50,6 +50,9 @@ private:
 
 	void CreateInput();
 	void CreateAlpha();
+	
+	void CreateNormal();
+	void CreateTangent();
 
 private:
 	Material* _material = nullptr;

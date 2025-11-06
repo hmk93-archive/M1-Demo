@@ -16,8 +16,11 @@
 #include "ModelExportScene.h"
 #include "NavMeshScene.h"
 #include "MenuScene.h"
+#include "PostProcess.h"
+#include "RenderTarget.h"
 
 bool Game::s_exit = false;
+PostProcess* Game::s_postProcess = nullptr;
 ImGuizmo::OPERATION g_guizmoOp = ImGuizmo::TRANSLATE;
 ImGuizmo::MODE g_guizmoMode = ImGuizmo::WORLD;
 bool g_useSnap = false;
@@ -29,7 +32,7 @@ Game::Game()
 	Environment::Get();
 	Input::Get();
 	Timer::Get();
-	Font::Get().Add();
+	// Font::Get().Add();
 	SceneManager::Get();
 
 	ImGui::CreateContext();
@@ -45,10 +48,17 @@ Game::Game()
 	// SceneManager::Get().Add("NavMesh", new NavMeshScene(true)); // 카메라 주의: InGameScene 보다 먼저 로딩될 경우 Follow 카메라 동작하지 않음
 	
 	SceneManager::Get().Play("Menu");
+
+	s_postProcess = new PostProcess();
+	s_postProcess->scale = { (float)g_screenWidth, (float)g_screenHeight, 1.0f };
+	s_postProcess->position = { g_screenWidth * 0.5f, g_screenHeight * 0.5f, 0.0f };
+	s_postProcess->SetSRV(Device::Get().GetResolvedRT()->GetSRV());
 }
 
 Game::~Game()
 {
+	delete s_postProcess;
+
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 
@@ -80,10 +90,13 @@ void Game::Render()
 
 void Game::PostRender()
 {
-	// Font
-	Font::Get().GetDC()->BeginDraw();
-	RenderFPS();
-	Font::Get().GetDC()->EndDraw();
+	// PostProcess
+	s_postProcess->Render();
+
+	//// Font
+	//Font::Get().GetDC()->BeginDraw();
+	//RenderFPS();
+	//Font::Get().GetDC()->EndDraw();
 
 	// ImGui
 	ImGui_ImplDX11_NewFrame();

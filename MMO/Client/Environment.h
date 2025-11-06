@@ -1,6 +1,7 @@
 #pragma once
 
 class MatrixBuffer;
+class LightBuffer;
 class SamplerState;
 class Camera;
 
@@ -30,6 +31,7 @@ private:
 	Camera* _mainCamera = nullptr;
 
 	MatrixBuffer* _projectionBuffer = nullptr;
+	LightBuffer* _lightBuffer = nullptr;
 
 	SamplerState* _samplerState = nullptr;
 };
