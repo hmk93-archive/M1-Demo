@@ -7,6 +7,8 @@ class DepthStencilState;
 
 class UIImage : public Transform
 {
+	friend class Device;
+
 	using VertexType = VertexUV;
 
 public:

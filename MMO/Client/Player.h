@@ -8,6 +8,7 @@ class Collider;
 class AStar;
 class NavMesh;
 class Cursor;
+class ModelObject;
 
 class Player : public ModelAnimator, public Transform
 {
@@ -19,6 +20,7 @@ public:
 		Jump,
 		Attack_A,
 		Attack_B,
+		Impact,
 		End,
 	} animState = Idle;
 
@@ -44,13 +46,19 @@ public:
 
 	Collider* GetMainCollider() { return _mainCollider; }
 	Collider* GetEventCollider() { return _eventCollider; }
+	Collider* GetSwordCollider();
 
 	void Attack(int type);
 	void PushBack(Collider* other);
 	void LookAt(Vector3 direction);
 
+	int GetAttackDamage() { return _attackDamage; }
+
+	void Hit(int damage);
+
 private:
 	void CreateCollider();
+	void CreateWeapons();
 
 	void UpdateMatrix();
 
@@ -60,6 +68,8 @@ private:
 
 	void SetIdle();
 	void AttackEnd();
+
+	void ActiveWeaponCollider();
 
 	void SetPath();
 	void SetVelocity();
@@ -83,11 +93,16 @@ private:
 	Collider* _eventCollider = nullptr;
 
 	Matrix _body = Matrix::Identity;
+	Matrix _rightHand = Matrix::Identity;
 
 	vector<Vector3> _path = {};
 
 	bool _isCombo = false;
 
 	Cursor* _cursor = nullptr;
+
+	int _attackDamage = 20;
+
+	ModelObject* _sword = nullptr;
 };
 

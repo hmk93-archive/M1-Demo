@@ -3,6 +3,7 @@
 #include "Environment.h"
 #include "Camera.h"
 #include "Input.h"
+#include "Timer.h"
 
 namespace Utility
 {
@@ -189,17 +190,26 @@ namespace Utility
         rotationY = result;
     }
 
+    int Random(int min, int max)
+    {
+        return rand() % (max - min) + min;
+    }
+
+    float Random(float min, float max)
+    {
+        float normal = rand() / (float)RAND_MAX;
+        return min + (max - min) * normal;
+    }
+
     void Shuffle(vector<int>& arr)
     {
-        //for (int i = arr.size() - 1; i != 1; --i)
-        //{
-        //	int randIdx = Random(0, i);
-     //       int temp = arr[i];
-     //       arr[i] = arr[randIdx];
-     //       arr[randIdx] = temp;
-        //}
-     //   
-        return;
+        for (int i = arr.size() - 1; i != 1; --i)
+        {
+        	int randIdx = Random(0, i);
+            int temp = arr[i];
+            arr[i] = arr[randIdx];
+            arr[randIdx] = temp;
+        }
     }
 
     Vector3 ToEulerAngles(Quaternion q)
@@ -222,6 +232,30 @@ namespace Utility
         angles.z = (float)std::atan2(siny_cosp, cosy_cosp);
 
         return angles;
+    }
+
+    bool TransitionTimer(OUT float& counter, OUT float& transitionTime, CallBack callBack)
+    {
+        counter += Timer::Get().GetElapsedTime();
+        if (counter > transitionTime)
+        {
+            counter = 0;
+            callBack();
+            return true;
+        }
+        return false;
+    }
+
+    bool TransitionTimer(OUT float& counter, OUT float& transitionTime, CallBackParam callBack, int param)
+    {
+        counter += Timer::Get().GetElapsedTime();
+        if (counter > transitionTime)
+        {
+            counter = 0;
+            callBack(param);
+            return true;
+        }
+        return false;
     }
 
     void TransformUsingGuizmo(Matrix& world, OUT Vector3& scale, OUT Vector3& rotation, OUT Vector3& position)

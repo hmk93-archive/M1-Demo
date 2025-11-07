@@ -10,6 +10,11 @@ class HUDHPBar;
 class Enemy : public ModelAnimators
 {
 public:
+	enum EnemyType
+	{
+		Warrok
+	} type = Warrok;
+
 	enum EnemyAnimState
 	{
 		Idle,
@@ -17,15 +22,16 @@ public:
 		Punch,
 		Hit,
 		Dead,
-	} state = Idle;
+	};
 
 	enum EnemyBehaviourState
 	{
 		None,
+		Move,
 		War,
 		Jump,
 		Die,
-	} behaviourState = None;
+	};
 
 public:
 	Enemy(string file);
@@ -46,7 +52,9 @@ public:
 	void SetIdle(int instanceID);
 	void SetHP(UINT instanceID, int damage);
 
-	HUDHPBar* AddHPBar();
+	HUDHPBar* AddHPBar(UINT instanceID);
+
+	void OnAttack();
 
 	void Death(UINT instanceID);
 	void DeathEnd(int instanceID);
@@ -57,21 +65,21 @@ protected:
 	void MoveTo(UINT instanceID);
 
 public:
-	bool onMouse = false;
-
-public:
 	Collider* mainCollider[MAX_INSTANCE] = {};
 	HUDHPBar* hpBar[MAX_INSTANCE] = {};
+	EnemyAnimState animState[MAX_INSTANCE] = {};
+	EnemyBehaviourState behaviourState[MAX_INSTANCE] = {};
+	int curHP[MAX_INSTANCE] = {};
+	int maxHP[MAX_INSTANCE] = {};
+	bool onMouse[MAX_INSTANCE] = {};
 
 protected:
-	float _attackRange = 25.0f;
+	float _followRange = 25.0f;
+	float _attackRange = 15.0f;
 	float _moveSpeed = 10.0f;
 
 private:
 	Terrain* _terrain = nullptr;
 	Player* _player = nullptr;
-
-	int _curHP = 100;
-	int _maxHP = 100;
 };
 

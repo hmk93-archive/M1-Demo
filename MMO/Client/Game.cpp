@@ -18,6 +18,7 @@
 #include "MenuScene.h"
 #include "PostProcess.h"
 #include "RenderTarget.h"
+#include "UIManager.h"
 
 bool Game::s_exit = false;
 PostProcess* Game::s_postProcess = nullptr;
@@ -32,7 +33,7 @@ Game::Game()
 	Environment::Get();
 	Input::Get();
 	Timer::Get();
-	// Font::Get().Add();
+	Font::Get().Add();
 	SceneManager::Get();
 
 	ImGui::CreateContext();
@@ -41,6 +42,7 @@ Game::Game()
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(Device::Get().GetDevice(), Device::Get().GetDeviceContext());
 
+	// SceneManger
 	SceneManager::Get().Add("ModelExport", new ModelExportScene());
 	SceneManager::Get().Add("MapEditor", new MapEditorScene());
 	SceneManager::Get().Add("InGame", new InGameScene());
@@ -49,6 +51,7 @@ Game::Game()
 	
 	SceneManager::Get().Play("Menu");
 
+	// PostProcess
 	s_postProcess = new PostProcess();
 	s_postProcess->scale = { (float)g_screenWidth, (float)g_screenHeight, 1.0f };
 	s_postProcess->position = { g_screenWidth * 0.5f, g_screenHeight * 0.5f, 0.0f };
@@ -73,6 +76,7 @@ void Game::Update()
 	Timer::Get().Update();
 	Environment::Get().GetMainCamera()->Update();
 	SceneManager::Get().Update();
+	UIManager::Get().Update();
 	Input::Get().SetWheel(0.0f);
 }
 
@@ -94,10 +98,11 @@ void Game::PostRender()
 	// PostProcess
 	s_postProcess->Render();
 
-	//// Font
-	//Font::Get().GetDC()->BeginDraw();
-	//RenderFPS();
-	//Font::Get().GetDC()->EndDraw();
+	// Font
+	Font::Get().GetDC()->BeginDraw();
+	RenderFPS();
+	UIManager::Get().PostRender();
+	Font::Get().GetDC()->EndDraw();
 
 	// ImGui
 	ImGui_ImplDX11_NewFrame();

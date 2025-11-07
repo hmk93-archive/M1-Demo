@@ -44,13 +44,43 @@ void ModelAnimators::Update()
 			float time = 1.0f / clip->tickPerSecond / desc.speed;
 			desc.runningTime += Timer::Get().GetElapsedTime();
 
+			if (FrameEvents[i].count(desc.clip) > 0)
+			{
+				UINT fSize = (UINT)instFrames[i][desc.clip].size();
+				UINT frame = instFrames[i][desc.clip][0];
+				if (desc.curFrame == frame)
+				{
+					FrameEvents[i][desc.clip]();
+					
+					if (fSize == 1)
+					{
+						tempFrame = frame;
+						instFrames[i][desc.clip][0] = -1;
+					}
+					else
+					{
+						auto iter = instFrames[i][desc.clip].begin();
+						UINT valueTemp = *iter;
+						instFrames[i][desc.clip].erase(iter);
+						instFrames[i][desc.clip].emplace_back(valueTemp);
+					}
+				}
+				if (fSize == 1)
+				{
+					if (desc.curFrame >= clip->frameCount - 1)
+					{
+						instFrames[i][desc.clip][0] = tempFrame;
+						tempFrame = {};
+					}
+				}
+			}
+
 			if (desc.time >= 1.0f)
 			{
 				if (desc.curFrame + desc.time >= clip->frameCount)
 				{
 					if (EndEvents[i].count(desc.clip) > 0)
 						EndEvents[i][desc.clip](params[i][desc.clip]);
-
 				}
 
 				desc.curFrame = (desc.curFrame + 1) % clip->frameCount;
@@ -129,12 +159,20 @@ void ModelAnimators::PlayClip(UINT instance, UINT clip, float speed, float takeT
 	frameBuffer->data.tweenDesc[instance].next.speed = speed;
 }
 
+void ModelAnimators::SetFrameEvents(UINT instanceID, UINT clip, CallBack Event, vector<UINT> value)
+{
+	FrameEvents[instanceID][clip] = Event;
+	instFrames[instanceID][clip] = value;
+}
+
 Transform* ModelAnimators::AddTransform()
 {
 	Transform* transform = new Transform();
 	_transforms.emplace_back(transform);
 	EndEvents.emplace_back();
 	params.emplace_back();
+	FrameEvents.emplace_back();
+	instFrames.emplace_back();
 	return transform;
 }
 
@@ -152,7 +190,6 @@ void ModelAnimators::UpdateTransforms()
 
 		_instanceData[_drawCount].world = (*_transforms[i]->GetWorld()).Transpose();
 		_instanceData[_drawCount].index = i;
-		_instanceData[_drawCount].instanceID = i;
 		_drawCount++;
 	}
 

@@ -6,6 +6,7 @@ class UIImage;
 
 class HUDHPBar : public Transform
 {
+	friend class Device;
 public:
 	enum HPBarElement
 	{

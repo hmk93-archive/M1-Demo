@@ -22,6 +22,8 @@ public:
 	virtual void Render() override;
 	virtual void PostRender() override;
 
+	Enemy* GetEnemies() { return _enemies; }
+
 private:
 	void InitScene();
 
@@ -31,9 +33,9 @@ private:
 	void UpdateEnemies();
 
 	void LoadMap();
-	void PlayerAttackToWarrok();
-	void WarrokToMouse();
-	void WarrokToPlayer();
+	void PlayerAttackToEnemy();
+	void EnemyToMouse();
+	void EnemyToPlayer();
 
 	void SetCamera();
 
@@ -42,7 +44,9 @@ private:
 private:
 	Terrain* _terrain = nullptr;
 	Player* _player = nullptr;
-	Enemy* _warrok = nullptr;
+	Enemy* _enemies = nullptr;
+
+	UINT _drawWarrokCount = 50;
 
 	vector<Field*> _fields = {};
 

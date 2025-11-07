@@ -11,6 +11,7 @@
 #include "NavMesh.h"
 #include "Utility.h"
 #include "Cursor.h"
+#include "ModelObject.h"
 using namespace Utility;
 
 Player::Player(string file)
@@ -26,14 +27,20 @@ Player::Player(string file)
 	ReadClip(file + "/Jump0", false);
 	ReadClip(file + "/Attack_A0");
 	ReadClip(file + "/Attack_B0", false);
+	ReadClip(file + "/Hit0");
 
 	SetEndEvent(Jump, bind(&Player::SetIdle, this));
 	SetEndEvent(Attack_A, bind(&Player::AttackEnd, this));
 	SetEndEvent(Attack_B, bind(&Player::AttackEnd, this));
+	SetEndEvent(Impact, bind(&Player::SetIdle, this));
+
+	SetFrameEvent(Attack_A, bind(&Player::ActiveWeaponCollider, this), { 32 });
+	SetFrameEvent(Attack_B, bind(&Player::ActiveWeaponCollider, this), { 32 });
 
 	SetAnimation(Idle);
 
 	CreateCollider();
+	CreateWeapons();
 
 	_cursor = new Cursor();
 }
@@ -41,6 +48,7 @@ Player::Player(string file)
 Player::~Player()
 {
 	delete _cursor;
+	delete _sword;
 	delete _eventCollider;
 	delete _mainCollider;
 }
@@ -67,18 +75,23 @@ void Player::Render()
 
 	_mainCollider->Render();
 	_eventCollider->Render();
+
+	_sword->Render();
 }
 
 void Player::PostRender()
 {
+}
 
+Collider* Player::GetSwordCollider()
+{
+	return _sword->collider;
 }
 
 void Player::Attack(int type)
 {
 	if (behaviourState == War)
 		return;
-	behaviourState = War;
 	
 	switch (type)
 	{
@@ -110,14 +123,34 @@ void Player::LookAt(Vector3 direction)
 	Utility::LookAt(rotation.y, direction);
 }
 
+void Player::Hit(int damage)
+{
+	if (behaviourState == Air || behaviourState == War)
+		return;
+	SetAnimation(Impact);
+}
+
 void Player::CreateCollider()
 {
+	// Main Collider
 	Vector3 minBox, maxBox;
 	SetBox(&minBox, &maxBox);
 	_mainCollider = new CapsuleCollider(15.0f, 100.0f);
 
+	// Event Collider
 	float radius = (minBox - maxBox).Length() * 0.5f;
 	_eventCollider = new SphereCollider(radius);
+}
+
+void Player::CreateWeapons()
+{
+	// rotation 값 주의
+	// 이유에 대해서 아직 이해하지 못함
+	// Blender Export 시 축이 변환되는건가??
+	_sword = new ModelObject("Sword/Sword");
+	_sword->rotation.x = XM_PIDIV2;
+	_sword->rotation.z = -XM_PIDIV2;
+	_sword->position = 0.05f * Vector3(-73.0f, 141.47f, 4.1882f);
 }
 
 void Player::UpdateMatrix()
@@ -134,9 +167,12 @@ void Player::UpdateMatrix()
 	}
 
 	_body = GetTransformByNode(i2) * _world;
+	_rightHand = GetTransformByNode(i1) * _world;
 
 	_mainCollider->SetParent(&_body);
 	_eventCollider->SetParent(&_body);
+	
+	_sword->SetParent(&_rightHand);
 }
 
 void Player::Control()
@@ -244,12 +280,21 @@ void Player::SetIdle()
 {
 	if (behaviourState == War || behaviourState == Air)
 		behaviourState = None;
+
+	_sword->collider->isActive = false;
+
 	SetAnimation(Idle);
 }
 
 void Player::AttackEnd()
 {
 	SetIdle();
+}
+
+void Player::ActiveWeaponCollider()
+{
+	_sword->collider->isActive = true;
+	behaviourState = War;
 }
 
 void Player::SetPath()

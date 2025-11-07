@@ -367,6 +367,15 @@
     <ClInclude Include="HUDHPBar.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="FloatText.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -671,6 +680,15 @@
       <Filter>Environment</Filter>
     </ClCompile>
     <ClCompile Include="HUDHPBar.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Factory.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="FloatText.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>

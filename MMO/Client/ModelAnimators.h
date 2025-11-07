@@ -27,9 +27,13 @@ public:
 	void SetEndEvents(UINT instance, UINT clip, CallBackParam Event) { EndEvents[instance][clip] = Event; }
 	void SetParams(UINT instance, UINT clip, int param) { params[instance][clip] = param; }
 
+	void SetFrameEvents(UINT instanceID, UINT clip, CallBack Event, vector<UINT> value);
+
 	Transform* AddTransform();
 
 	void UpdateTransforms();
+
+	UINT GetInstanceCount() { return (UINT)_transforms.size(); }
 
 public:
 	Vector3 worldMinBox, worldMaxBox;
@@ -46,5 +50,8 @@ private:
 
 	vector<map<UINT, CallBackParam>> EndEvents;
 	vector<map<UINT, int>> params;
+
+	vector<map<UINT, CallBack>> FrameEvents;
+	vector<map<UINT, vector<UINT>>> instFrames;
 };
 

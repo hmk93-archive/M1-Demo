@@ -20,6 +20,9 @@ HUDHPBar::~HUDHPBar()
 
 void HUDHPBar::Update()
 {
+	if (!isActive)
+		return;
+
 	AnimBody();
 	Transform::UpdateWorld();
 	SyncPos();
@@ -27,13 +30,17 @@ void HUDHPBar::Update()
 
 void HUDHPBar::Render()
 {
+	if (!isActive)
+		return;
+
 	for (UIImage* image : _images)
 		image->Render();
 }
 
 void HUDHPBar::PostRender()
 {
-
+	if (!isActive)
+		return;
 }
 
 void HUDHPBar::SetPos(Vector3 worldPos)

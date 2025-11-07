@@ -16,6 +16,8 @@
 #include "Utility.h"
 #include "ModelObject.h"
 #include "Shadow.h"
+#include "Factory.h"
+#include "UIManager.h"
 using namespace Utility;
 
 InGameScene::InGameScene()
@@ -30,7 +32,7 @@ InGameScene::InGameScene()
 InGameScene::~InGameScene()
 {
 	delete _shadow;
-	delete _warrok;
+	delete _enemies;
 	delete _player;
 	for (Field* field : _fields)
 		delete field;
@@ -50,9 +52,9 @@ void InGameScene::Update()
 	for (Field* field : _fields)
 		field->Update();
 	_player->Update();
-	_warrok->Update();
+	_enemies->Update();
 
-	PlayerAttackToWarrok();
+	PlayerAttackToEnemy();
 	UpdateEnemies();
 }
 
@@ -81,7 +83,9 @@ void InGameScene::Render()
 	for (Field* field : _fields)
 		field->Render();
 	_player->Render();
-	_warrok->Render();
+	_enemies->Render();
+
+	UIManager::Get().Render();
 }
 
 void InGameScene::PostRender()
@@ -93,7 +97,7 @@ void InGameScene::PostRender()
 	for (Field* field : _fields)
 		field->PostRender();
 	_player->PostRender();
-	_warrok->PostRender();
+	_enemies->PostRender();
 }
 
 void InGameScene::LoadMap()
@@ -143,58 +147,68 @@ void InGameScene::LoadMap()
 	delete document;
 }
 
-void InGameScene::PlayerAttackToWarrok()
+void InGameScene::PlayerAttackToEnemy()
 {
-	Collider* playerCol = _player->GetMainCollider();
-	if (!playerCol->isActive)
-		return;
-
-	Collider* warrokCol = _warrok->mainCollider[0];
-	if (!warrokCol->isActive)
-		return;
-
-	if (_player->behaviourState != Player::PlayerBehaviourState::War)
-		return;
-
-	if (playerCol->Collision(warrokCol))
+	for (UINT i = 0; i < _drawWarrokCount; i++)
 	{
-		_warrok->Damage(0, 1);
+		Collider* weaponCol = _player->GetSwordCollider();
+		if (!weaponCol->isActive)
+			break;
+
+		Collider* warrokCol = _enemies->mainCollider[i];
+		if (!warrokCol->isActive)
+			continue;
+
+		if (_player->behaviourState != Player::PlayerBehaviourState::War)
+			break;
+
+		if (weaponCol->Collision(warrokCol))
+		{
+			weaponCol->isActive = false;
+			_enemies->Damage(i, _player->GetAttackDamage());
+		}
 	}
 }
 
-void InGameScene::WarrokToMouse()
+void InGameScene::EnemyToMouse()
 {
-	Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
-	Collider* col = _warrok->mainCollider[0];
-	if (col->RayCollision(ray))
-		_warrok->onMouse = true;
-	else
-		_warrok->onMouse = false;
+	for (UINT i = 0; i < _drawWarrokCount; i++)
+	{
+		Ray ray = Environment::Get().GetMainCamera()->ScreenPointToRay(Input::Get().GetMouse());
+		Collider* col = _enemies->mainCollider[i];
+		if (col->RayCollision(ray))
+			_enemies->onMouse[i] = true;
+		else
+			_enemies->onMouse[i] = false;
+	}
 }
 
-void InGameScene::WarrokToPlayer()
+void InGameScene::EnemyToPlayer()
 {
-	Collider* warrokCol = _warrok->mainCollider[0];
-	if (!warrokCol->isActive)
-		return;
-
-	Collider* playerMainCol = _player->GetMainCollider();
-	Collider* playerEventCol = _player->GetEventCollider();
-	if (warrokCol->Collision(playerEventCol))
+	for (UINT i = 0; i < _drawWarrokCount; i++)
 	{
-		if (Input::Get().Down('1') && _warrok->onMouse)
-		{
-			_player->LookAt(warrokCol->position - _player->position);
-			_player->Attack(0);
-		}
-		if (Input::Get().Down('2') && _warrok->onMouse)
-		{
-			_player->LookAt(warrokCol->position - _player->position);
-			_player->Attack(1);
-		}
+		Collider* warrokCol = _enemies->mainCollider[i];
+		if (!warrokCol->isActive)
+			continue;
 
-		if (warrokCol->Collision(playerMainCol))
-			_player->PushBack(warrokCol);
+		Collider* playerMainCol = _player->GetMainCollider();
+		Collider* playerEventCol = _player->GetEventCollider();
+		if (warrokCol->Collision(playerEventCol))
+		{
+			if (Input::Get().Down('1') && _enemies->onMouse[i])
+			{
+				_player->LookAt(warrokCol->position - _player->position);
+				_player->Attack(0);
+			}
+			if (Input::Get().Down('2') && _enemies->onMouse[i])
+			{
+				_player->LookAt(warrokCol->position - _player->position);
+				_player->Attack(1);
+			}
+
+			if (warrokCol->Collision(playerMainCol))
+				_player->PushBack(warrokCol);
+		}
 	}
 }
 
@@ -295,29 +309,23 @@ void InGameScene::CreateEnemies()
 		return;
 
 	// Warrok
-	_warrok = new Enemy("Warrok");
-	Transform* transform = _warrok->AddTransform();
-	transform->position = Vector3(50.0f, 0.0f, 50.0f);
-	transform->scale = Vector3(0.1f);
-	_warrok->UpdateTransforms();
-	_warrok->AddHPBar();
-	_warrok->SetAnimation(0, Enemy::EnemyAnimState::Idle);
-	_warrok->SetEndEvents(0, (UINT)Enemy::EnemyAnimState::Hit, bind(&Enemy::SetIdle, _warrok, 0));
-	_warrok->SetEndEvents(0, (UINT)Enemy::EnemyAnimState::Dead, bind(&Enemy::DeathEnd, _warrok, 0));
-
-	float radius = (_warrok->worldMinBox - _warrok->worldMaxBox).Length() * 0.5f;
-	_warrok->mainCollider[0] = new SphereCollider(radius * 0.5f);
-
-	Vector3 offset = Vector3(0.0f, 10.0f, 0.0f);
-	_warrok->mainCollider[0]->SetTarget(transform, offset);
-	_warrok->SetPlayer(_player);
+	vector<Vector3> positions;
+	for (UINT i = 0; i < _drawWarrokCount; i++)
+	{
+		Vector3 randomPos = Vector3(Random(0.0f, 300.0f), 0.0f, Random(0.0f, 300.0f));
+		positions.push_back(randomPos);
+	}
+	_enemies = Factory::CreateEnemy(Enemy::EnemyType::Warrok, positions);
+	_enemies->SetPlayer(_player);
 }
 
 void InGameScene::UpdateEnemies()
 {
-	_warrok->UpdateAI(0);
-	_warrok->UpdateTransforms();
+	for (UINT i = 0; i < _drawWarrokCount; i++)
+		_enemies->UpdateAI(i);
 
-	WarrokToMouse();
-	WarrokToPlayer();
+	_enemies->UpdateTransforms();
+
+	EnemyToMouse();
+	EnemyToPlayer();
 }

@@ -5,6 +5,8 @@
 #include "Timer.h"
 #include "Utility.h"
 #include "HUDHPBar.h"
+#include "FloatText.h"
+#include "UIManager.h"
 using namespace Utility;
 
 Enemy::Enemy(string file)
@@ -17,6 +19,9 @@ Enemy::Enemy(string file)
 	ReadClip(file + "/Punch0");
 	ReadClip(file + "/Hit0");
 	ReadClip(file + "/Dead0");
+
+	for (UINT i = 0; i < MAX_INSTANCE; i++)
+		curHP[i] = maxHP[i] = 100;
 }
 
 Enemy::~Enemy()
@@ -29,7 +34,7 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
-	for (UINT i = 0; i < _drawCount; i++)
+	for (UINT i = 0; i < _transforms.size(); i++)
 	{
 		mainCollider[i]->SetColor(Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 		hpBar[i]->Update();
@@ -46,7 +51,7 @@ void Enemy::Render()
 
 	ModelAnimators::Render();
 
-	for (UINT i = 0; i < _drawCount; i++)
+	for (UINT i = 0; i < _transforms.size(); i++)
 		mainCollider[i]->Render();
 }
 
@@ -58,12 +63,10 @@ void Enemy::PostRender()
 
 void Enemy::Damage(UINT instanceID, UINT damage)
 {
-	if (behaviourState == Die)
+	if (behaviourState[instanceID] == Die)
 		return;
 
 	mainCollider[instanceID]->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	behaviourState = War;
 
 	SetAnimation(instanceID, EnemyAnimState::Hit);
 
@@ -75,19 +78,27 @@ void Enemy::CheckDistance(UINT instanceID)
 	if (!_player)
 		return;
 
-	if (behaviourState == War)
+	if (behaviourState[instanceID] == War)
 		return;
 
 	const float distance = (_player->position - _transforms[instanceID]->position).Length();
-	if (distance > _attackRange)
+	if (distance > _followRange)
 	{
 		SetAnimation(instanceID, Idle);
-		state = Idle;
+		behaviourState[instanceID] = None;
 	}
 	else
 	{
-		SetAnimation(instanceID, Run);
-		state = Run;
+		if (distance > _attackRange)
+		{
+			SetAnimation(instanceID, Run);
+			behaviourState[instanceID] = Move;
+		}
+		else
+		{
+			SetAnimation(instanceID, Punch);
+			behaviourState[instanceID] = War;
+		}
 	}
 }
 
@@ -102,47 +113,58 @@ void Enemy::RotateTo(UINT instanceID)
 
 void Enemy::SetIdle(int instanceID)
 {
-	behaviourState = None;
+	if (behaviourState[instanceID] == Die)
+	{
+		_transforms[instanceID]->isActive = true;
+		mainCollider[instanceID]->isActive = true;
+		hpBar[instanceID]->isActive = true;
+	}
+
+	behaviourState[instanceID] = None;
 	SetAnimation(instanceID, Idle);
 }
 
 void Enemy::SetHP(UINT instanceID, int damage)
 {
-	_curHP -= damage;
-	if (_curHP <= 0)
+	UIManager::Get().InitFloatText(_transforms[instanceID], ToWString(damage));
+
+	curHP[instanceID] -= damage;
+	if (curHP[instanceID] <= 0)
 		Death(instanceID);
 
-	float hpRatio = (float)_curHP / (float)_maxHP;
+	float hpRatio = (float)curHP[instanceID] / (float)maxHP[instanceID];
 	hpBar[instanceID]->isHit = true;
 	hpBar[instanceID]->SetScale(HUDHPBar::Face, hpRatio);
 	hpBar[instanceID]->SetCurrentBodyScale();
 }
 
-HUDHPBar* Enemy::AddHPBar()
+HUDHPBar* Enemy::AddHPBar(UINT instanceID)
 {
-	assert(_drawCount - 1 >= 0);
 	HUDHPBar* bar = new HUDHPBar();
-	hpBar[_drawCount - 1] = bar;
+	hpBar[instanceID] = bar;
 	return bar;
+}
+
+void Enemy::OnAttack()
+{
+	int damage = 10;
+	_player->Hit(damage);
 }
 
 void Enemy::Death(UINT instanceID)
 {
-	_curHP = 0;
+	curHP[instanceID] = 0;
 
 	mainCollider[instanceID]->isActive = false;
 	hpBar[instanceID]->isActive = false;
-
-	behaviourState = Die;
 	
+	behaviourState[instanceID] = Die;
 	SetAnimation(instanceID, Dead);
 }
 
 void Enemy::DeathEnd(int instanceID)
 {
 	_transforms[instanceID]->isActive = false;
-
-	// @TODO: Respawn
 }
 
 void Enemy::MoveTo(UINT instanceID)
@@ -158,16 +180,16 @@ void Enemy::MoveTo(UINT instanceID)
 
 void Enemy::UpdateAI(UINT instanceID)
 {
-	if (behaviourState == Die)
+	if (behaviourState[instanceID] == Die)
 		return;
 
 	CheckDistance(instanceID);
-	switch (state)
+	switch (behaviourState[instanceID])
 	{
-	case Idle:
+	case None:
 		SetIdle(instanceID);
 		break;
-	case Run:
+	case Move:
 		RotateTo(instanceID);
 		MoveTo(instanceID);
 		break;
@@ -176,9 +198,9 @@ void Enemy::UpdateAI(UINT instanceID)
 
 void Enemy::SetAnimation(UINT instanceID, EnemyAnimState value, float speed)
 {
-	if (state != value)
+	if (animState[instanceID] != value)
 	{
-		state = value;
-		PlayClip(instanceID, state, speed);
+		animState[instanceID] = value;
+		PlayClip(instanceID, animState[instanceID], speed);
 	}
 }

@@ -6,6 +6,12 @@
 #include "RenderTarget.h"
 #include "Game.h"
 #include "PostProcess.h"
+#include "SceneManager.h"
+#include "InGameScene.h"
+#include "MenuScene.h"
+#include "Enemy.h"
+#include "HUDHPBar.h"
+#include "UIImage.h"
 
 Device::Device()
 {
@@ -106,6 +112,18 @@ void Device::UpdateWindowSize(UINT width, UINT height)
 	if (FAILED(_swapChain->ResizeBuffers(0, g_screenWidth, g_screenHeight, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)))
 	{
 		__debugbreak();
+	}
+
+	Scene* scene = SceneManager::Get().GetCurrentScene();
+	if (InGameScene* inGameScene = dynamic_cast<InGameScene*>(scene))
+	{
+		Enemy* enemies = inGameScene->GetEnemies();
+		for (UINT i = 0; i < enemies->GetInstanceCount(); i++)
+		{
+			HUDHPBar* hpBar = enemies->hpBar[i];
+			for (UIImage* image : hpBar->_images)
+				image->CreateMatrix();
+		}
 	}
 
 	Font::Get().CreateTargetBitmap();

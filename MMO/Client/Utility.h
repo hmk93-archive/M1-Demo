@@ -27,10 +27,17 @@ namespace Utility
 	Vector3 WorldToScreen(Vector3 worldPos);
 	void LookAt(OUT float& rotationY, Vector3 direction);
 
+	int Random(int min, int max);
+	float Random(float min, float max);
+
 	void Shuffle(vector<int>& arr);
 
 	// Quaternion to euler angle 
 	Vector3 ToEulerAngles(Quaternion q);
+
+	// Timer
+	bool TransitionTimer(OUT float& counter, OUT float& transitionTime, CallBack callBack);
+	bool TransitionTimer(OUT float& counter, OUT float& transitionTime, CallBackParam callBack, int param);
 
 	// Guizmo
 	void TransformUsingGuizmo(Matrix& world, OUT Vector3& scale, OUT Vector3& rotation, OUT Vector3& position);

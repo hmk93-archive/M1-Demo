@@ -19,7 +19,7 @@ PixelInput VS(VertexInstancing input)
     
     [flatten]
     if (modelType == 2)
-        transform = mul(SkinWorld(input.indices, input.weights), input.transform);
+        transform = mul(SkinWorld(input.index, input.indices, input.weights), input.transform);
     else if (modelType == 1)
         transform = mul(BoneWorld(input.indices, input.weights), input.transform);
     else

@@ -178,6 +178,8 @@
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="DepthStencilState.h" />
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="FloatText.h" />
     <ClInclude Include="HUDHPBar.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Cube.h" />
@@ -253,6 +255,7 @@
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="SquareCollider.h" />
     <ClInclude Include="UIImage.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexLayouts.h" />
@@ -275,6 +278,8 @@
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
+    <ClCompile Include="Factory.cpp" />
+    <ClCompile Include="FloatText.cpp" />
     <ClCompile Include="HUDHPBar.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -457,6 +462,7 @@
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="SquareCollider.cpp" />
     <ClCompile Include="UIImage.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexLayouts.cpp" />

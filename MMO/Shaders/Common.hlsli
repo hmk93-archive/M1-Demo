@@ -280,6 +280,73 @@ matrix SkinWorld(float4 indices, float4 weights)
     return transform;
 }
 
+matrix SkinWorld(int instanceID, float4 indices, float4 weights)
+{
+    float4 c0, c1, c2, c3;
+    float4 n0, n1, n2, n3;
+    
+    matrix transform = 0;
+    matrix cur = 0, next = 0;
+    matrix curAnim = 0, nextAnim = 0;
+    
+    int clip[2];
+    int curFrame[2];
+    int nextFrame[2];
+    float time[2];
+    
+    clip[0] = tweenFrame[instanceID].cur.clip;
+    curFrame[0] = tweenFrame[instanceID].cur.curFrame;
+    nextFrame[0] = tweenFrame[instanceID].cur.nextFrame;
+    time[0] = tweenFrame[instanceID].cur.time;
+    
+    clip[1] = tweenFrame[instanceID].next.clip;
+    curFrame[1] = tweenFrame[instanceID].next.curFrame;
+    nextFrame[1] = tweenFrame[instanceID].next.nextFrame;
+    time[1] = tweenFrame[instanceID].next.time;
+    
+    [unroll(4)]
+    for (int i = 0; i < 4; i++)
+    {
+        c0 = transformMap.Load(int4(indices[i] * 4 + 0, curFrame[0], clip[0], 0));
+        c1 = transformMap.Load(int4(indices[i] * 4 + 1, curFrame[0], clip[0], 0));
+        c2 = transformMap.Load(int4(indices[i] * 4 + 2, curFrame[0], clip[0], 0));
+        c3 = transformMap.Load(int4(indices[i] * 4 + 3, curFrame[0], clip[0], 0));
+        cur = matrix(c0, c1, c2, c3);
+        
+        n0 = transformMap.Load(int4(indices[i] * 4 + 0, nextFrame[0], clip[0], 0));
+        n1 = transformMap.Load(int4(indices[i] * 4 + 1, nextFrame[0], clip[0], 0));
+        n2 = transformMap.Load(int4(indices[i] * 4 + 2, nextFrame[0], clip[0], 0));
+        n3 = transformMap.Load(int4(indices[i] * 4 + 3, nextFrame[0], clip[0], 0));
+        next = matrix(n0, n1, n2, n3);
+        
+        curAnim = lerp(cur, next, time[0]);
+        
+        [flatten]
+        if (clip[1] > -1)
+        {
+            c0 = transformMap.Load(int4(indices[i] * 4 + 0, curFrame[1], clip[1], 0));
+            c1 = transformMap.Load(int4(indices[i] * 4 + 1, curFrame[1], clip[1], 0));
+            c2 = transformMap.Load(int4(indices[i] * 4 + 2, curFrame[1], clip[1], 0));
+            c3 = transformMap.Load(int4(indices[i] * 4 + 3, curFrame[1], clip[1], 0));
+            cur = matrix(c0, c1, c2, c3);
+        
+            n0 = transformMap.Load(int4(indices[i] * 4 + 0, nextFrame[1], clip[1], 0));
+            n1 = transformMap.Load(int4(indices[i] * 4 + 1, nextFrame[1], clip[1], 0));
+            n2 = transformMap.Load(int4(indices[i] * 4 + 2, nextFrame[1], clip[1], 0));
+            n3 = transformMap.Load(int4(indices[i] * 4 + 3, nextFrame[1], clip[1], 0));
+            next = matrix(n0, n1, n2, n3);
+        
+            nextAnim = lerp(cur, next, time[1]);
+            
+            curAnim = lerp(curAnim, nextAnim, tweenFrame[instanceID].tweenTime);
+        }
+        
+        transform += mul(weights[i], curAnim);
+    }
+
+    return transform;
+}
+
 float3 NormalMapping(float3 T, float3 B, float3 N, float2 uv)
 {
     T = normalize(T);

@@ -89,6 +89,11 @@ void UIImage::CreateMesh()
 
 void UIImage::CreateMatrix()
 {
+	if (_viewBuffer)
+		delete _viewBuffer;
+	if (_orthoBuffer)
+		delete _orthoBuffer;
+
 	_view = XMMatrixIdentity();
 	_ortho = XMMatrixOrthographicOffCenterLH(0, g_screenWidth, 0, g_screenHeight, -1, 1);
 

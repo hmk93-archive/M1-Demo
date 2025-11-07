@@ -15,6 +15,7 @@ ModelExportScene::ModelExportScene()
 		CreateAnimation("Paladin", "Jump");
 		CreateAnimation("Paladin", "Attack_A");
 		CreateAnimation("Paladin", "Attack_B");
+		CreateAnimation("Paladin", "Hit");
 		_player = new Player("Paladin");
 	}
 	// Monster
@@ -41,23 +42,32 @@ ModelExportScene::ModelExportScene()
 		}
 	}
 
-	// ModelObject
+	// Export
 	{
 		CreateModel("Stone");
 		CreateModel("House");
+		CreateModel("Sword");
 	}
 
 	// Create ModelObject
 	{
+		// Stone
 		{
 			ModelObject* obj = new ModelObject("Stone/Stone");
 			obj->rotation.z = XM_PI;
 			_models.emplace_back(obj);
 		}
+		// House
 		{
 			ModelObject* obj = new ModelObject("House/House");
 			obj->scale = Vector3(0.01f);
 			obj->rotation.x = XM_PIDIV2;
+			_models.emplace_back(obj);
+		}
+		// Sword
+		{
+			ModelObject* obj = new ModelObject("Sword/Sword");
+			obj->scale = Vector3(0.05f);
 			_models.emplace_back(obj);
 		}
 	}
