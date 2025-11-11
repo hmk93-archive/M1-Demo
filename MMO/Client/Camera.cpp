@@ -35,6 +35,8 @@ void Camera::PostRender()
 	if (ImGui::RadioButton("EDITOR", (int*)&mode, 1)) position = Vector3::Zero;
 	ImGui::Checkbox("FPV", &_fpv);
 	ImGui::InputFloat("MoveSpeed", &_moveSpeed, 1.0f, 50.0f);
+	ImGui::SliderFloat("Distance", &_distance, 0.0f, 30.0f);
+	ImGui::SliderFloat("Height", &_height, 0.0f, 30.0f);
 	ImGui::End();
 }
 
@@ -48,56 +50,26 @@ void Camera::FollowMode()
 	if (!_target)
 		return;
 
-	if (Input::Get().Press(VK_RBUTTON))
-	{
-		_yaw += Input::Get().GetDeltaMouse().x * 0.01f;
-		_pitch += Input::Get().GetDeltaMouse().y;
-		_pitch = clamp(_pitch, _minPitch, _maxPitch);
+	_yaw += Input::Get().GetDeltaMouse().x * 0.01f;
+	_pitch += Input::Get().GetDeltaMouse().y;
+	_pitch = clamp(_pitch, _minPitch, _maxPitch);
 
-		Matrix rotMatrix = XMMatrixRotationRollPitchYaw(0.0f, _yaw, 0.0f);
-		Vector3 offset = Vector3(0.0f, _height, -_distance);  // 뒤 + 높이
-		Vector3 rotatedOffset = Vector3::Transform(offset, rotMatrix);
-		position = _target->GlobalPos() + rotatedOffset;
-		rotation.y = _yaw;
-	}
-	else
-	{
-		rotation.y = 0.0f;
-		Matrix rotMatrix = Matrix::Identity;
-		if (_rotDamping > 0.0f)
-		{
-			if (_target->rotation.y != _destRot)
-			{
-				_destRot = LERP(_destRot, _target->rotation.y + XM_PI, _rotDamping * Timer::Get().GetElapsedTime());
-			}
+	Matrix rotMatrix = XMMatrixRotationRollPitchYaw(0.0f, _yaw, 0.0f);
+	Vector3 offset = Vector3(0.0f, _height, -_distance);  // 뒤 + 높이
+	Vector3 rotatedOffset = Vector3::Transform(offset, rotMatrix);
+	position = _target->GlobalPos() + rotatedOffset;
+	rotation.y = _yaw;
 
-			rotMatrix = XMMatrixRotationY(_destRot);
-		}
-		else
-		{
-			// FollowControl();
-			// rotMatrix = XMMatrixRotationY(rotY);
-		}
-
-		Vector3 forward = Vector3::Transform(Vector3::Backward, rotMatrix);
-		_destPos = forward * -_distance;
-		_destPos += _target->GlobalPos();
-		_destPos.y += _height;
-	}
-
-	if (Input::Get().Up(VK_RBUTTON))
-	{
-		_yaw = 0;
-	}
-
-	position = Vector3::Lerp(position, _destPos, _moveDamping * Timer::Get().GetElapsedTime());
-
-	_view = XMMatrixLookAtLH(position, _target->GlobalPos(), Up());
+	const float epsilon = 0.01f;
+	Vector3 lookAt = _target->GlobalPos();
+	lookAt.y = 0.0f;
+	lookAt.y = _target->GlobalPos().y + _height + epsilon;
+	_view = XMMatrixLookAtLH(position, lookAt, Vector3::Up);
 	_viewBuffer->Set(_view);
 
 	UpdateWorld();
 
-	MouseWheel();
+	// MouseWheel();
 }
 
 void Camera::EditorMode()

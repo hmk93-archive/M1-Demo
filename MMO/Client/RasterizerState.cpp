@@ -22,7 +22,12 @@ void RasterizerState::SetState()
 void RasterizerState::FillMode(D3D11_FILL_MODE mode)
 {
 	_desc.FillMode = mode;
+	Changed();
+}
 
+void RasterizerState::CullMode(D3D11_CULL_MODE mode)
+{
+	_desc.CullMode = mode;
 	Changed();
 }
 

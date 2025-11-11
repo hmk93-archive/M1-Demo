@@ -108,5 +108,5 @@ float4 PS(PixelInput input) : SV_TARGET
     
     
     
-    return color;
+    return color * factor;
 }

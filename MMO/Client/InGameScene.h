@@ -46,7 +46,7 @@ private:
 	Player* _player = nullptr;
 	Enemy* _enemies = nullptr;
 
-	UINT _drawWarrokCount = 50;
+	UINT _drawWarrokCount = 1;
 
 	vector<Field*> _fields = {};
 

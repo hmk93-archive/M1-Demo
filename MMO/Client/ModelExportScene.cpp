@@ -11,11 +11,15 @@ ModelExportScene::ModelExportScene()
 	{
 		CreateModel("Paladin");
 		CreateAnimation("Paladin", "Idle");
-		CreateAnimation("Paladin", "Run");
+		CreateAnimation("Paladin", "RunF");
+		CreateAnimation("Paladin", "RunL");
+		CreateAnimation("Paladin", "RunR");
+		CreateAnimation("Paladin", "RunB");
 		CreateAnimation("Paladin", "Jump");
 		CreateAnimation("Paladin", "Attack_A");
 		CreateAnimation("Paladin", "Attack_B");
 		CreateAnimation("Paladin", "Hit");
+		CreateAnimation("Paladin", "Dead");
 		_player = new Player("Paladin");
 	}
 	// Monster

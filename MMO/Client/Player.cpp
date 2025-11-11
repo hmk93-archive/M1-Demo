@@ -12,6 +12,7 @@
 #include "Utility.h"
 #include "Cursor.h"
 #include "ModelObject.h"
+#include "RasterizerState.h"
 using namespace Utility;
 
 Player::Player(string file)
@@ -22,31 +23,25 @@ Player::Player(string file)
 
 	SetShader(L"Default");
 
-	ReadClip(file + "/Idle0");
-	ReadClip(file + "/Run0");
-	ReadClip(file + "/Jump0", false);
-	ReadClip(file + "/Attack_A0");
-	ReadClip(file + "/Attack_B0", false);
-	ReadClip(file + "/Hit0");
-
-	SetEndEvent(Jump, bind(&Player::SetIdle, this));
-	SetEndEvent(Attack_A, bind(&Player::AttackEnd, this));
-	SetEndEvent(Attack_B, bind(&Player::AttackEnd, this));
-	SetEndEvent(Impact, bind(&Player::SetIdle, this));
-
-	SetFrameEvent(Attack_A, bind(&Player::ActiveWeaponCollider, this), { 32 });
-	SetFrameEvent(Attack_B, bind(&Player::ActiveWeaponCollider, this), { 32 });
+	SetClips(file);
 
 	SetAnimation(Idle);
 
 	CreateCollider();
+
 	CreateWeapons();
 
-	_cursor = new Cursor();
+	CreateCursor();
+
+	_rsState[0] = new RasterizerState();
+	_rsState[1] = new RasterizerState();
+	_rsState[1]->CullMode(D3D11_CULL_NONE);
 }
 
 Player::~Player()
 {
+	delete _rsState[1];
+	delete _rsState[0];
 	delete _cursor;
 	delete _sword;
 	delete _eventCollider;
@@ -71,7 +66,9 @@ void Player::Render()
 	_cursor->Render();
 
 	SetWorldBuffer();
+	_rsState[1]->SetState();
 	ModelAnimator::Render();
+	_rsState[0]->SetState();
 
 	_mainCollider->Render();
 	_eventCollider->Render();
@@ -90,9 +87,11 @@ Collider* Player::GetSwordCollider()
 
 void Player::Attack(int type)
 {
-	if (behaviourState == War)
+	if (behaviourState == War || behaviourState == Air)
 		return;
-	
+
+	behaviourState = War;
+
 	switch (type)
 	{
 	case 0:
@@ -125,9 +124,24 @@ void Player::LookAt(Vector3 direction)
 
 void Player::Hit(int damage)
 {
-	if (behaviourState == Air || behaviourState == War)
+	if (behaviourState == Die || behaviourState == Air || behaviourState == War)
 		return;
+
 	SetAnimation(Impact);
+
+	_curHP -= damage;
+	if (_curHP <= 0)
+		Death();
+}
+
+void Player::Death()
+{
+	_mainCollider->isActive = false;
+	_eventCollider->isActive = false;
+	_sword->collider->isActive = false;
+
+	behaviourState = Die;
+	SetAnimation(Dead);
 }
 
 void Player::CreateCollider()
@@ -153,6 +167,11 @@ void Player::CreateWeapons()
 	_sword->position = 0.05f * Vector3(-73.0f, 141.47f, 4.1882f);
 }
 
+void Player::CreateCursor()
+{
+	_cursor = new Cursor();
+}
+
 void Player::UpdateMatrix()
 {
 	static bool set = false;
@@ -171,7 +190,7 @@ void Player::UpdateMatrix()
 
 	_mainCollider->SetParent(&_body);
 	_eventCollider->SetParent(&_body);
-	
+
 	_sword->SetParent(&_rightHand);
 }
 
@@ -180,46 +199,53 @@ void Player::Control()
 	if (Environment::Get().GetMainCamera()->mode != Camera::CamMode::Follow)
 		return;
 
-	// Path Finding
-	if (Input::Get().Down(VK_LBUTTON))
+	//// Path Finding
+	//if (Input::Get().Down(VK_LBUTTON))
+	//{
+	//	if (behaviourState != Air)
+	//	{
+	//		_velocity = {};
+	//		SetPath();
+	//	}
+	//}
+
+	// WSAD 
+	if (Input::Get().Press('W'))
 	{
-		if (behaviourState != Air)
-		{
-			_velocity = {};
-			SetPath();
-		}
+		_path.clear();
+		_velocity += Environment::Get().GetMainCamera()->Forward();
+		_velocity.Normalize();
+	}
+	if (Input::Get().Press('S'))
+	{
+		_path.clear();
+		_velocity += -Environment::Get().GetMainCamera()->Forward();
+		_velocity.Normalize();
+	}
+	if (Input::Get().Press('A'))
+	{
+		_path.clear();
+		_velocity += -Environment::Get().GetMainCamera()->Right();
+		_velocity.Normalize();
+	}
+	if (Input::Get().Press('D'))
+	{
+		_path.clear();
+		_velocity += Environment::Get().GetMainCamera()->Right();
+		_velocity.Normalize();
 	}
 
-	//// WSAD 
-	//if (Input::Get().Press('W'))
-	//{
-	//	_path.clear();
-	//	_velocity += Vector3::Backward;
-	//	_velocity.Normalize();
-	//}
-	//if (Input::Get().Press('S'))
-	//{
-	//	_path.clear();
-	//	_velocity += Vector3::Forward;
-	//	_velocity.Normalize();
-	//}
-	//if (Input::Get().Press('A'))
-	//{
-	//	_path.clear();
-	//	_velocity += Vector3::Left;
-	//	_velocity.Normalize();
-	//}
-	//if (Input::Get().Press('D'))
-	//{
-	//	_path.clear();
-	//	_velocity += Vector3::Right;
-	//	_velocity.Normalize();
-	//}
-
+	// Jump
 	if (Input::Get().Down(VK_SPACE) && behaviourState != War)
 	{
 		behaviourState = Air;
 		SetAnimation(Jump);
+	}
+
+	// Attack
+	if (Input::Get().Down(VK_LBUTTON))
+	{
+		Attack(1);
 	}
 }
 
@@ -245,11 +271,35 @@ void Player::Move()
 
 	if (_velocity.Length() > 0.5f)
 	{
-		SetAnimation(Run);
+		Vector3 forward = -Forward();
+		forward.Normalize();
+
+		Vector3 vel = _velocity;
+		vel.Normalize();
+
+		// 두 벡터 사이의 cos(theta)
+		float cosValue = forward.Dot(vel);
+		cosValue = std::clamp(cosValue, -1.0f, 1.0f);
+		float theta = acos(cosValue); // 0 ~ π
+
+		// 방향 판정
+		Vector3 cross = forward.Cross(vel);
+		float sign = (cross.y >= 0.0f) ? 1.0f : -1.0f;
+
+		theta *= sign;
+
+		if (-XM_PIDIV4 <= theta && theta <= XM_PIDIV4)
+			SetAnimation(RunF);
+		else if (-XM_PIDIV4 - XM_PIDIV2 <= theta && theta < -XM_PIDIV4)
+			SetAnimation(RunL);
+		else if (XM_PIDIV4 < theta && theta <= XM_PIDIV4 + XM_PIDIV2)
+			SetAnimation(RunR);
+		else
+			SetAnimation(RunB);
 	}
 	else
 	{
-		if (animState == Run)
+		if (RunF <= animState && animState <= RunB)
 		{
 			SetAnimation(Idle);
 		}
@@ -258,22 +308,24 @@ void Player::Move()
 
 void Player::Rotate()
 {
-	if (behaviourState == War)
-		return;
-	if (_velocity.Length() < 0.1f)
-		return;
-	Vector3 start = Forward() * -1.0f;
-	Vector3 end = _velocity;
-	end.Normalize();
-	float cosValue = start.Dot(end);
-	float theta = acos(cosValue);
-	if (theta < 0.1f)
-		return;
-	Vector3 cross = start.Cross(end);
-	if (cross.y > 0.0f)
-		rotation.y += _rotateSpeed * Timer::Get().GetElapsedTime();
-	else
-		rotation.y -= _rotateSpeed * Timer::Get().GetElapsedTime();
+	LookAt(Environment::Get().GetMainCamera()->Forward());
+
+	//if (behaviourState == War)
+	//	return;
+	//if (_velocity.Length() < 0.1f)
+	//	return;
+	//Vector3 start = Forward() * -1.0f;
+	//Vector3 end = _velocity;
+	//end.Normalize();
+	//float cosValue = start.Dot(end);
+	//float theta = acos(cosValue);
+	//if (theta < 0.1f)
+	//	return;
+	//Vector3 cross = start.Cross(end);
+	//if (cross.y > 0.0f)
+	//	rotation.y += _rotateSpeed * Timer::Get().GetElapsedTime();
+	//else
+	//	rotation.y -= _rotateSpeed * Timer::Get().GetElapsedTime();	
 }
 
 void Player::SetIdle()
@@ -281,6 +333,8 @@ void Player::SetIdle()
 	if (behaviourState == War || behaviourState == Air)
 		behaviourState = None;
 
+	_mainCollider->isActive = true;
+	_eventCollider->isActive = true;
 	_sword->collider->isActive = false;
 
 	SetAnimation(Idle);
@@ -299,31 +353,31 @@ void Player::ActiveWeaponCollider()
 
 void Player::SetPath()
 {
-	if (!_terrain || !_astar)
-		return;
+	//if (!_terrain || !_astar)
+	//	return;
 
-	_path.clear();
-	_terrain->ComputePicking(_destPos);
-	_astar->SetPath(_path, position, _destPos);
+	//_path.clear();
+	//_terrain->ComputePicking(_destPos);
+	//_astar->SetPath(_path, position, _destPos);
 
 
-	wstring log = to_wstring(_path.size()) + L"\n";
-	OutputDebugString(log.c_str());
+	//wstring log = to_wstring(_path.size()) + L"\n";
+	//OutputDebugString(log.c_str());
 }
 
 void Player::SetVelocity()
 {
-	// Path Finding
-	if (!_path.empty())
-	{
-		Vector3 dest = _path.back();
-		Vector3 direction = dest - position;
-		if (direction.Length() < 0.1f)
-			_path.pop_back();
+	//// Path Finding
+	//if (!_path.empty())
+	//{
+	//	Vector3 dest = _path.back();
+	//	Vector3 direction = dest - position;
+	//	if (direction.Length() < 0.1f)
+	//		_path.pop_back();
 
-		_velocity = direction;
-		_velocity.Normalize();
-	}
+	//	_velocity = direction;
+	//	_velocity.Normalize();
+	//}
 }
 
 void Player::SetHeight()
@@ -343,6 +397,28 @@ void Player::SetAnimation(PlayerAnimState value, float speed)
 		animState = value;
 		PlayClip(animState, speed);
 	}
+}
+
+void Player::SetClips(string file)
+{
+	ReadClip(file + "/Idle0");
+	ReadClip(file + "/RunF0");
+	ReadClip(file + "/RunL0");
+	ReadClip(file + "/RunR0");
+	ReadClip(file + "/RunB0");
+	ReadClip(file + "/Jump0", false);
+	ReadClip(file + "/Attack_A0");
+	ReadClip(file + "/Attack_B0", false);
+	ReadClip(file + "/Hit0");
+	ReadClip(file + "/Dead0");
+
+	SetEndEvent(Jump, bind(&Player::SetIdle, this));
+	SetEndEvent(Attack_A, bind(&Player::AttackEnd, this));
+	SetEndEvent(Attack_B, bind(&Player::AttackEnd, this));
+	SetEndEvent(Impact, bind(&Player::SetIdle, this));
+
+	SetFrameEvent(Attack_A, bind(&Player::ActiveWeaponCollider, this), { 32 });
+	SetFrameEvent(Attack_B, bind(&Player::ActiveWeaponCollider, this), { 32 });
 }
 
 void Player::SetTerrain(Terrain* terrain)

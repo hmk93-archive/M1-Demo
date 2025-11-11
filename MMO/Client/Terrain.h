@@ -44,6 +44,8 @@ public:
 	vector<VertexType>& GetVertices() { return _vertices; }
 	vector<UINT>& GetIndices() { return _indices; }
 
+	Material* GetMaterial() { return _material; }
+
 private:
 	void CreateMesh();
 	void CreateCompute();

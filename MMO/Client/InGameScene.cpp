@@ -18,6 +18,8 @@
 #include "Shadow.h"
 #include "Factory.h"
 #include "UIManager.h"
+#include "Model.h"
+#include "Material.h"
 using namespace Utility;
 
 InGameScene::InGameScene()
@@ -60,29 +62,47 @@ void InGameScene::Update()
 
 void InGameScene::PreRender()
 {
-	// _shadow->PreRender();
+	_shadow->PreRender();
 
-	//for (ModelObject* model : _models)
-	//	model->Render();
-	//_terrain->Render();
-	//for (Field* field : _fields)
-	//	field->Render();
-	//_player->Render();
-	//_warrok->Render();
+	for (ModelObject* model : _models)
+	{
+		model->GetModel()->SetShader(L"Depth");
+		model->Render();
+	}
+
+	_terrain->GetMaterial()->SetShader(L"Depth");
+	_terrain->Render();
+
+	for (Field* field : _fields)
+		field->Render();
+
+	_player->SetShader(L"Depth");
+	_player->Render();
+
+	_enemies->SetShader(L"Depth");
+	_enemies->Render();
 }
 
 void InGameScene::Render()
 {
-	// _shadow->Render();
+	_shadow->Render();
 
 	for (ModelObject* model : _models)
+	{
+		model->GetModel()->SetShader(L"Default");
 		model->Render();
+	}
+
+	_terrain->GetMaterial()->SetShader(L"Terrain");
 	_terrain->Render();
-	_astar->Render();
-	_navMesh->Render();
+
 	for (Field* field : _fields)
 		field->Render();
+
+	_player->SetShader(L"Default");
 	_player->Render();
+
+	_enemies->SetShader(L"Instancing");
 	_enemies->Render();
 
 	UIManager::Get().Render();
@@ -90,7 +110,7 @@ void InGameScene::Render()
 
 void InGameScene::PostRender()
 {
-	// _shadow->PostRender();
+	_shadow->PostRender();
 
 	_terrain->PostRender();
 	_astar->PostRender();
@@ -195,16 +215,8 @@ void InGameScene::EnemyToPlayer()
 		Collider* playerEventCol = _player->GetEventCollider();
 		if (warrokCol->Collision(playerEventCol))
 		{
-			if (Input::Get().Down('1') && _enemies->onMouse[i])
-			{
-				_player->LookAt(warrokCol->position - _player->position);
-				_player->Attack(0);
-			}
-			if (Input::Get().Down('2') && _enemies->onMouse[i])
-			{
-				_player->LookAt(warrokCol->position - _player->position);
-				_player->Attack(1);
-			}
+			_player->LookAt(warrokCol->position - _player->position);
+			_player->LookAt(warrokCol->position - _player->position);
 
 			if (warrokCol->Collision(playerMainCol))
 				_player->PushBack(warrokCol);
@@ -214,7 +226,7 @@ void InGameScene::EnemyToPlayer()
 
 void InGameScene::SetCamera()
 {
-	Environment::Get().GetMainCamera()->position = { 0, 100.0f, -70.0f };
+	Environment::Get().GetMainCamera()->position = { 0, 0.0f, 0.0f };
 	Environment::Get().GetMainCamera()->rotation = { 0.6f, 0, 0 };
 	Environment::Get().GetMainCamera()->mode = Camera::CamMode::Follow;
 	Environment::Get().GetMainCamera()->SetTarget(_player);

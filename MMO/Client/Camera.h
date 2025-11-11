@@ -12,7 +12,7 @@ public:
 	{
 		Follow,
 		Editor
-	} mode;
+	} mode = Follow;
 
 public:
 	Camera();
@@ -56,8 +56,8 @@ private:
 	float _destRot = 0.0f;
 
 	Vector3 _destPos = Vector3::Zero;
-	float _distance = 60.0f;
-	float _height = 60.0f;
+	float _distance = 7.5f;
+	float _height = 7.5f;
 
 	float _yaw = 0.0f;
 	float _pitch = 0.0f;

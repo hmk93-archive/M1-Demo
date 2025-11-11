@@ -9,6 +9,7 @@ class AStar;
 class NavMesh;
 class Cursor;
 class ModelObject;
+class RasterizerState;
 
 class Player : public ModelAnimator, public Transform
 {
@@ -16,11 +17,15 @@ public:
 	enum PlayerAnimState
 	{
 		Idle,
-		Run,
+		RunF,
+		RunL,
+		RunR,
+		RunB,
 		Jump,
 		Attack_A,
 		Attack_B,
 		Impact,
+		Dead,
 		End,
 	} animState = Idle;
 
@@ -29,6 +34,7 @@ public:
 		None,
 		War,
 		Air,
+		Die,
 	} behaviourState = None;
 
 public:
@@ -56,9 +62,12 @@ public:
 
 	void Hit(int damage);
 
+	void Death();
+
 private:
 	void CreateCollider();
 	void CreateWeapons();
+	void CreateCursor();
 
 	void UpdateMatrix();
 
@@ -76,6 +85,8 @@ private:
 	void SetHeight();
 	void SetAnimation(PlayerAnimState value, float speed = 1.0f);
 
+	void SetClips(string file);
+
 private:
 	Terrain* _terrain = nullptr;
 	AStar* _astar = nullptr;
@@ -87,7 +98,7 @@ private:
 
 	float _moveSpeed = 20.0f;
 	float _rotateSpeed = 20.0f;
-	float _deceleration = 5.0f;
+	float _deceleration = 20.0f;
 
 	Collider* _mainCollider = nullptr;
 	Collider* _eventCollider = nullptr;
@@ -104,5 +115,10 @@ private:
 	int _attackDamage = 20;
 
 	ModelObject* _sword = nullptr;
+
+	int _curHP = 100;
+	int _maxHP = 100;
+
+	RasterizerState* _rsState[2] = {};
 };
 
