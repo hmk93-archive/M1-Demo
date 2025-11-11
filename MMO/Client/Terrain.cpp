@@ -14,12 +14,10 @@
 Terrain::Terrain(Vector3 pos)
 {
 	_material = new Material(L"Terrain");
-	_material->SetDiffuseMap(L"../Assets/Textures/WallDiffuse.png");
-	_material->SetSpecularMap(L"../Assets/Textures/WallSpecular.png");
-	_material->SetNormalMap(L"../Assets/Textures/WallNormal.png");
+	_material->SetDiffuseMap(L"../Assets/Textures/Landscape/Dirt1.png");
 
-	_secondMap = Texture::Add(L"../Assets/Textures/Floor.png");
-	_thirdMap = Texture::Add(L"../Assets/Textures/Stones.png");
+	_secondMap = Texture::Add(L"../Assets/Textures/Landscape/Dirt2.png");
+	_thirdMap = Texture::Add(L"../Assets/Textures/Landscape/Dirt3.png");
 
 	_heightMap = Texture::Add(L"../Assets/Textures/HeightMap.png");
 

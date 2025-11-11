@@ -12,24 +12,14 @@ using namespace Utility;
 
 MapEditorScene::MapEditorScene()
 {
-	// Terrain Editor
 	_terrainEditor = new TerrainEditor(300, 300);
-	// Create ModelObject
-	{
-		{
-			ModelObject* obj = new ModelObject("Stone/Stone");
-			obj->rotation.z = XM_PI;
-			_models.emplace_back(obj);
-		}
-		{
-			ModelObject* obj = new ModelObject("House/House");
-			obj->scale = Vector3(0.01f);
-			_models.emplace_back(obj);
-		}
-	}
+
+	LoadMap("../Data/Main.xml");
 
 	for (auto& model : _models)
 		model->isActive = false;
+
+	SetCamera();
 
 	InitFileSystem();
 }
@@ -43,6 +33,8 @@ MapEditorScene::~MapEditorScene()
 
 void MapEditorScene::Update()
 {
+	Control();
+
 	_terrainEditor->Update();
 
 	// Picking and update
@@ -145,6 +137,30 @@ void MapEditorScene::LoadFile()
 
 		igfd::ImGuiFileDialog::Instance()->CloseDialog("MapLoadKey");
 	}
+
+	// Create Model
+	if (ImGui::Button("Create Model"))
+	{
+		igfd::ImGuiFileDialog::Instance()->OpenDialog("CreateModelKey", "Load Map File", ".xml", ".");
+	}
+
+	if (igfd::ImGuiFileDialog::Instance()->FileDialog("CreateModelKey"))
+	{
+		if (igfd::ImGuiFileDialog::Instance()->IsOk == true)
+		{
+			_path = igfd::ImGuiFileDialog::Instance()->GetFilePathName();
+			Replace(&_path, "\\", "/");
+
+			{
+				string text = GetFileNameWithoutExtension(_path);
+				
+				ModelObject* obj = new ModelObject(text + "/" + text);
+				_models.emplace_back(obj);
+			}
+		}
+
+		igfd::ImGuiFileDialog::Instance()->CloseDialog("CreateModelKey");
+	}
 }
 
 void MapEditorScene::SaveMap(string path)
@@ -193,5 +209,74 @@ void MapEditorScene::SaveMap(string path)
 
 void MapEditorScene::LoadMap(string path)
 {
+	string file = path;
+
+	XmlDocument* document = new XmlDocument();
+	document->LoadFile(file.c_str());
+
+	XmlElement* root = document->FirstChildElement();
+
+	XmlElement* modelNode = root->FirstChildElement();
+
+	do
+	{
+		XmlElement* node = modelNode->FirstChildElement();
+
+		string text = "";
+		text = node->GetText();
+		ModelObject* model = new ModelObject(text + "/" + text);
+
+		Vector3 vec;
+		node = node->NextSiblingElement();
+		vec.x = node->FloatAttribute("x");
+		vec.y = node->FloatAttribute("y");
+		vec.z = node->FloatAttribute("z");
+		model->scale = vec;
+
+		node = node->NextSiblingElement();
+		vec.x = node->FloatAttribute("x");
+		vec.y = node->FloatAttribute("y");
+		vec.z = node->FloatAttribute("z");
+		model->rotation = vec;
+
+		node = node->NextSiblingElement();
+		vec.x = node->FloatAttribute("x");
+		vec.y = node->FloatAttribute("y");
+		vec.z = node->FloatAttribute("z");
+		model->position = vec;
+
+		modelNode = modelNode->NextSiblingElement();
+
+		_models.push_back(model);
+
+	} while (modelNode != nullptr);
+
+	delete document;
 }
 
+void MapEditorScene::Control()
+{
+	if (Input::Get().Down(VK_DELETE))
+	{
+		auto iter = _models.begin();
+		for (;iter != _models.end();)
+		{
+			if ((*iter)->isActive)
+			{
+				delete (*iter);
+				iter = _models.erase(iter);
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+}
+
+void MapEditorScene::SetCamera()
+{
+	Environment::Get().GetMainCamera()->position = { 0, 0.0f, 0.0f };
+	Environment::Get().GetMainCamera()->rotation = { 0.6f, 0, 0 };
+	Environment::Get().GetMainCamera()->mode = Camera::CamMode::Editor;
+}

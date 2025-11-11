@@ -21,5 +21,6 @@ PixelInput VS(VertexUVNormal input)
 
 float4 PS(PixelInput input) : SV_TARGET
 {
-    return albedoMap.Sample(linearWrapSS, input.uv);
+    float4 color = albedoMap.Sample(linearWrapSS, input.uv);
+    return color;
 }

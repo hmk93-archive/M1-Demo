@@ -1,14 +1,17 @@
 #include "pch.h"
 #include "UIManager.h"
 #include "FloatText.h"
+#include "UIPointBar.h"
 
 UIManager::UIManager()
 {
+	CreateStatus();
 	CreateFloatTexts();
 }
 
 UIManager::~UIManager()
 {
+	delete _status;
 	for (FloatText* text : _texts)
 		delete text;
 }
@@ -21,6 +24,7 @@ void UIManager::Update()
 
 void UIManager::Render()
 {
+	_status->Render();
 }
 
 void UIManager::PostRender()
@@ -44,6 +48,11 @@ void UIManager::CreateFloatTexts()
 		FloatText* text = new FloatText();
 		_texts.push_back(text);
 	}
+}
+
+void UIManager::CreateStatus()
+{
+	_status = new UIPointBar(L"Health", { 150, 20, 0 }, Vector3(g_screenWidth * 0.5f, 40.0f, 0.0f));
 }
 
 void UIManager::InitFloatText(Transform* target, wstring text, DXGI_RGBA color)

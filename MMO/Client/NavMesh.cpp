@@ -165,7 +165,7 @@ bool NavMesh::IsWalkable(Vector3 pos)
 	return false;
 }
 
-void NavMesh::AppedMesh(const vector<Vector3>& vertices, const vector<UINT>& indices)
+void NavMesh::AppendMesh(const vector<Vector3>& vertices, const vector<UINT>& indices)
 {
 	size_t vertOffset = _navVertices.size();
 	_navVertices.insert(_navVertices.end(), vertices.begin(), vertices.end());

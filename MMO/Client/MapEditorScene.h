@@ -25,6 +25,10 @@ private:
 	void SaveMap(string path);
 	void LoadMap(string path);
 
+	void Control();
+
+	void SetCamera();
+
 private:
 	TerrainEditor* _terrainEditor = nullptr;
 	vector<ModelObject*> _models = {};

@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Device.h"
+#include "RasterizerState.h"
 
 FieldWall::FieldWall(Vector2 size, Vector2 layout, wstring textureFile)
 	: _size(size)
@@ -11,11 +12,11 @@ FieldWall::FieldWall(Vector2 size, Vector2 layout, wstring textureFile)
 {
 	CreateMaterial(textureFile);
 	CreateMesh();
-	//
-	// rsState[0] = new RasterizerState();
-	// rsState[1] = new RasterizerState();
-	// rsState[1]->CullMode(D3D11_CULL_NONE);
-	//
+
+	_rsState[0] = new RasterizerState();
+	_rsState[1] = new RasterizerState();
+	_rsState[1]->CullMode(D3D11_CULL_NONE);
+
 	float halfDepth = 1.5f;
 	Vector3 minBox = { 0, 0, -halfDepth };
 	Vector3 maxBox = { size.x, size.y, halfDepth };
@@ -26,35 +27,37 @@ FieldWall::FieldWall(Vector2 size, Vector2 layout, wstring textureFile)
 FieldWall::~FieldWall()
 {
 	delete _collider;
-	//
-	// delete rsState[0];
-	// delete rsState[1];
-	//
+
+	delete _rsState[0];
+	delete _rsState[1];
+
 	delete _material;
 	delete _mesh;
 }
 
 void FieldWall::Update()
 {
-	if (isActive == false) return;
-	//
+	if (isActive == false) 
+		return;
+	
 	Transform::UpdateWorld();
 }
 
 void FieldWall::Render()
 {
-	if (isActive == false) return;
-	//
+	if (isActive == false) 
+		return;
+	
 	_mesh->IASet();
 	SetWorldBuffer();
 	_material->Set();
-	//
-	// rsState[1]->SetState();
+	
+	_rsState[1]->SetState();
 	Device::Get().GetDeviceContext()->DrawIndexed((UINT)_indices.size(), 0, 0);
-	// rsState[0]->SetState();
-	//
+	_rsState[0]->SetState();
+	
 	Transform::RenderAxis();
-	//
+	
 	_collider->Render();
 }
 
@@ -79,7 +82,8 @@ void FieldWall::CreateMesh()
 	v.uv = { _layout.x, _layout.y };
 	_vertices.emplace_back(v);
 	_indices.resize(6);
-	_indices = {
+	_indices = 
+	{
 		0, 1, 3,
 		0, 3, 2
 	};
@@ -92,7 +96,7 @@ void FieldWall::CreateMaterial(wstring textureFile)
 	_material = new Material(L"Default");
 
 	wstring filePath{};
-	filePath = L"../Assets/Textures/" + textureFile + L"Diffuse" + L".png";
+	filePath = L"../Assets/Textures/" + textureFile + L"Albedo" + L".png";
 	_material->SetDiffuseMap(filePath);
 	filePath = L"../Assets/Textures/" + textureFile + L"Normal" + L".png";
 	_material->SetNormalMap(filePath);

@@ -25,7 +25,7 @@ NavMeshScene::NavMeshScene(bool showConsole)
 	for (auto& v : vertices)
 		newVertices[i++] = vertices[i].position;
 
-	_navMesh->AppedMesh(newVertices, indices);
+	_navMesh->AppendMesh(newVertices, indices);
 
 	_navMesh->Bake();
 

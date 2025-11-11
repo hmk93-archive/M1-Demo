@@ -261,9 +261,10 @@ void Player::Move()
 		_velocity = Vector3::Lerp(_velocity, zero, _deceleration * Timer::Get().GetElapsedTime());
 	}
 
-	position += _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
-
-	//@TODO: WSAD 사용 시 NavMesh 로 다음 위치 판정 필요
+	// NavMesh 를 통해 다음 위치 이동 가능을 판정
+	Vector3 nextPos = position + _velocity * _moveSpeed * Timer::Get().GetElapsedTime();
+	if (_navMesh->IsWalkable(nextPos))
+		position = nextPos;
 
 	// 공중에 있을 경우 다른 애니메이션 재생 하지 않음
 	if (behaviourState == Air)

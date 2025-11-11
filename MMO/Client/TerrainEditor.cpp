@@ -22,10 +22,10 @@ TerrainEditor::TerrainEditor(UINT width, UINT height)
 	isActive = false;
 
 	_material = new Material(L"TerrainEditor");
-	_material->SetDiffuseMap(L"../Assets/Textures/WallDiffuse.png");
+	_material->SetDiffuseMap(L"../Assets/Textures/Landscape/Dirt1.png");
 
-	_secondMap = Texture::Add(L"../Assets/Textures/Floor.png");
-	_thirdMap = Texture::Add(L"../Assets/Textures/Stones.png");
+	_secondMap = Texture::Add(L"../Assets/Textures/Landscape/Dirt2.png");
+	_thirdMap = Texture::Add(L"../Assets/Textures/Landscape/Dirt3.png");
 
 	_fillModes[0] = new RasterizerState();
 	_fillModes[1] = new RasterizerState();

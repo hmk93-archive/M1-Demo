@@ -1,14 +1,98 @@
 <Map>
     <ModelObject>
-        <Name>Stone</Name>
-        <Scale x="0.99990636" y="1" z="0.99990636"/>
-        <Rotation x="0" y="0.025240898" z="-3.1415927"/>
-        <Position x="256.9325" y="-19.998682" z="163.5446"/>
+        <Name>Wall0</Name>
+        <Scale x="5.001617" y="4.9971414" z="4.9970345"/>
+        <Rotation x="1.5674294" y="0.03512907" z="0.0049625076"/>
+        <Position x="129.80966" y="-0.0879879" z="131.16026"/>
     </ModelObject>
     <ModelObject>
-        <Name>House</Name>
-        <Scale x="0.0099947238" y="0.0099915974" z="0.0099916067"/>
-        <Rotation x="-1.5363729" y="0.0062322617" z="-3.1290793"/>
-        <Position x="58.386433" y="-20.168934" z="172.62456"/>
+        <Name>Wall1</Name>
+        <Scale x="4.9879627" y="4.9869285" z="4.9874802"/>
+        <Rotation x="-1.5241559" y="-0.00096023083" z="3.1310956"/>
+        <Position x="88.201523" y="1.5258789e-05" z="243.12314"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall2</Name>
+        <Scale x="4.9897819" y="4.9888663" z="4.9879484"/>
+        <Rotation x="-1.6169895" y="0.016011477" z="3.1206362"/>
+        <Position x="198.76213" y="-0.4435215" z="246.83385"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall2</Name>
+        <Scale x="4.9877582" y="4.987699" z="4.9875283"/>
+        <Rotation x="1.5738581" y="-0.015258908" z="0.0047848816"/>
+        <Position x="257.29166" y="0" z="139.00496"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall3</Name>
+        <Scale x="5.0001621" y="4.9991512" z="4.999136"/>
+        <Rotation x="1.555716" y="0.01187551" z="0.011153675"/>
+        <Position x="42.255417" y="0" z="96.510773"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall4</Name>
+        <Scale x="5.0132728" y="5.0034418" z="5.0108161"/>
+        <Rotation x="1.5736458" y="0.0092071295" z="0.0083329491"/>
+        <Position x="44.602375" y="0" z="188.67297"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall1</Name>
+        <Scale x="4.9885054" y="4.9883785" z="4.987833"/>
+        <Rotation x="1.5554104" y="-0.0057358742" z="0.0030205538"/>
+        <Position x="180.06804" y="0" z="45.103699"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall6</Name>
+        <Scale x="5.0274005" y="5.0287075" z="5.0281138"/>
+        <Rotation x="-1.5608191" y="-0.046547294" z="3.1297195"/>
+        <Position x="132.59697" y="0" z="189.5511"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall9</Name>
+        <Scale x="4.8578553" y="4.8566375" z="4.8564806"/>
+        <Rotation x="1.5618593" y="0.013430238" z="0.0057571135"/>
+        <Position x="116.45971" y="0" z="175.45215"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall8</Name>
+        <Scale x="5.0103936" y="5.0092111" z="5.0092177"/>
+        <Rotation x="1.5717516" y="0.0091673136" z="0.0036039231"/>
+        <Position x="143.3813" y="0" z="218.24754"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall7</Name>
+        <Scale x="4.998281" y="4.9967771" z="4.9906015"/>
+        <Rotation x="1.5623189" y="0.04415369" z="0.0042979824"/>
+        <Position x="170.36865" y="0" z="194.02541"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall5</Name>
+        <Scale x="5.0199304" y="5.02" z="5.0199304"/>
+        <Rotation x="-0" y="0.007212162" z="-0"/>
+        <Position x="130.75169" y="6.6118555" z="54.426556"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall10</Name>
+        <Scale x="4.9901538" y="4.9889746" z="4.9895711"/>
+        <Rotation x="1.5829326" y="0.013115883" z="0.0023208237"/>
+        <Position x="145.68947" y="0.37309813" z="248.52744"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall10</Name>
+        <Scale x="5.0005274" y="4.9997163" z="5.0002103"/>
+        <Rotation x="1.5851033" y="0.007904768" z="0.0043507898"/>
+        <Position x="92.92334" y="0" z="46.535599"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall11</Name>
+        <Scale x="4.9899716" y="4.9897451" z="4.9895806"/>
+        <Rotation x="0.17487517" y="-1.5653359" z="1.3887227"/>
+        <Position x="34.174385" y="4.4720473" z="100.59048"/>
+    </ModelObject>
+    <ModelObject>
+        <Name>Wall11</Name>
+        <Scale x="5.0492921" y="4.9999232" z="4.9981666"/>
+        <Rotation x="0.058641061" y="-1.5641627" z="1.5155445"/>
+        <Position x="34.124466" y="4.4220438" z="90.885429"/>
     </ModelObject>
 </Map>

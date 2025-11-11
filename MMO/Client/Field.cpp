@@ -14,11 +14,16 @@ vector<string> Field::locNames
 };
 
 vector<string> Field::stateNames
-{ "NORMAL", "ALERT", "DANGER" };
+{ 
+	"NORMAL", 
+	"ALERT", 
+	"DANGER" 
+};
 
 Field::Field(Terrain* terrain, Location location)
-	:location(location), state(MapState::NORMAL),
-	terrain(terrain)
+	: location(location)
+	, state(MapState::NORMAL)
+	, terrain(terrain)
 {
 	SetTag();
 	SetFieldData();
@@ -63,7 +68,7 @@ void Field::PostRender()
 		if (ImGui::RadioButton("ALERT", (int*)&state, 1))
 			SetState();
 		ImGui::SameLine();
-		if( ImGui::RadioButton("DANGER", (int*)&state, 2))
+		if (ImGui::RadioButton("DANGER", (int*)&state, 2))
 			SetState();
 	}
 	// field pos
@@ -117,7 +122,7 @@ void Field::SetFieldData()
 {
 	fieldSize.x = (terrain->GetSize().x) / 3.0f;
 	fieldSize.y = (terrain->GetSize().y) / 3.0f;
-	//
+
 	fieldPos.x = (int)location % 3 * fieldSize.x;
 	fieldPos.z = (int)location / 3 * fieldSize.y;
 }
@@ -137,10 +142,9 @@ void Field::CreateWalls()
 {
 	Vector2 wallSize = fieldSize;
 	wallSize.y /= 10.0f;
-	//
 	wallSize.x *= 0.4f;
 	wallSize.y *= 0.4f;
-	//
+
 	vector<Vector3> wallPos =
 	{
 		Vector3(0, 0, 0),
@@ -148,14 +152,12 @@ void Field::CreateWalls()
 		Vector3(fieldSize.x, 0, fieldSize.y),
 		Vector3(0, 0, fieldSize.y)
 	};
-	//
+
 	for (int j = 0; j < 2; ++j)
 		for (int i = 0; i < 4; ++i)
 		{
 			FieldWall* wall = new FieldWall(wallSize, { 10, 1 });
-			//
 			wall->position = wallPos[i] + fieldPos;
-			//
 			wall->rotation.y = -XM_PIDIV2 * i - XM_PIDIV2 * j;
 			walls.emplace_back(wall);
 		}

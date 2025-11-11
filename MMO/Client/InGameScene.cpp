@@ -20,6 +20,8 @@
 #include "UIManager.h"
 #include "Model.h"
 #include "Material.h"
+#include "ModelMesh.h"
+#include "BoxCollider.h"
 using namespace Utility;
 
 InGameScene::InGameScene()
@@ -215,8 +217,8 @@ void InGameScene::EnemyToPlayer()
 		Collider* playerEventCol = _player->GetEventCollider();
 		if (warrokCol->Collision(playerEventCol))
 		{
-			_player->LookAt(warrokCol->position - _player->position);
-			_player->LookAt(warrokCol->position - _player->position);
+			//_player->LookAt(warrokCol->position - _player->position);
+			//_player->LookAt(warrokCol->position - _player->position);
 
 			if (warrokCol->Collision(playerMainCol))
 				_player->PushBack(warrokCol);
@@ -283,10 +285,49 @@ void InGameScene::InitScene()
 
 	// NavMesh
 	_navMesh = new NavMesh(_terrain->GetSize().x, _terrain->GetSize().y);
-	// _navMesh->SetTerrain(_terrain);
-	// _navMesh->Bake();
+	for (ModelObject* model : _models)
+	{
+		// @TODO:??
+		BoxCollider* boxCollider = (BoxCollider*)model->collider;
+		model->UpdateWorld();
+		boxCollider->UpdateWorld();
 
-	// Fields
+		Vector3 minBox = boxCollider->MinBox();
+		Vector3 maxBox = boxCollider->MaxBox();
+
+		vector<Vector3> modelVertices;
+		modelVertices.emplace_back(minBox.x, minBox.y, minBox.z);
+		modelVertices.emplace_back(minBox.x, maxBox.y, minBox.z);
+		modelVertices.emplace_back(maxBox.x, maxBox.y, minBox.z);
+		modelVertices.emplace_back(maxBox.x, minBox.y, minBox.z);
+
+		modelVertices.emplace_back(minBox.x, minBox.y, maxBox.z);
+		modelVertices.emplace_back(minBox.x, maxBox.y, maxBox.z);
+		modelVertices.emplace_back(maxBox.x, maxBox.y, maxBox.z);
+		modelVertices.emplace_back(maxBox.x, minBox.y, maxBox.z);
+
+		vector<UINT> modelIndices =
+		{
+			0, 1, 1, 2, 2, 3, 3, 0,
+			4, 5, 5, 6, 6, 7, 7, 4,
+			0, 4, 1, 5, 2, 6, 3, 7
+		};
+	
+		_navMesh->AppendMesh(modelVertices, modelIndices);
+	}
+
+	auto& vertices = _terrain->GetVertices();
+	auto& indices = _terrain->GetIndices();
+	vector<Vector3> terrainVertices(vertices.size());
+	int i = 0;
+	for (auto& v : vertices)
+		terrainVertices[i++] = vertices[i].position;
+
+	_navMesh->AppendMesh(terrainVertices, indices);
+	
+	_navMesh->Bake();
+
+	//// Fields
 	//for (UINT i = 0; i < 9; i++)
 	//{
 	//	Field* field = new Field(_terrain, Field::Location(i));

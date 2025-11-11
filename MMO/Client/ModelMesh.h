@@ -18,6 +18,11 @@ public:
 
 	void SetBox(Vector3* minBox, Vector3* maxBox);
 
+	ModelVertex* GetVertices() { return vertices; }
+	UINT GetVertexCount() { return vertexCount; }
+	UINT* GetIndices() { return indices; }
+	UINT GetIndexCount() { return indexCount; }
+
 	string name;
 	string materialName;
 

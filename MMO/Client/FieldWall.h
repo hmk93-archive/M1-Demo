@@ -3,12 +3,13 @@
 #include "Transform.h"
 
 class Collider;
+class RasterizerState;
 
 class FieldWall : public Transform
 {
 	using VertexType =  VertexUV;
 public:
-	FieldWall(Vector2 size, Vector2 layout = { 1.0f, 1.0f }, wstring textureFile = L"Wall");
+	FieldWall(Vector2 size, Vector2 layout = { 1.0f, 1.0f }, wstring textureFile = L"Rock");
 	~FieldWall();
 
 	void Update();
@@ -30,7 +31,7 @@ private:
 	Material* _material = nullptr;
 	Mesh* _mesh = nullptr;
 	
-	// RasterizerState* rsState[2];
+	RasterizerState* _rsState[2] = {};
 
 	Collider* _collider = nullptr;
 };

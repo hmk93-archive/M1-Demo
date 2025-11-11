@@ -22,7 +22,7 @@ public:
 	float GetHeightAt(Vector3 pos);
 	bool IsWalkable(Vector3 pos);
 
-	void AppedMesh(const vector<Vector3>& vertices, const vector<UINT>& indices);
+	void AppendMesh(const vector<Vector3>& vertices, const vector<UINT>& indices);
 
 private:
 	void InitNavMesh();

@@ -3,6 +3,7 @@
 #include "Transform.h"
 
 class MatrixBuffer;
+class BlendState;
 class DepthStencilState;
 
 class UIImage : public Transform
@@ -45,6 +46,7 @@ protected:
 	MatrixBuffer* _viewBuffer = nullptr;
 	MatrixBuffer* _orthoBuffer = nullptr;
 
+	BlendState* _blendState[2] = {};
 	DepthStencilState* _depthMode[2] = {};
 
 	ComPtr<ID3D11ShaderResourceView> _srv;

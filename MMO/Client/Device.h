@@ -7,7 +7,7 @@ class Device
 	DECLARE_SINGLETON(Device);
 public:
 	void SetRenderTarget();
-	void Clear(Vector4 color = Vector4(0.0f, 0.125f, 0.8f, 1.0f));
+	void Clear(Vector4 color = Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 	void Present();
 
 	ID3D11Device* GetDevice() { return _device.Get(); }

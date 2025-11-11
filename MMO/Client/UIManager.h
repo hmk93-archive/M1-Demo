@@ -3,6 +3,8 @@
 class FloatText;
 class Transform;
 
+class UIPointBar;
+
 class UIManager
 {
 	DECLARE_SINGLETON(UIManager);
@@ -15,11 +17,14 @@ public:
 
 private:
 	void CreateFloatTexts();
+	void CreateStatus();
 
 	FloatText* SetFloatText();
 
 private:
 	vector<FloatText*> _texts = {};
 	UINT _floatTextIndex = 0;
+
+	UIPointBar* _status = nullptr;
 };
 

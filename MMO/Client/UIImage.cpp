@@ -3,6 +3,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "GlobalBuffers.h"
+#include "BlendState.h"
 #include "DepthStencilState.h"
 #include "Device.h"
 
@@ -14,6 +15,10 @@ UIImage::UIImage(wstring shaderFile, UIImage::Pivot inPivot, bool blendAlpha, bo
 	CreateMesh();
 	CreateMatrix();
 
+	_blendState[0] = new BlendState();
+	_blendState[1] = new BlendState();
+	_blendState[1]->Alpha(blendAlpha);
+
 	_depthMode[0] = new DepthStencilState();
 	_depthMode[1] = new DepthStencilState();
 	_depthMode[1]->DepthEnable(depthEnable);
@@ -23,6 +28,9 @@ UIImage::~UIImage()
 {
 	delete _depthMode[1];
 	delete _depthMode[0];
+
+	delete _blendState[1];
+	delete _blendState[0];
 
 	delete _viewBuffer;
 	delete _orthoBuffer;
@@ -48,8 +56,10 @@ void UIImage::Render()
 
 	_material->Set();
 
+	_blendState[1]->SetState();
 	_depthMode[1]->SetState();
 	Device::Get().GetDeviceContext()->DrawIndexed(6, 0, 0);
+	_blendState[0]->SetState();
 	_depthMode[0]->SetState();
 }
 

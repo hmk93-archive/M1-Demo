@@ -32,9 +32,6 @@
     <Filter Include="Graphics\Resource">
       <UniqueIdentifier>{21395e72-c318-4e46-97fa-cdde004d8a85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils">
-      <UniqueIdentifier>{7257fc1b-b6c7-4aa5-bde9-8949e1a3ac8f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{207c71f2-442e-42ce-aff0-6fc577d56311}</UniqueIdentifier>
     </Filter>
@@ -50,9 +47,6 @@
     <Filter Include="Landscape">
       <UniqueIdentifier>{c6149347-1e6a-4218-b29e-763367e7a7b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\ImGui">
-      <UniqueIdentifier>{c72097c5-ffae-4c2d-ba54-b2029e5b8987}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Managers">
       <UniqueIdentifier>{eb8cc856-ca79-424b-bf31-2ff58b0d6510}</UniqueIdentifier>
     </Filter>
@@ -61,9 +55,6 @@
     </Filter>
     <Filter Include="Collider">
       <UniqueIdentifier>{d70fe33d-2aa6-48f8-9447-5846a70042dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\PathFinding">
-      <UniqueIdentifier>{566c6d54-8ea8-4f5b-9c4e-b0d9b3c73ad2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Model">
       <UniqueIdentifier>{9700932e-88b0-4746-b6cb-2551e92afd45}</UniqueIdentifier>
@@ -74,11 +65,20 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{fa731200-974d-426d-8cbb-468f5f927359}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\PathFinding\Recast">
-      <UniqueIdentifier>{bc989612-c080-45fe-9e4d-e5979c1233cc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\PostPorcess">
       <UniqueIdentifier>{232256bf-6a07-439a-ad82-61c7e5cb633e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{7257fc1b-b6c7-4aa5-bde9-8949e1a3ac8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\ImGui">
+      <UniqueIdentifier>{c72097c5-ffae-4c2d-ba54-b2029e5b8987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\PathFinding">
+      <UniqueIdentifier>{566c6d54-8ea8-4f5b-9c4e-b0d9b3c73ad2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\PathFinding\Recast">
+      <UniqueIdentifier>{bc989612-c080-45fe-9e4d-e5979c1233cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -374,6 +374,9 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPointBar.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -689,6 +692,9 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="UIManager.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPointBar.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>

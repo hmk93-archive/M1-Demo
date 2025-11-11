@@ -106,7 +106,5 @@ float4 PS(PixelInput input) : SV_TARGET
     if (factor < 1.0)
         factor = 1.0 - factor;
     
-    
-    
     return color * factor;
 }

@@ -51,6 +51,21 @@ ModelExportScene::ModelExportScene()
 		CreateModel("Stone");
 		CreateModel("House");
 		CreateModel("Sword");
+		CreateModel("Rock0");
+		CreateModel("Rock1");
+		// CreateModel("Wall0"); // DiffuseColor 이름이 존재하지 않아 Material 파일 덮어쓰는 현상으로 주석처리
+		// CreateModel("Wall1");
+		// CreateModel("Wall2");
+		// CreateModel("Wall3");
+		// CreateModel("Wall4");
+		// CreateModel("Wall5");
+		// CreateModel("Wall6");
+		// CreateModel("Wall7");
+		// CreateModel("Wall8");
+		// CreateModel("Wall9");
+		// CreateModel("Wall10");
+		// CreateModel("Wall11");
+		// CreateModel("Wall12");
 	}
 
 	// Create ModelObject
@@ -72,6 +87,21 @@ ModelExportScene::ModelExportScene()
 		{
 			ModelObject* obj = new ModelObject("Sword/Sword");
 			obj->scale = Vector3(0.05f);
+			_models.emplace_back(obj);
+		}
+		// Rocks
+		{
+			ModelObject* obj = new ModelObject("Rock0/Rock0");
+			obj->scale = Vector3(0.05f);
+			_models.emplace_back(obj);
+
+			obj = new ModelObject("Rock1/Rock1");
+			obj->scale = Vector3(0.05f);
+			_models.emplace_back(obj);
+		}
+		// Walls
+		{
+			ModelObject* obj = new ModelObject("Wall0/Wall0");
 			_models.emplace_back(obj);
 		}
 	}
